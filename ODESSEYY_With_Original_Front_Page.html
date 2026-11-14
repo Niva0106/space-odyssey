@@ -193,6 +193,16 @@
         font-size: 11px;
         letter-spacing: 0.1em;
       }
+      .card.disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+        filter: saturate(0.55);
+      }
+      .card.disabled:hover {
+        border-color: var(--line);
+        box-shadow: none;
+        transform: none;
+      }
       .card h3 {
         font-size: 21px;
         color: var(--cyan);
@@ -561,7 +571,7 @@
       }
       #introRoot .intro-sub {
         max-width: 460px;
-        color: #b9cde8;
+        color: #011c3f;
         font-size: clamp(18px, 2vw, 22px);
         margin: 22px 0 36px;
       }
@@ -806,7 +816,13 @@
           padding: 22px 18px !important;
         }
       }
-    </style>
+    
+      .resource-status{font-size:.82rem;line-height:1.45;margin:-3px 0 14px;padding:8px 10px;border-left:3px solid #f0b84b;background:rgba(240,184,75,.08);color:#f3d28d;border-radius:5px}
+      .resource-status.good{border-left-color:#45d69a;background:rgba(69,214,154,.09);color:#8df0c2}
+      .resource-status.bad{border-left-color:#ff667a;background:rgba(255,102,122,.09);color:#ff9eaa}
+      .autoset-btn{width:100%;margin-top:8px}
+      .autoset-hint{font-size:.78rem;line-height:1.45;opacity:.72;margin:8px 0 0}
+</style>
   </head>
   <body class="intro-open">
     <div id="introRoot">
@@ -1174,13 +1190,13 @@
             </p>
             <span class="tag">CAPACITY 12,000 KG</span>
           </div>
-          <div class="card" data-rocket="light">
+          <div class="card disabled" aria-disabled="true">
             <h3>SCOUT-L</h3>
             <p>
               Small launcher for compact satellites and low-cost technology
               demonstrations.
             </p>
-            <span class="tag">CAPACITY 1,500 KG</span>
+            <span class="tag">COMING SOON</span>
           </div>
         </div>
         <div class="two">
@@ -1198,6 +1214,7 @@
               value="65"
               style="width: 100%; accent-color: var(--cyan)"
             />
+            <div class="resource-status" id="fuelStatus" aria-live="polite">Checking propellant allocation…</div>
             <div class="row">
               <label for="structure">Structural reinforcement</label
               ><strong><span id="structureVal">55</span>%</strong>
@@ -1210,6 +1227,7 @@
               value="55"
               style="width: 100%; accent-color: var(--cyan)"
             />
+            <div class="resource-status" id="structureStatus" aria-live="polite">Checking structural reinforcement…</div>
             <div class="row">
               <label for="solar">Solar array capacity</label
               ><strong><span id="solarVal">8</span> kW</strong>
@@ -1222,6 +1240,9 @@
               value="8"
               style="width: 100%; accent-color: var(--cyan)"
             />
+            <div class="resource-status" id="solarStatus" aria-live="polite">Checking solar array capacity…</div>
+            <button class="btn secondary autoset-btn" type="button" onclick="autoSetResources()">✦ AUTO-SET VALID CONFIGURATION</button>
+            <p class="autoset-hint">Automatically adjusts propellant, structure, solar capacity and launcher to a valid configuration for the selected mission.</p>
           </div>
           <div class="panel">
             <h3>ENGINEERING TELEMETRY</h3>
@@ -1691,36 +1712,143 @@
                 ? "Geostationary orbit selected: high altitude requires a larger energy budget."
                 : "Equatorial orbit selected for repeated coverage along the equator.";
       }
+      // Mission-specific educational game thresholds (not real launch specifications).
+      function resourceLimits() {
+        return {
+          fuel: { lunar: 55, earth: 40, mars: 80 }[state.mission],
+          structure: 35,
+        };
+      }
+      function vehicleCheck() {
+        const m = mass();
+        const r = rocketData[state.rocket];
+        const remaining = missionData[state.mission].fund - cost();
+        const solarMargin = val("solar") - val("power");
+        const limits = resourceLimits();
+        const issues = [];
+        const fixes = [];
+        if (val("fuel") < limits.fuel) {
+          issues.push("Propellant allocation is below the mission minimum.");
+          fixes.push("Raise propellant to at least " + limits.fuel + "%.");
+        }
+        if (val("structure") < limits.structure) {
+          issues.push("Structural reinforcement is below the launch-load minimum.");
+          fixes.push("Raise structural reinforcement to at least " + limits.structure + "%.");
+        }
+        if (solarMargin < 0) {
+          issues.push("Solar array output is lower than payload power demand.");
+          fixes.push("Set solar capacity to at least " + val("power") + " kW, or lower payload power demand.");
+        }
+        if (m > r.capacity) {
+          issues.push("Estimated launch mass (" + m.toLocaleString() + " kg) exceeds " + r.name + " capacity (" + r.capacity.toLocaleString() + " kg).");
+          fixes.push("Choose a higher-capacity launcher or reduce payload/resource mass.");
+        }
+        if (remaining < 0) {
+          issues.push("Resource and launcher cost exceeds the mission funding by " + Math.abs(remaining) + " credits.");
+          fixes.push("Use AUTO-SET to find a configuration within the mission budget.");
+        }
+        return { valid: issues.length === 0, issues, fixes, m, r, remaining, solarMargin, limits };
+      }
+      function setResourceStatus(id, valid, message) {
+        const el = $(id);
+        if (!el) return;
+        el.className = "resource-status " + (valid ? "good" : "bad");
+        el.textContent = (valid ? "✓ " : "✕ ") + message;
+      }
       function updateVehicle() {
         ["fuel", "structure", "solar"].forEach(
           (id) => ($(id + "Val").textContent = val(id)),
         );
-        const m = mass(),
-          r = rocketData[state.rocket],
-          c = missionData[state.mission].fund - cost(),
-          margin = val("solar") - val("power");
-        $("capacity").textContent = r.capacity.toLocaleString() + " kg";
-        $("launchMass").textContent = m.toLocaleString() + " kg";
-        $("remaining").textContent = c + " credits";
-        $("margin").textContent = (margin >= 0 ? "+" : "") + margin + " kW";
-        const issues = [];
-        if (m > r.capacity)
-          issues.push("Payload and spacecraft exceed launcher capacity.");
-        if (c < 0)
-          issues.push(
-            "Funding exceeded. Reduce resource allocation or choose a lower-cost configuration.",
-          );
-        if (margin < 0)
-          issues.push("Solar power generation is below payload demand.");
-        if (val("structure") < 35)
-          issues.push("Structural reinforcement is low for launch loads.");
-        $("vehicleAdvice").textContent = issues.length
-          ? issues.join(" ")
-          : "Vehicle within nominal capacity. Power and budget margins are acceptable.";
-        $("vehicleAdvice").className =
-          "notice " + (issues.length ? "bad" : "good");
+        const check = vehicleCheck();
+        $("capacity").textContent = check.r.capacity.toLocaleString() + " kg";
+        $("launchMass").textContent = check.m.toLocaleString() + " kg";
+        $("remaining").textContent = check.remaining + " credits";
+        $("margin").textContent = (check.solarMargin >= 0 ? "+" : "") + check.solarMargin + " kW";
+
+        const fuelOK = val("fuel") >= check.limits.fuel;
+        const structureOK = val("structure") >= check.limits.structure;
+        const solarOK = check.solarMargin >= 0;
+        setResourceStatus("fuelStatus", fuelOK,
+          fuelOK ? "Propellant is sufficient for " + missionData[state.mission].name + "." :
+          "Insufficient for this mission. Minimum: " + check.limits.fuel + "%; current: " + val("fuel") + "%.");
+        setResourceStatus("structureStatus", structureOK,
+          structureOK ? "Structural reinforcement meets the minimum." :
+          "Below minimum. Set at least " + check.limits.structure + "%; current: " + val("structure") + "%.");
+        setResourceStatus("solarStatus", solarOK,
+          solarOK ? "Solar output meets payload demand (" + val("solar") + " / " + val("power") + " kW)." :
+          "Power shortfall: add " + Math.abs(check.solarMargin) + " kW (minimum " + val("power") + " kW).");
+
+        const box = $("vehicleAdvice");
+        if (check.valid) {
+          box.className = "notice good";
+          box.textContent = "✓ ALL RESOURCE CHECKS PASSED. Propellant, structure, solar power, launcher capacity and funding are valid.";
+        } else {
+          box.className = "notice bad";
+          box.innerHTML = "<strong>✕ CONFIGURATION NEEDS CORRECTION</strong><br>" +
+            check.issues.map(x => "• " + x).join("<br>") +
+            "<br><br><strong>Suggested corrections</strong><br>" +
+            check.fixes.map(x => "→ " + x).join("<br>");
+        }
+      }
+      function autoSetResources() {
+        const limits = resourceLimits();
+        const power = val("power");
+        const mission = missionData[state.mission];
+        const rockets = Object.entries(rocketData);
+        let best = null;
+
+        // Search every allowed integer slider value and launcher, then choose
+        // the lowest-cost configuration that passes all constraints.
+        for (let fuel = Math.max(25, limits.fuel); fuel <= 100; fuel++) {
+          for (let structure = Math.max(20, limits.structure); structure <= 100; structure++) {
+            for (let solar = Math.max(2, power); solar <= 20; solar++) {
+              const estimatedMass = mission.baseMass + val("payload") +
+                Math.round(fuel * 7) + Math.round((100 - structure) * 3);
+              const resourceCost = Math.round(fuel * 0.18) +
+                Math.round(solar * 0.7) + Math.round(structure * 0.12);
+              for (const [rocketKey, rocket] of rockets) {
+                if (rocketKey === "light") continue; // SCOUT-L is coming soon.
+                const totalCost = rocket.cost + resourceCost;
+                if (estimatedMass <= rocket.capacity && totalCost <= mission.fund) {
+                  const candidate = {
+                    fuel, structure, solar, rocketKey, totalCost,
+                    mass: estimatedMass,
+                    score: totalCost * 100000 + estimatedMass
+                  };
+                  if (!best || candidate.score < best.score) best = candidate;
+                }
+              }
+            }
+          }
+        }
+
+        if (!best) {
+          $("vehicleAdvice").className = "notice bad";
+          $("vehicleAdvice").textContent =
+            "AUTO-SET COULD NOT FIND A VALID CONFIGURATION. Try reducing payload mass or payload power demand, or select a mission with a larger budget.";
+          return;
+        }
+
+        $("fuel").value = best.fuel;
+        $("structure").value = best.structure;
+        $("solar").value = best.solar;
+        state.rocket = best.rocketKey;
+        document.querySelectorAll("[data-rocket]").forEach(card =>
+          card.classList.toggle("selected", card.dataset.rocket === best.rocketKey)
+        );
+        updateVehicle();
+        $("vehicleAdvice").className = "notice good";
+        $("vehicleAdvice").textContent =
+          "✓ AUTO-SET COMPLETE. A valid configuration has been applied: " +
+          best.fuel + "% propellant, " + best.structure +
+          "% structural reinforcement, " + best.solar + " kW solar capacity, " +
+          rocketData[best.rocketKey].name + " launcher. All checks passed.";
       }
       function next(n) {
+        if (n === 3 && !vehicleCheck().valid) {
+          updateVehicle();
+          return;
+        }
         state.screen = n;
         document
           .querySelectorAll(".screen")
@@ -1781,17 +1909,8 @@
       );
       function validateVehicle() {
         updateVehicle();
-        if (
-          mass() > rocketData[state.rocket].capacity ||
-          missionData[state.mission].fund - cost() < 0 ||
-          val("solar") < val("power") ||
-          val("structure") < 35
-        ) {
-          alert(
-            "SYSTEM CHECK FAILED\\n\\n" +
-              $("vehicleAdvice").textContent +
-              "\\n\\nAdjust the engineering parameters and run the check again.",
-          );
+        if (!vehicleCheck().valid) {
+          $("vehicleAdvice").scrollIntoView({ behavior: "smooth", block: "nearest" });
           return;
         }
         next(3);
