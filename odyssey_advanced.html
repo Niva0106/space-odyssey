@@ -1,0 +1,4289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ODESSEYY | Advanced Mission Operations</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@500;600;700;900&family=Exo+2:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #040a12;
+        --panel: #081827;
+        --cyan: #5ff3ff;
+        --gold: #ffb347;
+        --muted: #8ba8b8;
+        --line: #1b3a4d;
+        --text: #d8edf5;
+        --green: #6dffb0;
+        --red: #ff7185;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: radial-gradient(ellipse at 50% 20%, #10283b, #040a12 70%);
+        color: var(--text);
+        font-family: Rajdhani, "Segoe UI", sans-serif;
+      }
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      #stars {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.65;
+        background-image:
+          radial-gradient(1px 1px at 10% 20%, #fff 99%, transparent),
+          radial-gradient(1px 1px at 70% 40%, #5ff3ff 99%, transparent),
+          radial-gradient(2px 2px at 40% 80%, #fff 99%, transparent),
+          radial-gradient(1px 1px at 90% 12%, #fff 99%, transparent);
+        background-size:
+          190px 170px,
+          230px 210px,
+          300px 270px,
+          260px 240px;
+        animation: drift 45s linear infinite;
+      }
+      @keyframes drift {
+        to {
+          background-position:
+            190px 170px,
+            -230px 210px,
+            300px -270px,
+            -260px 240px;
+        }
+      }
+      header {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 4vw;
+        border-bottom: 1px solid #214052;
+        background: #061321cc;
+      }
+      .brand {
+        font: 700 20px Orbitron;
+        letter-spacing: 0.16em;
+        color: var(--cyan);
+      }
+      .brand small {
+        display: block;
+        font: 600 10px Rajdhani;
+        letter-spacing: 0.28em;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .hstats {
+        display: flex;
+        gap: 20px;
+        font-size: 15px;
+        color: var(--muted);
+      }
+      .hstats b {
+        color: var(--gold);
+      }
+      main {
+        position: relative;
+        z-index: 1;
+        max-width: 1200px;
+        margin: auto;
+        padding: 28px 4vw 60px;
+      }
+      .progress {
+        display: flex;
+        gap: 7px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .step {
+        padding: 7px 13px;
+        border: 1px solid var(--line);
+        color: #7894a5;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+      }
+      .step.active {
+        border-color: var(--cyan);
+        color: var(--cyan);
+        box-shadow: 0 0 15px #5ff3ff22;
+      }
+      .step.done {
+        color: var(--green);
+        border-color: #286b59;
+      }
+      .screen {
+        display: none;
+        animation: appear 0.35s ease;
+      }
+      .screen.active {
+        display: block;
+      }
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .kicker {
+        color: var(--gold);
+        letter-spacing: 0.22em;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .heading {
+        font: 600 clamp(25px, 4vw, 39px) Orbitron;
+        margin: 9px 0 8px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 18px;
+        max-width: 760px;
+        line-height: 1.4;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin: 24px 0;
+      }
+      .card {
+        background: linear-gradient(145deg, #0b2030dd, #071421ee);
+        border: 1px solid var(--line);
+        padding: 18px;
+        position: relative;
+        transition: 0.2s;
+        cursor: pointer;
+      }
+      .card:hover,
+      .card.selected {
+        border-color: var(--cyan);
+        box-shadow: 0 0 20px #5ff3ff1c;
+        transform: translateY(-2px);
+      }
+      .card.selected:after {
+        content: "SELECTED";
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        color: var(--green);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+      }
+      .card.disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+        filter: saturate(0.55);
+      }
+      .card.disabled:hover {
+        border-color: var(--line);
+        box-shadow: none;
+        transform: none;
+      }
+      .card h3 {
+        font-size: 21px;
+        color: var(--cyan);
+        margin: 0 0 6px;
+      }
+      .card p {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.35;
+        margin: 0 0 12px;
+      }
+      .tag {
+        display: inline-block;
+        border: 1px solid #315166;
+        padding: 3px 8px;
+        color: var(--gold);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+      }
+      .panel {
+        background: #071827dd;
+        border: 1px solid var(--line);
+        padding: 20px;
+        margin: 18px 0;
+      }
+      .panel h3 {
+        margin: 0 0 12px;
+        color: var(--gold);
+        font-size: 21px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid #183345;
+        font-size: 17px;
+      }
+      .row:last-child {
+        border: 0;
+      }
+      .row strong {
+        color: var(--cyan);
+      }
+      .row input {
+        width: min(48%, 260px);
+        accent-color: var(--cyan);
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+      }
+      .btnrow {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+      }
+      .btn {
+        border: 1px solid var(--cyan);
+        background: var(--cyan);
+        color: #03121b;
+        padding: 10px 18px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        transition: 0.2s;
+      }
+      .btn:hover:not(:disabled) {
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+      }
+      .btn.secondary {
+        background: transparent;
+        color: var(--cyan);
+      }
+      .btn.gold {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: #1a1004;
+      }
+      .btn.fix-btn {
+        background: linear-gradient(110deg, #ffb347, #ffd584);
+        border-color: #ffd584;
+        color: #160c02;
+        font-family: Orbitron, sans-serif;
+        font-size: 12px;
+        padding: 9px 15px;
+        box-shadow: 0 0 16px rgba(255, 179, 71, 0.45);
+        animation: fixPulse 1.8s infinite;
+      }
+      @keyframes fixPulse {
+        0%, 100% { box-shadow: 0 0 10px rgba(255, 179, 71, 0.4); }
+        50% { box-shadow: 0 0 24px rgba(255, 179, 71, 0.85); }
+      }
+      .btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .notice {
+        padding: 12px 15px;
+        border-left: 3px solid var(--gold);
+        background: #ffb34712;
+        color: #c9dbe4;
+        font-size: 16px;
+        margin: 14px 0;
+        line-height: 1.45;
+      }
+      .notice.good {
+        border-left-color: var(--green);
+        background: rgba(109, 255, 176, 0.09);
+        color: var(--green);
+      }
+      .notice.bad {
+        border-left-color: var(--red);
+        background: rgba(255, 113, 133, 0.12);
+        color: #ffb3be;
+      }
+      .good {
+        color: var(--green);
+      }
+      .bad {
+        color: var(--red);
+      }
+      #holoScreen {
+        margin: 0 -4vw;
+        min-height: 680px;
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(ellipse at 40% 50%, #0a1a2b, #040a12 70%);
+        border-top: 1px solid var(--line);
+      }
+      #holoTop {
+        position: absolute;
+        z-index: 2;
+        top: 18px;
+        left: 4vw;
+        pointer-events: none;
+      }
+      #holoTop h2 {
+        font: 600 22px Orbitron;
+        color: var(--cyan);
+        margin: 0;
+        letter-spacing: 0.12em;
+      }
+      #holoTop p {
+        color: #a4bdc9;
+        margin: 5px 0;
+      }
+      #shipCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        cursor: crosshair;
+      }
+      #partPanel {
+        position: absolute;
+        z-index: 3;
+        right: 4vw;
+        top: 18px;
+        width: min(310px, 36vw);
+        background: #061523e8;
+        border: 1px solid var(--cyan);
+        padding: 14px;
+        pointer-events: none;
+        box-shadow: 0 0 22px #5ff3ff20;
+      }
+      #partPanel h3 {
+        color: var(--gold);
+        font-size: 21px;
+        margin: 0 0 5px;
+      }
+      #partPanel p {
+        color: #bfd2dc;
+        margin: 0 0 9px;
+        font-size: 15px;
+      }
+      #partSpecs .row {
+        font-size: 14px;
+        padding: 4px 0;
+      }
+      #graph {
+        width: 100%;
+        height: 65px;
+        border: 1px solid var(--line);
+        margin-top: 8px;
+      }
+      #partChips {
+        position: absolute;
+        z-index: 3;
+        left: 4vw;
+        bottom: 18px;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        max-width: 62%;
+        pointer-events: auto;
+      }
+      #partChips button {
+        background: #061523e8;
+        border: 1px solid var(--line);
+        color: var(--cyan);
+        padding: 6px 9px;
+        font-size: 13px;
+      }
+      #partChips button.on {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      #cameraBox {
+        position: absolute;
+        z-index: 5;
+        right: 4vw;
+        bottom: 18px;
+        width: 245px;
+        text-align: right;
+        font-size: 13px;
+        color: var(--muted);
+        background: rgba(5, 19, 32, 0.92);
+        border: 1px solid rgba(95, 243, 255, 0.45);
+        padding: 12px;
+        box-shadow: 0 0 26px rgba(95, 243, 255, 0.22);
+      }
+      #preview {
+        display: none;
+        width: 100%;
+        height: 140px;
+        border: 1px solid var(--line);
+        background: #000;
+        margin-bottom: 6px;
+      }
+      #cameraStatus {
+        margin: 0 0 8px;
+        color: #d6eef8;
+        font-weight: 600;
+      }
+      /* Prominent attention-grabbing Hand Tracking button */
+      #enableHands {
+        width: 100%;
+        background: linear-gradient(110deg, #ffb347 0%, #5ff3ff 50%, #ffb347 100%);
+        background-size: 200% auto;
+        border: 2px solid #ffffff;
+        padding: 12px 14px;
+        font-family: Orbitron, sans-serif;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        color: #020d16;
+        box-shadow:
+          0 0 18px rgba(95, 243, 255, 0.75),
+          0 0 34px rgba(255, 179, 71, 0.65);
+        animation: handPulse 1.6s ease-in-out infinite;
+        position: relative;
+      }
+      #enableHands::before {
+        content: "✋ GESTURE CONTROL";
+        display: block;
+        font-size: 9px;
+        letter-spacing: 0.18em;
+        color: #051826;
+        margin-bottom: 2px;
+      }
+      @keyframes handPulse {
+        0%, 100% {
+          transform: scale(1);
+          background-position: 0% center;
+          box-shadow:
+            0 0 14px rgba(95, 243, 255, 0.7),
+            0 0 28px rgba(255, 179, 71, 0.55);
+        }
+        50% {
+          transform: scale(1.045);
+          background-position: 100% center;
+          box-shadow:
+            0 0 26px rgba(95, 243, 255, 1),
+            0 0 46px rgba(255, 179, 71, 0.9);
+        }
+      }
+      #gestureHelp {
+        position: absolute;
+        left: 4vw;
+        bottom: 82px;
+        max-width: 420px;
+        color: #a4bdc9;
+        font-size: 14px;
+        pointer-events: none;
+      }
+      #holoActions {
+        position: absolute;
+        z-index: 4;
+        top: 18px;
+        right: calc(4vw + min(310px, 36vw) + 14px);
+        display: flex;
+        gap: 7px;
+      }
+      #holoActions button {
+        background: #061523;
+        border: 1px solid var(--line);
+        color: var(--cyan);
+        padding: 7px 10px;
+      }
+      #launchGate {
+        margin-top: 16px;
+      }
+      footer {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 20px;
+        color: #648093;
+        font-size: 13px;
+        border-top: 1px solid #193344;
+      }
+      @media (max-width: 720px) {
+        header {
+          align-items: flex-start;
+          gap: 12px;
+          flex-direction: column;
+        }
+        .hstats {
+          gap: 12px;
+        }
+        .two {
+          grid-template-columns: 1fr;
+        }
+        #partPanel {
+          top: 90px;
+          width: 45vw;
+          right: 3vw;
+        }
+        #holoActions {
+          top: 18px;
+          right: 3vw;
+        }
+        #holoTop {
+          left: 3vw;
+        }
+        #holoTop p {
+          max-width: 45vw;
+        }
+        #partChips {
+          left: 3vw;
+          max-width: 52%;
+        }
+        #cameraBox {
+          right: 3vw;
+          width: 200px;
+        }
+        #gestureHelp {
+          left: 3vw;
+          bottom: 165px;
+          max-width: 50%;
+        }
+        #holoScreen {
+          min-height: 740px;
+        }
+      }
+
+      /* Intro front-page layer */
+      body.intro-open {
+        overflow: hidden;
+      }
+      body.intro-open > header,
+      body.intro-open > main,
+      body.intro-open > footer {
+        visibility: hidden;
+      }
+      #introRoot {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        padding: 5vh 7vw;
+        background: radial-gradient(
+          ellipse at 60% 50%,
+          rgba(8, 25, 53, 0.74),
+          rgba(0, 4, 14, 0.96) 78%
+        );
+        color: #e6f1ff;
+        font: 300 19px/1.55 "Exo 2", Arial, sans-serif;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.7s, visibility 0.7s;
+      }
+      #introRoot.hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #introRoot * {
+        box-sizing: border-box;
+      }
+      #introRoot .intro-wrap {
+        width: min(1040px, 100%);
+        margin: auto;
+      }
+      #introRoot .intro-screen {
+        display: none;
+        animation: introRise 0.65s ease both;
+      }
+      #introRoot .intro-screen.active {
+        display: block;
+      }
+      #introRoot h1,
+      #introRoot h2,
+      #introRoot h3 {
+        font-family: Orbitron, Arial, sans-serif;
+        margin: 0;
+      }
+      #introRoot .intro-btn {
+        font-family: Orbitron, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.16em;
+        color: #03101e;
+        background: linear-gradient(110deg, #38bdf8, #9be3ff 50%, #38bdf8);
+        border: 0;
+        padding: 16px 30px;
+        cursor: pointer;
+        clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+        filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.45));
+        transition: 0.25s;
+      }
+      #introRoot .intro-btn:hover {
+        transform: translateY(-3px) scale(1.03);
+        filter: drop-shadow(0 0 24px rgba(125, 211, 252, 0.9));
+      }
+      #introRoot .intro-ghost {
+        background: rgba(8, 24, 52, 0.78);
+        color: #9be3ff;
+        border: 1px solid rgba(56, 189, 248, 0.45);
+        clip-path: none;
+        filter: none;
+      }
+      #introRoot .intro-head {
+        font-size: clamp(28px, 4.4vw, 52px);
+        letter-spacing: 0.1em;
+        text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+      }
+      #introRoot .intro-lead {
+        color: #a9c0de;
+        max-width: 560px;
+        margin: 10px 0 0;
+      }
+      #introRoot .intro-guide {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 36px;
+        margin-top: 26px;
+        align-items: center;
+      }
+      #introRoot .intro-panel {
+        padding: 28px 30px;
+        background: linear-gradient(
+          140deg,
+          rgba(6, 20, 44, 0.88),
+          rgba(4, 16, 36, 0.76)
+        );
+        border: 1px solid rgba(88, 190, 240, 0.38);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      }
+      #introRoot ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        counter-reset: introStep;
+      }
+      #introRoot li {
+        counter-increment: introStep;
+        position: relative;
+        padding: 10px 0 10px 48px;
+        border-bottom: 1px solid rgba(112, 160, 204, 0.18);
+      }
+      #introRoot li:before {
+        content: counter(introStep);
+        position: absolute;
+        left: 0;
+        top: 9px;
+        width: 34px;
+        height: 34px;
+        border: 1px solid #38bdf8;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font: 700 13px Orbitron;
+        color: #9be3ff;
+      }
+      #introRoot li b {
+        display: block;
+        font: 700 12px Orbitron;
+        letter-spacing: 0.08em;
+        color: #9be3ff;
+      }
+      #introRoot li span {
+        color: #b4c8e4;
+        font-size: 15px;
+      }
+      #introRoot .intro-fine {
+        font-size: 13px;
+        color: #8ea6d0;
+        margin: 14px 0 0;
+      }
+      #introRoot .intro-say {
+        padding: 20px;
+        background: rgba(10, 36, 70, 0.88);
+        border: 1px solid #38bdf8;
+        border-radius: 18px;
+        box-shadow: 0 0 32px rgba(56, 189, 248, 0.2);
+      }
+      #introRoot .intro-say small {
+        display: block;
+        font: 700 11px Orbitron;
+        color: #fbbf24;
+        letter-spacing: 0.1em;
+        margin-bottom: 8px;
+      }
+      #introRoot .intro-say p {
+        margin: 0;
+        color: #e2eefc;
+        font-size: 16px;
+      }
+      #introRoot .intro-astro {
+        width: 125px;
+        margin: 18px auto 0;
+        display: block;
+        filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.6));
+      }
+      #introRoot .intro-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+      }
+      @keyframes introRise {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.99);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @media (max-width: 820px) {
+        #introRoot {
+          align-items: flex-start;
+          overflow: auto;
+          padding: 5vh 6vw;
+        }
+        .intro-guide {
+          grid-template-columns: 1fr !important;
+          gap: 20px !important;
+        }
+        .intro-panel {
+          padding: 22px 18px !important;
+        }
+      }
+
+      /* Operations & Launch styles */
+      .resource-status {
+        font-size: 0.85rem;
+        line-height: 1.45;
+        margin: -3px 0 14px;
+        padding: 8px 10px;
+        border-left: 3px solid #f0b84b;
+        background: rgba(240, 184, 75, 0.08);
+        color: #f3d28d;
+        border-radius: 5px;
+      }
+      .resource-status.good {
+        border-left-color: #45d69a;
+        background: rgba(69, 214, 154, 0.09);
+        color: #8df0c2;
+      }
+      .resource-status.bad {
+        border-left-color: #ff667a;
+        background: rgba(255, 102, 122, 0.09);
+        color: #ff9eaa;
+      }
+      .autoset-btn {
+        width: 100%;
+        margin-top: 8px;
+      }
+      .autoset-hint {
+        font-size: 0.8rem;
+        line-height: 1.45;
+        opacity: 0.78;
+        margin: 8px 0 0;
+      }
+      .ops-top {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin: 18px 0;
+      }
+      .ops-top > div {
+        background: rgba(9, 29, 44, 0.9);
+        border: 1px solid #24506a;
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .ops-top span,
+      .ops-top b {
+        display: block;
+      }
+      .ops-top span {
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+      }
+      .ops-top b {
+        font-family: Orbitron, sans-serif;
+        font-size: 14px;
+        color: var(--cyan);
+        margin-top: 5px;
+      }
+      .ops-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 18px 0;
+      }
+      .ops-tab {
+        background: #0b2030;
+        border: 1px solid #28516a;
+        color: #8ba8b8;
+        padding: 12px 15px;
+        border-radius: 7px;
+        font-weight: 700;
+      }
+      .ops-tab:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .ops-tab.active {
+        border-color: var(--cyan);
+        color: var(--cyan);
+        box-shadow: 0 0 16px #5ff3ff22;
+      }
+      .ops-tab.cleared {
+        color: var(--green);
+        border-color: #398d6d;
+      }
+      .ops-panel {
+        background: linear-gradient(145deg, rgba(9, 29, 44, 0.97), rgba(4, 14, 24, 0.98));
+        border: 1px solid #24475d;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 16px 40px #0005;
+      }
+      .ops-kicker {
+        font: 600 11px Orbitron, sans-serif;
+        letter-spacing: 2px;
+        color: var(--gold);
+      }
+      .ops-panel h2 {
+        font: 600 clamp(20px, 3vw, 28px) Orbitron, sans-serif;
+        margin: 10px 0 18px;
+      }
+      .orbit-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        align-items: center;
+      }
+      .orbit-visual {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #1b4359;
+        border-radius: 12px;
+        background: radial-gradient(ellipse at 50% 120%, #1c5a7a, #071522 65%);
+      }
+      .planet {
+        position: absolute;
+        width: 170px;
+        height: 170px;
+        left: 50%;
+        bottom: -105px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 25%, #70c8dc, #1d628b 45%, #09263e 75%);
+        box-shadow: 0 0 35px #40b9df66;
+      }
+      .orbit-ring {
+        position: absolute;
+        width: 250px;
+        height: 115px;
+        border: 1px dashed #71e9ff;
+        left: 50%;
+        top: 44px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        box-shadow: 0 0 12px #5ff3ff33;
+      }
+      .orbit-dot {
+        position: absolute;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #ffce78;
+        left: calc(50% + 118px);
+        top: 96px;
+        box-shadow: 0 0 15px #ffb347;
+      }
+      .orbit-label {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font: 10px Orbitron;
+        color: #9befff;
+      }
+      .orbit-data {
+        display: grid;
+        gap: 8px;
+      }
+      .telemetry {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 12px;
+        background: #102a3b;
+        border-radius: 6px;
+        margin-bottom: 6px;
+      }
+      .telemetry span {
+        color: var(--muted);
+      }
+      .telemetry b {
+        color: var(--cyan);
+        font-family: Orbitron;
+        font-size: 13px;
+        text-align: right;
+      }
+      .orbit-data p,
+      .ops-copy {
+        color: #a9c2ce;
+        line-height: 1.5;
+      }
+      .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .ops-choice {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        text-align: left;
+        padding: 15px;
+        background: #0b2030;
+        border: 1px solid #28516a;
+        border-radius: 9px;
+        color: var(--text);
+        transition: 0.2s;
+      }
+      .ops-choice:hover,
+      .ops-choice.picked {
+        border-color: var(--cyan);
+        background: #103248;
+        transform: translateY(-2px);
+      }
+      .ops-choice b {
+        font: 600 15px Orbitron;
+        color: #d9f7ff;
+      }
+      .ops-choice span {
+        font-size: 13px;
+        color: #91adbd;
+      }
+      .ops-feedback {
+        padding: 12px 14px;
+        margin: 14px 0;
+        background: #102333;
+        border-left: 3px solid #7793a3;
+        border-radius: 5px;
+        color: #b6cad4;
+        line-height: 1.45;
+      }
+      .ops-feedback.good {
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .ops-feedback.bad {
+        border-color: var(--red);
+        color: #ff9aa9;
+      }
+      .ops-feedback.warn {
+        border-color: var(--gold);
+        color: #ffd68f;
+      }
+      .sequence-board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin: 18px 0;
+      }
+      .sequence-step {
+        padding: 14px 10px;
+        border: 1px solid #29485a;
+        border-radius: 8px;
+        background: #0b1c2a;
+        min-height: 112px;
+      }
+      .sequence-step span,
+      .sequence-step b,
+      .sequence-step small {
+        display: block;
+      }
+      .sequence-step span {
+        font: 600 12px Orbitron;
+        color: var(--gold);
+      }
+      .sequence-step b {
+        margin: 8px 0;
+        font-size: 15px;
+      }
+      .sequence-step small {
+        color: var(--muted);
+      }
+      .sequence-step.done {
+        border-color: #50c993;
+        background: #0d302b;
+      }
+      .sequence-step.done span:after {
+        content: " ✓";
+        color: var(--green);
+      }
+      .sequence-controls {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .sequence-controls .ops-choice {
+        text-align: center;
+        align-items: center;
+        font: 600 12px Orbitron;
+      }
+      .alert-box {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 17px;
+        background: #321c20;
+        border: 1px solid #9a454d;
+        border-radius: 9px;
+      }
+      .alert-box b {
+        color: #ff9ba3;
+        font: 600 13px Orbitron;
+      }
+      .alert-box p {
+        margin: 8px 0 0;
+        color: #e9bdc1;
+      }
+      .alert-pulse {
+        flex: 0 0 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ff5968;
+        box-shadow: 0 0 0 6px #ff596822;
+        animation: pulse 1s infinite;
+      }
+      .launch-unlock {
+        border-color: #4eae82;
+        background: linear-gradient(130deg, #0b302a, #0a1d2b);
+      }
+      .launch-unlock h2 {
+        color: var(--green);
+      }
+      @keyframes pulse {
+        50% {
+          box-shadow: 0 0 0 12px #ff596800;
+          opacity: 0.55;
+        }
+      }
+
+      /* Final Testing Level Checklist */
+      .final-test-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin: 16px 0;
+      }
+      .ftest-item {
+        background: #091d2d;
+        border: 1px solid #23495e;
+        border-radius: 8px;
+        padding: 14px;
+        transition: 0.25s;
+      }
+      .ftest-item.pass {
+        border-color: #45d69a;
+        background: rgba(16, 52, 43, 0.65);
+      }
+      .ftest-item.fault {
+        border-color: #ff7185;
+        background: rgba(65, 22, 32, 0.72);
+      }
+      .ftest-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: Orbitron, sans-serif;
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+      .ftest-bar {
+        height: 6px;
+        background: #132c3d;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .ftest-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--cyan), var(--green));
+        transition: width 0.35s ease;
+      }
+
+      /* Launch Stage Canvas & Live Status Overlay */
+      #launchStage {
+        display: none;
+        position: relative;
+        min-height: 620px;
+        overflow: hidden;
+        margin-top: 20px;
+        border-radius: 12px;
+        border: 1px solid #24536a;
+        background: radial-gradient(ellipse at 50% 80%, #173b55, #071321 55%, #020711);
+      }
+      #launchStage.show {
+        display: block;
+      }
+      #launchStage canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #launchOverlay {
+        position: absolute;
+        inset: 18px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        pointer-events: none;
+        text-align: center;
+      }
+      #launchVehicleLabel {
+        color: var(--cyan);
+        font: 700 18px Orbitron;
+        letter-spacing: 0.12em;
+      }
+      #launchStatus {
+        color: #d9f4ff;
+        margin-top: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        background: rgba(4, 15, 26, 0.7);
+        padding: 6px 14px;
+        border: 1px solid rgba(95, 243, 255, 0.25);
+        border-radius: 6px;
+      }
+      #launchStageBadge {
+        margin-top: 8px;
+        font: 700 13px Orbitron;
+        letter-spacing: 0.14em;
+        color: var(--gold);
+        background: rgba(15, 25, 38, 0.85);
+        padding: 5px 12px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 179, 71, 0.4);
+      }
+      #launchDone {
+        display: none;
+        color: var(--green);
+        font: 700 clamp(22px, 4vw, 34px) Orbitron;
+        margin-top: 16px;
+        text-shadow: 0 0 22px #54ffb0, 0 0 44px #54ffb077;
+      }
+      #liveStatusCta {
+        display: none;
+        margin-top: 14px;
+        pointer-events: auto;
+      }
+      @keyframes launchShake {
+        0%, 100% { transform: translate(0, 0); }
+        25% { transform: translate(-2px, 1px); }
+        50% { transform: translate(2px, -1px); }
+        75% { transform: translate(-1px, -1px); }
+      }
+      #launchStage.liftoff {
+        animation: launchShake 0.11s infinite;
+      }
+      .sep-tracker {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      .sep-pill {
+        font: 600 10px Orbitron, sans-serif;
+        letter-spacing: 0.08em;
+        padding: 4px 9px;
+        border-radius: 4px;
+        background: rgba(5, 18, 30, 0.82);
+        border: 1px solid rgba(95, 243, 255, 0.25);
+        color: #7ea0b3;
+        transition: 0.25s;
+      }
+      .sep-pill.active {
+        border-color: var(--gold);
+        color: var(--gold);
+        box-shadow: 0 0 12px rgba(255, 179, 71, 0.45);
+      }
+      .sep-pill.done {
+        border-color: var(--green);
+        color: var(--green);
+        background: rgba(12, 48, 38, 0.85);
+      }
+
+      /* Live Status Modal */
+      #liveStatusModal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        background: rgba(2, 8, 16, 0.85);
+        backdrop-filter: blur(6px);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      #liveStatusModal.open {
+        display: flex;
+      }
+      .live-modal-card {
+        width: min(560px, 100%);
+        background: linear-gradient(145deg, #092032, #040f1a);
+        border: 1px solid var(--cyan);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 0 45px rgba(95, 243, 255, 0.25);
+      }
+      .live-beacon {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font: 700 12px Orbitron;
+        color: var(--green);
+        letter-spacing: 0.14em;
+        margin-bottom: 10px;
+      }
+      .live-beacon i {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 12px var(--green);
+        animation: pulse 1.2s infinite;
+      }
+
+      /* Fullscreen Embedded 3D Live Navigation & Telemetry View */
+      #navOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 3000;
+        background: #000;
+        color: #e6f1ff;
+        font: 14px "Segoe UI", system-ui, sans-serif;
+        overflow: hidden;
+      }
+      #navOverlay.open {
+        display: block;
+      }
+      #navGL {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #navHud {
+        position: fixed;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+      }
+      #navRet {
+        position: absolute;
+        left: 50%;
+        top: 44%;
+        width: 34px;
+        height: 34px;
+        margin: -17px;
+        border: 1.5px solid #38bdf8;
+        border-radius: 50%;
+        opacity: 0.85;
+      }
+      #navRet:after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 4px;
+        height: 4px;
+        margin: -2px;
+        background: #38bdf8;
+        border-radius: 50%;
+      }
+      #navObj {
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        max-width: 310px;
+        font-size: 13px;
+        line-height: 1.6;
+        background: rgba(6, 16, 36, 0.78);
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        border-radius: 10px;
+        padding: 14px 16px;
+        backdrop-filter: blur(8px);
+      }
+      #navObj h2 {
+        font: 700 12px Orbitron, sans-serif;
+        letter-spacing: 0.18em;
+        color: #38bdf8;
+        margin: 0 0 6px;
+      }
+      #navWp {
+        position: absolute;
+        color: #fbbf24;
+        font-size: 12px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        white-space: nowrap;
+        text-shadow: 0 0 8px #000;
+      }
+      #navWarn {
+        position: absolute;
+        top: 13%;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #f87171;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-align: center;
+      }
+      #navTel {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        width: 260px;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        padding: 12px 14px;
+        background: rgba(6, 16, 36, 0.78);
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        border-radius: 10px;
+        backdrop-filter: blur(8px);
+        pointer-events: auto;
+      }
+      #navTel .th {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      #navTel .th h2 {
+        font: 700 11px Orbitron, sans-serif;
+        letter-spacing: 0.14em;
+        color: #38bdf8;
+        margin: 0;
+      }
+      #navTel .ch {
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        padding: 2px 8px;
+        border-radius: 10px;
+        border: 1px solid currentColor;
+      }
+      #navTel .r {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 3px 0;
+        border-top: 1px solid rgba(56, 189, 248, 0.14);
+      }
+      #navTel .r span {
+        color: #8ba8b8;
+      }
+      #navTel .r b {
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      #navCon {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: max(148px, 20vh);
+        background: linear-gradient(#08142b, #030811);
+        border-top: 2px solid #38bdf8;
+        box-shadow: 0 -6px 30px rgba(56, 189, 248, 0.35);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 4vw;
+        pointer-events: auto;
+      }
+      .nav-bar {
+        display: grid;
+        grid-template-columns: 60px 180px;
+        gap: 8px;
+        font-size: 11px;
+        margin: 4px 0;
+        color: #8ba8b8;
+      }
+      .nav-bar i {
+        height: 8px;
+        background: #0a1830;
+        border-radius: 4px;
+        overflow: hidden;
+        align-self: center;
+      }
+      .nav-bar b {
+        display: block;
+        height: 100%;
+      }
+      #navSpd {
+        text-align: right;
+        font-size: 13px;
+        line-height: 1.65;
+      }
+      #navSpd b {
+        font-size: 32px;
+        color: #38bdf8;
+      }
+      #navRad {
+        border-radius: 50%;
+        background: rgba(4, 12, 28, 0.9);
+        border: 1px solid #38bdf8;
+      }
+      #navCloseBtn {
+        margin-top: 10px;
+        width: 100%;
+        background: rgba(56, 189, 248, 0.16);
+        border: 1px solid #38bdf8;
+        color: #e6f1ff;
+        padding: 7px 10px;
+        border-radius: 6px;
+        font: 700 11px Orbitron, sans-serif;
+        letter-spacing: 0.1em;
+      }
+      #navCloseBtn:hover {
+        background: #38bdf8;
+        color: #03101e;
+      }
+
+      @media (max-width: 720px) {
+        .ops-top {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .orbit-layout,
+        .final-test-grid {
+          grid-template-columns: 1fr;
+        }
+        .choice-grid,
+        .sequence-board,
+        .sequence-controls {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .ops-panel {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body class="intro-open">
+    <div id="introRoot">
+      <div class="intro-wrap">
+        <section class="intro-screen active" data-intro="guide">
+          <div class="intro-panel">
+            <h2 class="intro-head">Mission instructions</h2>
+            <p class="intro-lead">
+              You are the mission design team. Your choices decide whether the
+              spacecraft completes its objectives and makes it home.
+            </p>
+            <div class="intro-guide">
+              <div>
+                <ol>
+                  <li>
+                    <b>DEFINE THE OBJECTIVE</b
+                    ><span
+                      >Review the mission goal, destination and science
+                      requirements.</span
+                    >
+                  </li>
+                  <li>
+                    <b>BUILD YOUR SPACECRAFT</b
+                    ><span
+                      >Choose instruments and systems while balancing mass,
+                      power and budget.</span
+                    >
+                  </li>
+                  <li>
+                    <b>PLAN THE FLIGHT</b
+                    ><span
+                      >Select a launch vehicle and weigh communication and
+                      orbital limits.</span
+                    >
+                  </li>
+                  <li>
+                    <b>OPERATE THE MISSION</b
+                    ><span
+                      >Navigate, watch your resources and respond to problems in
+                      flight.</span
+                    >
+                  </li>
+                  <li>
+                    <b>REVIEW THE OUTCOME</b
+                    ><span
+                      >See how your engineering decisions shaped the
+                      result.</span
+                    >
+                  </li>
+                </ol>
+                <p class="intro-fine">
+                  All values are simplified for gameplay and learning. They are
+                  not real mission specifications.
+                </p>
+              </div>
+              <aside>
+                <div class="intro-say">
+                  <small>COMMANDER NOVA · MISSION CONTROL</small>
+                  <p>
+                    Listen up, crew. Every choice has a consequence. A heavier
+                    instrument package brings more science, but it also raises
+                    launch cost and power demand. There is no perfect design, so
+                    find a balance that works.
+                  </p>
+                </div>
+                <svg
+                  class="intro-astro"
+                  viewBox="0 0 160 190"
+                  aria-label="Commander Nova astronaut"
+                >
+                  <defs>
+                    <radialGradient id="introHelmet" cx=".35" cy=".3">
+                      <stop offset="0" stop-color="#fff" />
+                      <stop offset="1" stop-color="#aab6c8" />
+                    </radialGradient>
+                    <linearGradient id="introVisor" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#4ab4ff" />
+                      <stop offset=".55" stop-color="#0b2a66" />
+                      <stop offset="1" stop-color="#050f26" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="26" y="92" width="22" height="58" rx="10" fill="#7d8aa0" />
+                  <rect x="112" y="92" width="22" height="58" rx="10" fill="#7d8aa0" />
+                  <rect x="38" y="88" width="84" height="84" rx="26" fill="url(#introHelmet)" />
+                  <rect x="58" y="112" width="44" height="26" rx="8" fill="#16243d" />
+                  <circle cx="70" cy="125" r="5" fill="#34d399" />
+                  <circle cx="90" cy="125" r="5" fill="#fbbf24" />
+                  <circle cx="80" cy="56" r="46" fill="url(#introHelmet)" />
+                  <rect
+                    x="48"
+                    y="30"
+                    width="64"
+                    height="50"
+                    rx="24"
+                    fill="url(#introVisor)"
+                    stroke="#5f6e86"
+                    stroke-width="3"
+                  />
+                  <ellipse
+                    cx="66"
+                    cy="43"
+                    rx="12"
+                    ry="6"
+                    fill="#fff"
+                    opacity=".55"
+                    transform="rotate(-24 66 43)"
+                  />
+                  <rect x="64" y="8" width="32" height="8" rx="4" fill="#38bdf8" />
+                </svg>
+              </aside>
+            </div>
+            <div class="intro-actions">
+              <button class="intro-btn" onclick="startLevelOne()">I’M READY</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="stars"></div>
+    <header>
+      <div class="brand">
+        ODESSEYY <small>ADVANCED SPACE MISSION SIMULATOR</small>
+      </div>
+      <div class="hstats">
+        <span>MISSION CREDITS <b id="credits">100</b></span>
+        <span>MISSION STATUS <b id="status">PLANNING</b></span>
+      </div>
+    </header>
+    <main>
+      <div class="progress" id="progress">
+        <span class="step active">01 · MISSION</span>
+        <span class="step">02 · FLIGHT PLAN</span>
+        <span class="step">03 · VEHICLE</span>
+        <span class="step">04 · HOLOGRAM LAB</span>
+        <span class="step">05 · MISSION OPERATIONS</span>
+        <span class="step">06 · DEBRIEF</span>
+      </div>
+
+      <!-- PHASE 01: MISSION -->
+      <section class="screen active" id="s0">
+        <div class="kicker">COMMANDER, YOUR MISSION STARTS HERE</div>
+        <h1 class="heading">Choose your mission objective</h1>
+        <p class="sub">
+          Every mission has a different destination, payload requirement and
+          engineering challenge. Select one to receive your mission briefing.
+        </p>
+        <div class="grid" id="missions">
+          <div class="card selected" data-mission="lunar">
+            <h3>01 / LUNAR SURVEY</h3>
+            <p>Map the lunar south pole and search for water-ice deposits.</p>
+            <span class="tag">MOON ORBIT · 5 DAYS</span>
+          </div>
+          <div class="card" data-mission="earth">
+            <h3>02 / EARTH OBSERVER</h3>
+            <p>Deploy an imaging satellite for weather and disaster monitoring.</p>
+            <span class="tag">LOW EARTH ORBIT · 1 DAY</span>
+          </div>
+          <div class="card" data-mission="mars">
+            <h3>03 / MARS PATHFINDER</h3>
+            <p>Send a compact science probe on an interplanetary transfer.</p>
+            <span class="tag">MARS TRANSFER · 7 MONTHS</span>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>MISSION BRIEFING</h3>
+          <div id="briefing">
+            Target: Moon · Payload: 800 kg science package · Priority: stable
+            polar orbit and high data return.
+          </div>
+          <div class="row">
+            <span>Mission difficulty</span>
+            <strong id="difficulty">ADVANCED</strong>
+          </div>
+          <div class="row">
+            <span>Available mission funding</span>
+            <strong id="funding">100 credits</strong>
+          </div>
+        </div>
+        <div class="btnrow">
+          <button class="btn" onclick="next(1)">ACCEPT MISSION →</button>
+        </div>
+      </section>
+
+      <!-- PHASE 02: FLIGHT PLAN -->
+      <section class="screen" id="s1">
+        <div class="kicker">PHASE 02 · MISSION ARCHITECTURE</div>
+        <h1 class="heading">Build your flight plan</h1>
+        <p class="sub">
+          Set the orbit and science payload. Your choices affect mission cost,
+          spacecraft mass and power demand.
+        </p>
+        <div class="two">
+          <div class="panel">
+            <h3>ORBIT & TRAJECTORY</h3>
+            <div class="row">
+              <label for="orbit">Target orbit</label>
+              <select id="orbit">
+                <option value="polar">Polar orbit</option>
+                <option value="equatorial">Equatorial orbit</option>
+                <option value="transfer">Transfer trajectory</option>
+                <option value="geo">Geostationary orbit</option>
+              </select>
+            </div>
+            <div class="row">
+              <label for="altitude">Orbit altitude</label>
+              <strong><span id="altitudeVal">100</span> km</strong>
+            </div>
+            <input
+              id="altitude"
+              type="range"
+              min="80"
+              max="1200"
+              value="100"
+              style="width: 100%; accent-color: var(--cyan)"
+            />
+            <div class="row">
+              <label for="payload">Science payload mass</label>
+              <strong><span id="payloadVal">800</span> kg</strong>
+            </div>
+            <input
+              id="payload"
+              type="range"
+              min="100"
+              max="1800"
+              step="50"
+              value="800"
+              style="width: 100%; accent-color: var(--cyan)"
+            />
+            <div class="row">
+              <label for="power">Payload power demand</label>
+              <strong><span id="powerVal">4</span> kW</strong>
+            </div>
+            <input
+              id="power"
+              type="range"
+              min="1"
+              max="15"
+              value="4"
+              style="width: 100%; accent-color: var(--cyan)"
+            />
+          </div>
+          <div class="panel">
+            <h3>MISSION CONSTRAINTS</h3>
+            <div class="row">
+              <span>Estimated spacecraft mass</span>
+              <strong id="massEstimate">2,800 kg</strong>
+            </div>
+            <div class="row">
+              <span>Required delta-v (game estimate)</span>
+              <strong id="dvEstimate">3.2 km/s</strong>
+            </div>
+            <div class="row">
+              <span>Power system target</span>
+              <strong id="powerEstimate">≥ 4 kW</strong>
+            </div>
+            <div class="notice" id="planAdvice">
+              Polar orbit selected for high-latitude lunar observations.
+            </div>
+          </div>
+        </div>
+        <div class="btnrow">
+          <button class="btn secondary" onclick="next(0)">← BACK</button>
+          <button class="btn" onclick="next(2)">CONFIRM FLIGHT PLAN →</button>
+        </div>
+      </section>
+
+      <!-- PHASE 03: VEHICLE & RESOURCE DIAGNOSTICS -->
+      <section class="screen" id="s2">
+        <div class="kicker">PHASE 03 · LAUNCH VEHICLE & RESOURCES</div>
+        <h1 class="heading">Engineer your spacecraft</h1>
+        <p class="sub">
+          Choose a launcher and balance fuel, structural mass and power within
+          your mission funding.
+        </p>
+        <div class="grid" id="rockets">
+          <div class="card selected" data-rocket="medium">
+            <h3>ARES-M</h3>
+            <p>
+              Medium-lift launch vehicle. Balanced payload capacity for orbital
+              science missions.
+            </p>
+            <span class="tag">CAPACITY 5,000 KG</span>
+          </div>
+          <div class="card" data-rocket="heavy">
+            <h3>ARES-H</h3>
+            <p>
+              Heavy-lift launcher for high-mass payloads and demanding transfer
+              missions.
+            </p>
+            <span class="tag">CAPACITY 12,000 KG</span>
+          </div>
+          <div class="card disabled" aria-disabled="true">
+            <h3>SCOUT-L</h3>
+            <p>
+              Small launcher for compact satellites and low-cost technology
+              demonstrations.
+            </p>
+            <span class="tag">COMING SOON</span>
+          </div>
+        </div>
+        <div class="two">
+          <div class="panel">
+            <h3>RESOURCE ALLOCATION</h3>
+            <div class="row">
+              <label for="fuel">Propellant allocation</label>
+              <strong><span id="fuelVal">65</span>%</strong>
+            </div>
+            <input
+              id="fuel"
+              type="range"
+              min="25"
+              max="100"
+              value="65"
+              style="width: 100%; accent-color: var(--cyan)"
+            />
+            <div class="resource-status" id="fuelStatus" aria-live="polite">Checking propellant allocation…</div>
+            <div class="row">
+              <label for="structure">Structural reinforcement</label>
+              <strong><span id="structureVal">55</span>%</strong>
+            </div>
+            <input
+              id="structure"
+              type="range"
+              min="20"
+              max="100"
+              value="55"
+              style="width: 100%; accent-color: var(--cyan)"
+            />
+            <div class="resource-status" id="structureStatus" aria-live="polite">Checking structural reinforcement…</div>
+            <div class="row">
+              <label for="solar">Solar array capacity</label>
+              <strong><span id="solarVal">8</span> kW</strong>
+            </div>
+            <input
+              id="solar"
+              type="range"
+              min="2"
+              max="20"
+              value="8"
+              style="width: 100%; accent-color: var(--cyan)"
+            />
+            <div class="resource-status" id="solarStatus" aria-live="polite">Checking solar array capacity…</div>
+            <button class="btn secondary autoset-btn" type="button" onclick="autoSetResources()">✦ AUTO-SET VALID CONFIGURATION</button>
+            <p class="autoset-hint">Automatically calibrates propellant, structure, solar capacity, and launcher to pass all diagnostics.</p>
+          </div>
+          <div class="panel">
+            <h3>ENGINEERING TELEMETRY & DIAGNOSTICS</h3>
+            <div class="row">
+              <span>Vehicle capacity</span>
+              <strong id="capacity">5,000 kg</strong>
+            </div>
+            <div class="row">
+              <span>Estimated launch mass</span>
+              <strong id="launchMass">3,500 kg</strong>
+            </div>
+            <div class="row">
+              <span>Remaining funding</span>
+              <strong id="remaining">72 credits</strong>
+            </div>
+            <div class="row">
+              <span>Power margin</span>
+              <strong id="margin">+4 kW</strong>
+            </div>
+            <div id="vehicleAdvice" class="notice good">
+              Vehicle within nominal capacity.
+            </div>
+          </div>
+        </div>
+        <div class="btnrow">
+          <button class="btn secondary" onclick="next(1)">← BACK</button>
+          <button class="btn" id="runCheckBtn" onclick="validateVehicle()">
+            RUN SYSTEM CHECK →
+          </button>
+        </div>
+      </section>
+
+      <!-- PHASE 04: HOLOGRAM LAB -->
+      <section class="screen" id="s3">
+        <div class="kicker">PHASE 04 · ENGINEERING BAY</div>
+        <h1 class="heading">Inspect your vessel in 3D</h1>
+        <p class="sub">
+          Your spacecraft is assembled from the choices you made. Inspect each
+          system before signing off the design.
+        </p>
+        <div class="notice good" id="holoNotice">
+          ✓ System check passed. Select each highlighted spacecraft component to
+          review its specifications, or enable camera hand tracking for gesture control.
+        </div>
+        <div id="holoScreen">
+          <canvas id="shipCanvas"></canvas>
+          <div id="holoTop">
+            <h2>VESSEL HOLOGRAM</h2>
+            <p>
+              Pinch a glowing part to inspect. Pinch empty space and move to
+              rotate.
+            </p>
+          </div>
+          <div id="holoActions">
+            <button onclick="resetView()">RESET VIEW</button>
+            <button onclick="togglePanel()">HIDE DATA</button>
+          </div>
+          <div id="partPanel">
+            <h3 id="partName">Crew Module</h3>
+            <p id="partDesc">Pressurised flight deck and crew quarters.</p>
+            <div id="partSpecs"></div>
+            <div id="graphLabel">Cabin oxygen (%)</div>
+            <canvas id="graph" width="300" height="65"></canvas>
+          </div>
+          <div id="partChips"></div>
+          <div id="gestureHelp">
+            GESTURES: Pinch thumb + index to select/drag · Move pinched hand to
+            rotate · Spread/close two index fingers to zoom. Mouse drag + wheel
+            also work.
+          </div>
+          <div id="cameraBox">
+            <canvas id="preview" width="190" height="140"></canvas>
+            <div id="cameraStatus">
+              Touchless 3D control available
+            </div>
+            <button id="enableHands">ENABLE HAND TRACKING</button>
+          </div>
+        </div>
+        <div class="panel" id="launchGate">
+          <h3>DESIGN REVIEW</h3>
+          <div class="row">
+            <span>Mission</span><strong id="reviewMission">Lunar Survey</strong>
+          </div>
+          <div class="row">
+            <span>Selected launch vehicle</span>
+            <strong id="reviewRocket">ARES-M</strong>
+          </div>
+          <div class="row">
+            <span>Spacecraft design</span>
+            <strong id="reviewMass">3,500 kg</strong>
+          </div>
+          <div class="row">
+            <span>Hologram inspection</span>
+            <strong id="inspection">1 / 6 systems inspected</strong>
+          </div>
+          <div id="designReviewNotice" class="notice">
+            Inspect all 6 spacecraft systems above to unlock design sign-off.
+          </div>
+          <div class="btnrow">
+            <button class="btn secondary" onclick="next(2)">
+              ← EDIT RESOURCES
+            </button>
+            <button class="btn secondary" onclick="inspectAllSystems()">
+              INSPECT ALL SYSTEMS
+            </button>
+            <button class="btn gold" onclick="completeDesign()">
+              SIGN OFF SPACECRAFT DESIGN →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 05: MISSION OPERATIONS, WEATHER, FINAL TESTING & LAUNCH -->
+      <section class="screen" id="s4">
+        <div class="kicker">PHASE 05 · MISSION OPERATIONS & LAUNCH CONTROL</div>
+        <h1 class="heading">Prepare for deep-space deployment</h1>
+        <p class="sub">Complete mission-control operations, verify launch weather, pass final pre-launch testing, and initiate liftoff.</p>
+        <div class="ops-top">
+          <div><span>MISSION</span><b id="opsMission">—</b></div>
+          <div><span>LAUNCH VEHICLE</span><b id="opsRocket">—</b></div>
+          <div><span>MISSION CREDITS</span><b id="opsCredits">100</b></div>
+          <div><span>OPERATIONS CLEARED</span><b id="opsProgress">0 / 3</b></div>
+        </div>
+        <div class="ops-tabs">
+          <button class="ops-tab active" id="tab0" onclick="showOpsLevel(0)">01 · ORBIT INSERTION</button>
+          <button class="ops-tab" id="tab1" onclick="showOpsLevel(1)" disabled>02 · PAYLOAD DEPLOYMENT</button>
+          <button class="ops-tab" id="tab2" onclick="showOpsLevel(2)" disabled>03 · FLIGHT ANOMALY</button>
+        </div>
+
+        <div class="ops-panel" id="opsLevel0">
+          <div class="ops-kicker">FLIGHT DYNAMICS SIMULATION · LEVEL 01</div>
+          <h2>Calculate the orbital insertion burn</h2>
+          <div class="orbit-layout">
+            <div class="orbit-visual">
+              <div class="planet"></div>
+              <div class="orbit-ring"></div>
+              <div class="orbit-dot"></div>
+              <div class="orbit-label">TARGET ORBIT · 400 KM</div>
+            </div>
+            <div class="orbit-data">
+              <div class="telemetry"><span>Current altitude</span><b>180 km</b></div>
+              <div class="telemetry"><span>Target altitude</span><b>400 km</b></div>
+              <div class="telemetry"><span>Required Δv</span><b>2.42 km/s</b></div>
+              <p>Choose the burn profile that raises the spacecraft into a stable 400 km circular orbit.</p>
+            </div>
+          </div>
+          <div class="choice-grid">
+            <button class="ops-choice" onclick="chooseOrbit(this,'low')"><b>1.85 km/s</b><span>Conservative burn</span></button>
+            <button class="ops-choice" onclick="chooseOrbit(this,'correct')"><b>2.42 km/s</b><span>Calculated insertion</span></button>
+            <button class="ops-choice" onclick="chooseOrbit(this,'high')"><b>3.10 km/s</b><span>High-energy burn</span></button>
+          </div>
+          <div class="ops-feedback" id="orbitFeedback">Awaiting trajectory selection.</div>
+        </div>
+
+        <div class="ops-panel" id="opsLevel1" style="display:none">
+          <div class="ops-kicker">AUTONOMOUS PAYLOAD OPERATIONS · LEVEL 02</div>
+          <h2>Deploy the science payload in the correct order</h2>
+          <p class="ops-copy">Select each operation in the safe sequence. Deploying before stabilisation risks damaging the instrument.</p>
+          <div class="sequence-board">
+            <div class="sequence-step"><span>01</span><b>Stabilise spacecraft</b><small>Attitude control · reaction wheels</small></div>
+            <div class="sequence-step"><span>02</span><b>Verify deployment zone</b><small>Clearance · telemetry lock</small></div>
+            <div class="sequence-step"><span>03</span><b>Release payload</b><small>Separation mechanism</small></div>
+            <div class="sequence-step"><span>04</span><b>Confirm payload signal</b><small>Telemetry · health check</small></div>
+          </div>
+          <div class="sequence-controls">
+            <button class="ops-choice" onclick="selectSequence(0)">STABILISE</button>
+            <button class="ops-choice" onclick="selectSequence(1)">VERIFY ZONE</button>
+            <button class="ops-choice" onclick="selectSequence(2)">RELEASE PAYLOAD</button>
+            <button class="ops-choice" onclick="selectSequence(3)">CONFIRM SIGNAL</button>
+          </div>
+          <div class="ops-feedback" id="sequenceFeedback">Choose the first operation.</div>
+          <button class="btn secondary" onclick="resetSequence()">RESET SEQUENCE</button>
+        </div>
+
+        <div class="ops-panel" id="opsLevel2" style="display:none">
+          <div class="ops-kicker">MISSION CONTROL · CONTINGENCY TRAINING · LEVEL 03</div>
+          <h2>Respond to an unexpected spacecraft anomaly</h2>
+          <div class="alert-box">
+            <span class="alert-pulse"></span>
+            <div>
+              <b>TELEMETRY ALERT · BATTERY TEMPERATURE RISING</b>
+              <p>Battery temperature has reached 42°C and is increasing. The spacecraft is in sunlight. Communications and attitude control remain nominal.</p>
+            </div>
+          </div>
+          <p class="ops-copy">Choose the safest first response to protect the spacecraft before resuming science operations.</p>
+          <div class="choice-grid anomaly-choices">
+            <button class="ops-choice" onclick="chooseAnomaly(this,'wrong1')"><b>Continue payload operations</b><span>Ignore the warning until the next data pass</span></button>
+            <button class="ops-choice" onclick="chooseAnomaly(this,'correct')"><b>Enter thermal-safe mode</b><span>Pause payload, reorient for thermal control and monitor battery telemetry</span></button>
+            <button class="ops-choice" onclick="chooseAnomaly(this,'wrong2')"><b>Power off all systems</b><span>Immediately shut down the spacecraft</span></button>
+          </div>
+          <div class="ops-feedback" id="anomalyFeedback">Awaiting flight-controller decision.</div>
+        </div>
+
+        <!-- LEVEL 04: RANDOMIZED WEATHER & AUTO-RESCHEDULE TO NEXT SUNNY DAY -->
+        <div class="ops-panel" id="weatherGate">
+          <div class="ops-kicker">LEVEL 04 · RANGE SAFETY & WEATHER CHECK</div>
+          <h2>Launch window weather verification</h2>
+          <p class="ops-copy">Check launch pad ambient temperature and sky conditions. If rainy weather is detected, mission control will automatically reschedule liftoff to the next clear sunny day.</p>
+          <div class="telemetry"><span>Launch site</span><b>Satish Dhawan Space Centre · Sriharikota</b></div>
+          <div class="telemetry"><span>Scheduled launch window</span><b id="launchDateLabel">20 NOV 2026 · 02:00 IST</b></div>
+          <div class="telemetry"><span>Pad temperature & sky</span><b id="weatherTempDisplay">AWAITING SENSOR READING</b></div>
+          <div class="telemetry"><span>Weather verification</span><b id="weatherState">NOT CHECKED</b></div>
+          <div class="ops-feedback" id="weatherFeedback">Click below to sample launch pad temperature and weather conditions.</div>
+          <div class="btnrow">
+            <button class="btn" id="weatherCheckBtn" onclick="checkLaunchWeather()">CHECK LAUNCH WEATHER</button>
+          </div>
+        </div>
+
+        <!-- LEVEL 05: FINAL TESTING LEVEL -->
+        <div class="ops-panel" id="finalTestingPanel" style="display:none">
+          <div class="ops-kicker">LEVEL 05 · FINAL PRE-LAUNCH TESTING LEVEL</div>
+          <h2>Final integrated vehicle & pad systems test</h2>
+          <p class="ops-copy">Weather window is confirmed GO. Run the final automated pre-launch diagnostic sweep before authorizing main engine ignition.</p>
+          <div class="final-test-grid" id="finalTestGrid">
+            <div class="ftest-item" id="ftest0">
+              <div class="ftest-head"><span>01 · PROPULSION VALVES</span><b id="ftestState0">STANDBY</b></div>
+              <small style="color:var(--muted)">Turbopump chilldown & cryo LOX/CH4 manifold pressure</small>
+              <div class="ftest-bar"><div class="ftest-fill" id="ftestFill0"></div></div>
+            </div>
+            <div class="ftest-item" id="ftest1">
+              <div class="ftest-head"><span>02 · GUIDANCE IMU</span><b id="ftestState1">STANDBY</b></div>
+              <small style="color:var(--muted)">Ring-laser gyro alignment & inertial navigation drift</small>
+              <div class="ftest-bar"><div class="ftest-fill" id="ftestFill1"></div></div>
+            </div>
+            <div class="ftest-item" id="ftest2">
+              <div class="ftest-head"><span>03 · AVIONICS BUS</span><b id="ftestState2">STANDBY</b></div>
+              <small style="color:var(--muted)">Triple-redundant flight computer & power bus sync</small>
+              <div class="ftest-bar"><div class="ftest-fill" id="ftestFill2"></div></div>
+            </div>
+            <div class="ftest-item" id="ftest3">
+              <div class="ftest-head"><span>04 · TELEMETRY LINK</span><b id="ftestState3">STANDBY</b></div>
+              <small style="color:var(--muted)">S/X-band range downlink & ground carrier lock</small>
+              <div class="ftest-bar"><div class="ftest-fill" id="ftestFill3"></div></div>
+            </div>
+            <div class="ftest-item" id="ftest4" style="grid-column: 1 / -1">
+              <div class="ftest-head"><span>05 · FLIGHT TERMINATION & SEPARATION PYROS</span><b id="ftestState4">STANDBY</b></div>
+              <small style="color:var(--muted)">Range safety arming & stage separation ordnance continuity</small>
+              <div class="ftest-bar"><div class="ftest-fill" id="ftestFill4"></div></div>
+            </div>
+          </div>
+          <div class="ops-feedback" id="finalTestFeedback">Ready to execute final pre-launch system verification.</div>
+          <div class="btnrow" id="finalTestActions">
+            <button class="btn" id="runFinalTestBtn" onclick="runFinalTestingLevel()">RUN FINAL SYSTEMS TEST</button>
+          </div>
+        </div>
+
+        <!-- FLIGHT DIRECTOR LAUNCH AUTHORIZATION -->
+        <div class="ops-panel launch-unlock" id="launchUnlock" style="display:none">
+          <div class="ops-kicker">FLIGHT DIRECTOR APPROVAL · ALL GATES GREEN</div>
+          <h2>All systems verified · Ready for liftoff</h2>
+          <p>Mission operations are cleared, weather is sunny and GO, and final pre-launch testing passed 100%.</p>
+          <div class="btnrow">
+            <button class="btn gold" id="launchButton" onclick="beginLaunchSequence()">INITIATE LAUNCH · 10 SECOND COUNTDOWN</button>
+          </div>
+        </div>
+
+        <!-- REALISTIC MULTI-STAGE LAUNCH CANVAS -->
+        <div id="launchStage">
+          <canvas id="launchCanvas"></canvas>
+          <div id="launchOverlay">
+            <div id="launchVehicleLabel">ARES-M · LAUNCH VEHICLE</div>
+            <div id="launchStatus">All systems nominal</div>
+            <div id="launchStageBadge">STAGE 1 · ON PAD</div>
+            <div class="sep-tracker" id="sepTracker">
+              <span class="sep-pill active" id="sepPill0">01 · LIFTOFF</span>
+              <span class="sep-pill" id="sepPill1">02 · STAGE 1 SEP</span>
+              <span class="sep-pill" id="sepPill2">03 · FAIRING JETTISON</span>
+              <span class="sep-pill" id="sepPill3">04 · STAGE 2 SEP</span>
+              <span class="sep-pill" id="sepPill4">05 · KICK STAGE & PAYLOAD SEP</span>
+            </div>
+            <div id="launchDone">MISSION LAUNCH SUCCESSFUL</div>
+            <div id="liveStatusCta">
+              <button class="btn gold" onclick="openLiveStatus()">CHECK LIVE STATUS</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEVEL 06: MISSION DEBRIEF -->
+        <div class="ops-panel launch-unlock" id="missionDebrief" style="display:none">
+          <div class="ops-kicker">LEVEL 06 · MISSION COMPLETE</div>
+          <h2>Successful launch · Spacecraft deployed in orbit</h2>
+          <p class="ops-copy" id="debriefText">The launch vehicle has cleared the tower, completed stage separations, and deployed the spacecraft.</p>
+          <div class="ops-top">
+            <div><span>MISSION RESULT</span><b>SUCCESS</b></div>
+            <div><span>LAUNCH VEHICLE</span><b id="debriefRocket">ARES-M</b></div>
+            <div><span>FINAL MASS</span><b id="debriefMass">—</b></div>
+            <div><span>MISSION SCORE</span><b id="debriefScore">—</b></div>
+          </div>
+          <div class="ops-feedback good">✓ All campaign levels cleared · Weather verified · Final testing passed · Multi-stage separation & orbital insertion confirmed.</div>
+          <div class="btnrow">
+            <button class="btn gold" onclick="openLiveStatus()">CHECK LIVE STATUS</button>
+            <button class="btn" onclick="restartCampaign()">PLAY AGAIN</button>
+            <button class="btn secondary" onclick="window.print()">PRINT MISSION REPORT</button>
+          </div>
+        </div>
+
+        <div class="btnrow"><button class="btn secondary" onclick="next(3)">← BACK TO HOLOGRAM</button></div>
+      </section>
+    </main>
+
+    <!-- LIVE STATUS TELEMETRY MODAL -->
+    <div id="liveStatusModal" onclick="if(event.target===this) closeLiveStatus()">
+      <div class="live-modal-card">
+        <div class="live-beacon"><i></i> LIVE ORBITAL TELEMETRY LINK ACTIVE</div>
+        <h2 style="font:700 24px Orbitron; margin:0 0 8px; color:var(--cyan)" id="liveModalTitle">LUNAR SURVEY · LIVE STATUS</h2>
+        <p style="color:var(--muted); margin:0 0 16px; font-size:15px" id="liveModalSub">Real-time downlink from Deep Space Network Station · Spacecraft nominal in target orbit.</p>
+        <div class="telemetry"><span>Flight Phase</span><b style="color:var(--green)">ORBITAL OPERATIONS · NOMINAL</b></div>
+        <div class="telemetry"><span>Current Altitude</span><b id="liveAlt">402.4 km</b></div>
+        <div class="telemetry"><span>Orbital Velocity</span><b id="liveVel">27,610 km/h (7.67 km/s)</b></div>
+        <div class="telemetry"><span>Orbital Inclination</span><b id="liveInc">97.4° (POLAR LOCK)</b></div>
+        <div class="telemetry"><span>Stage Separations</span><b style="color:var(--green)">S1 · FAIRING · S2 · KICK STAGE CONFIRMED</b></div>
+        <div class="telemetry"><span>Solar & Battery</span><b id="liveSolar">8.0 kW · 100% CHARGED</b></div>
+        <div class="telemetry"><span>Downlink Signal & Heartbeat</span><b id="liveSignal">X-BAND LOCK · -78 dBm · PKT #1042</b></div>
+        <div class="btnrow" style="justify-content:flex-end; margin-top:18px">
+          <button class="btn" onclick="closeLiveStatus()">CLOSE TELEMETRY</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMBEDDED 3D LIVE ORBITAL NAVIGATION & TELEMETRY SIMULATOR -->
+    <div id="navOverlay">
+      <canvas id="navGL"></canvas>
+      <div id="navHud">
+        <div id="navRet"></div>
+        <div id="navWp"></div>
+        <div id="navObj"></div>
+        <div id="navWarn"></div>
+        <div id="navTel"></div>
+        <div id="navCon">
+          <div id="navBars"></div>
+          <canvas id="navRad" width="136" height="136"></canvas>
+          <div id="navSpd"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      ODESSEYY · ADVANCED MISSION SIMULATION · EDUCATIONAL GAME MODEL — NOT
+      FLIGHT CERTIFICATION SOFTWARE
+    </footer>
+    <video id="cameraVideo" playsinline style="display: none"></video>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"></script>
+    <script>
+      function startLevelOne() {
+        const root = document.getElementById("introRoot");
+        root.classList.add("hide");
+        document.body.classList.remove("intro-open");
+        setTimeout(() => {
+          root.style.display = "none";
+          if (typeof next === "function") next(0);
+        }, 720);
+      }
+
+      const state = {
+        screen: 0,
+        mission: "lunar",
+        rocket: "medium",
+        credits: 100,
+        inspected: new Set(),
+        panel: true,
+      };
+      const missionData = {
+        lunar: {
+          name: "Lunar Survey",
+          brief:
+            "Target: Moon · Payload: 800 kg science package · Priority: stable polar orbit and high data return.",
+          difficulty: "ADVANCED",
+          fund: 100,
+          baseMass: 2000,
+          dv: 3.2,
+        },
+        earth: {
+          name: "Earth Observer",
+          brief:
+            "Target: Earth · Payload: multispectral imaging satellite · Priority: precise low-Earth orbit and continuous downlink.",
+          difficulty: "INTERMEDIATE",
+          fund: 85,
+          baseMass: 1200,
+          dv: 7.8,
+        },
+        mars: {
+          name: "Mars Pathfinder",
+          brief:
+            "Target: Mars · Payload: deep-space science probe · Priority: transfer trajectory, communications and long-duration power.",
+          difficulty: "EXPERT",
+          fund: 140,
+          baseMass: 2600,
+          dv: 5.6,
+        },
+      };
+      const rocketData = {
+        light: { name: "SCOUT-L", capacity: 1500, cost: 10 },
+        medium: { name: "ARES-M", capacity: 5000, cost: 18 },
+        heavy: { name: "ARES-H", capacity: 12000, cost: 32 },
+      };
+      const $ = (id) => document.getElementById(id);
+      function val(id) {
+        return Number($(id).value);
+      }
+      function mass() {
+        return (
+          missionData[state.mission].baseMass +
+          val("payload") +
+          Math.round(val("fuel") * 7) +
+          Math.round((100 - val("structure")) * 3)
+        );
+      }
+      function cost() {
+        return (
+          rocketData[state.rocket].cost +
+          Math.round(val("fuel") * 0.18) +
+          Math.round(val("solar") * 0.7) +
+          Math.round(val("structure") * 0.12)
+        );
+      }
+      function updatePlan() {
+        $("altitudeVal").textContent = val("altitude");
+        $("payloadVal").textContent = val("payload");
+        $("powerVal").textContent = val("power");
+        $("massEstimate").textContent =
+          (
+            missionData[state.mission].baseMass + val("payload")
+          ).toLocaleString() + " kg";
+        $("dvEstimate").textContent =
+          missionData[state.mission].dv.toFixed(1) + " km/s";
+        $("powerEstimate").textContent = "≥ " + val("power") + " kW";
+        const o = $("orbit").value;
+        $("planAdvice").textContent =
+          o === "polar"
+            ? "Polar orbit selected for high-latitude observations."
+            : o === "transfer"
+              ? "Transfer trajectory selected: navigation and communications margins become critical."
+              : o === "geo"
+                ? "Geostationary orbit selected: high altitude requires a larger energy budget."
+                : "Equatorial orbit selected for repeated coverage along the equator.";
+      }
+
+      function resourceLimits() {
+        return {
+          fuel: { lunar: 55, earth: 40, mars: 80 }[state.mission],
+          structure: 35,
+        };
+      }
+      function vehicleCheck() {
+        const m = mass();
+        const r = rocketData[state.rocket];
+        const remaining = missionData[state.mission].fund - cost();
+        const solarMargin = val("solar") - val("power");
+        const limits = resourceLimits();
+        const issues = [];
+        const fixes = [];
+        if (val("fuel") < limits.fuel) {
+          issues.push("Propellant Deficit: " + val("fuel") + "% allocated (minimum " + limits.fuel + "% required).");
+          fixes.push("Raise propellant to at least " + limits.fuel + "%.");
+        }
+        if (val("structure") < limits.structure) {
+          issues.push("Structural Weakness: " + val("structure") + "% reinforcement (minimum " + limits.structure + "% required).");
+          fixes.push("Raise structural reinforcement to at least " + limits.structure + "%.");
+        }
+        if (solarMargin < 0) {
+          issues.push("Power Shortfall: Solar output (" + val("solar") + " kW) is " + Math.abs(solarMargin) + " kW below payload demand (" + val("power") + " kW).");
+          fixes.push("Increase solar array capacity to ≥ " + val("power") + " kW.");
+        }
+        if (m > r.capacity) {
+          issues.push("Payload Overweight: Launch mass (" + m.toLocaleString() + " kg) exceeds " + r.name + " capacity (" + r.capacity.toLocaleString() + " kg).");
+          fixes.push("Switch to heavy-lift ARES-H or reduce mass.");
+        }
+        if (remaining < 0) {
+          issues.push("Budget Overrun: Exceeds mission funding by " + Math.abs(remaining) + " credits.");
+          fixes.push("Optimize resource allocation within funding.");
+        }
+        return { valid: issues.length === 0, issues, fixes, m, r, remaining, solarMargin, limits };
+      }
+      function setResourceStatus(id, valid, message) {
+        const el = $(id);
+        if (!el) return;
+        el.className = "resource-status " + (valid ? "good" : "bad");
+        el.textContent = (valid ? "✓ " : "⚠ ") + message;
+      }
+      function updateVehicle() {
+        ["fuel", "structure", "solar"].forEach(
+          (id) => ($(id + "Val").textContent = val(id)),
+        );
+        const check = vehicleCheck();
+        $("capacity").textContent = check.r.capacity.toLocaleString() + " kg";
+        $("launchMass").textContent = check.m.toLocaleString() + " kg";
+        $("remaining").textContent = check.remaining + " credits";
+        $("margin").textContent = (check.solarMargin >= 0 ? "+" : "") + check.solarMargin + " kW";
+
+        const fuelOK = val("fuel") >= check.limits.fuel;
+        const structureOK = val("structure") >= check.limits.structure;
+        const solarOK = check.solarMargin >= 0;
+        setResourceStatus("fuelStatus", fuelOK,
+          fuelOK ? "Propellant nominal for " + missionData[state.mission].name + "." :
+          "Error: Propellant too low (" + val("fuel") + "% / min " + check.limits.fuel + "%).");
+        setResourceStatus("structureStatus", structureOK,
+          structureOK ? "Structural reinforcement nominal." :
+          "Error: Structural load limit violated (" + val("structure") + "% / min " + check.limits.structure + "%).");
+        setResourceStatus("solarStatus", solarOK,
+          solarOK ? "Solar output meets payload demand (" + val("solar") + " / " + val("power") + " kW)." :
+          "Error: Power deficit of " + Math.abs(check.solarMargin) + " kW.");
+
+        const box = $("vehicleAdvice");
+        if (check.valid) {
+          box.className = "notice good";
+          box.innerHTML = "<strong>✓ ALL SYSTEMS NOMINAL</strong> — Propellant, structure, solar power, launcher capacity, and budget are verified.";
+        } else {
+          box.className = "notice bad";
+          box.innerHTML =
+            "<strong>⚠ DIAGNOSTIC FAULT DETECTED (" + check.issues.length + " ISSUE" + (check.issues.length > 1 ? "S" : "") + ")</strong><br>" +
+            check.issues.map(x => "• " + x).join("<br>") +
+            "<div style='margin-top:12px'><button type='button' class='btn fix-btn' onclick='autoSetResources(true)'>⚡ AUTO-FIX ALL ERRORS</button></div>";
+        }
+      }
+      function autoSetResources(fromDiagnostic = false) {
+        const limits = resourceLimits();
+        const power = val("power");
+        const mission = missionData[state.mission];
+        const rockets = Object.entries(rocketData);
+        let best = null;
+
+        for (let fuel = Math.max(25, limits.fuel); fuel <= 100; fuel++) {
+          for (let structure = Math.max(20, limits.structure); structure <= 100; structure++) {
+            for (let solar = Math.max(2, power); solar <= 20; solar++) {
+              const estimatedMass = mission.baseMass + val("payload") +
+                Math.round(fuel * 7) + Math.round((100 - structure) * 3);
+              const resourceCost = Math.round(fuel * 0.18) +
+                Math.round(solar * 0.7) + Math.round(structure * 0.12);
+              for (const [rocketKey, rocket] of rockets) {
+                if (rocketKey === "light") continue;
+                const totalCost = rocket.cost + resourceCost;
+                if (estimatedMass <= rocket.capacity && totalCost <= mission.fund) {
+                  const candidate = {
+                    fuel, structure, solar, rocketKey, totalCost,
+                    mass: estimatedMass,
+                    score: totalCost * 100000 + estimatedMass
+                  };
+                  if (!best || candidate.score < best.score) best = candidate;
+                }
+              }
+            }
+          }
+        }
+
+        if (!best) {
+          $("payload").value = 600;
+          $("power").value = 4;
+          updatePlan();
+          return autoSetResources(fromDiagnostic);
+        }
+
+        $("fuel").value = best.fuel;
+        $("structure").value = best.structure;
+        $("solar").value = best.solar;
+        state.rocket = best.rocketKey;
+        document.querySelectorAll("[data-rocket]").forEach(card =>
+          card.classList.toggle("selected", card.dataset.rocket === best.rocketKey)
+        );
+        updateVehicle();
+        $("vehicleAdvice").className = "notice good";
+        $("vehicleAdvice").innerHTML =
+          "<strong>✓ AUTO-FIX APPLIED · ALL ERRORS RESOLVED</strong><br>" +
+          "Calibrated to " + best.fuel + "% propellant, " + best.structure +
+          "% structure, " + best.solar + " kW solar array, and " +
+          rocketData[best.rocketKey].name + " launcher. Ready for system check.";
+      }
+      function next(n) {
+        if (n === 3 && !vehicleCheck().valid) {
+          updateVehicle();
+          return;
+        }
+        state.screen = n;
+        document
+          .querySelectorAll(".screen")
+          .forEach((s, i) => s.classList.toggle("active", i === n));
+        document.querySelectorAll(".step").forEach((s, i) => {
+          s.classList.toggle("active", i === n);
+          s.classList.toggle("done", i < n);
+        });
+        if (n === 2) updateVehicle();
+        if (n === 4) {
+          $("opsMission").textContent = missionData[state.mission].name;
+          $("opsRocket").textContent = rocketData[state.rocket].name;
+          $("opsCredits").textContent = $("credits").textContent;
+          showOpsLevel(0);
+          resizeLaunchCanvas();
+          drawLaunchScene(0);
+        }
+        if (n === 3) {
+          $("reviewMission").textContent = missionData[state.mission].name;
+          $("reviewRocket").textContent = rocketData[state.rocket].name;
+          $("reviewMass").textContent = mass().toLocaleString() + " kg";
+          resizeCanvas();
+        }
+      }
+      document.querySelectorAll("[data-mission]").forEach(
+        (c) =>
+          (c.onclick = () => {
+            document
+              .querySelectorAll("[data-mission]")
+              .forEach((x) => x.classList.remove("selected"));
+            c.classList.add("selected");
+            state.mission = c.dataset.mission;
+            const d = missionData[state.mission];
+            $("briefing").textContent = d.brief;
+            $("difficulty").textContent = d.difficulty;
+            $("funding").textContent = d.fund + " credits";
+            $("credits").textContent = d.fund;
+            updatePlan();
+            updateVehicle();
+          }),
+      );
+      document.querySelectorAll("[data-rocket]").forEach(
+        (c) =>
+          (c.onclick = () => {
+            if (c.classList.contains("disabled")) return;
+            document
+              .querySelectorAll("[data-rocket]")
+              .forEach((x) => x.classList.remove("selected"));
+            c.classList.add("selected");
+            state.rocket = c.dataset.rocket;
+            updateVehicle();
+          }),
+      );
+      [
+        "altitude",
+        "payload",
+        "power",
+        "fuel",
+        "structure",
+        "solar",
+        "orbit",
+      ].forEach((id) =>
+        $(id).addEventListener("input", () => {
+          updatePlan();
+          updateVehicle();
+        }),
+      );
+      function validateVehicle() {
+        updateVehicle();
+        const check = vehicleCheck();
+        if (!check.valid) {
+          $("vehicleAdvice").scrollIntoView({ behavior: "smooth", block: "nearest" });
+          return;
+        }
+        const btn = $("runCheckBtn");
+        btn.disabled = true;
+        btn.textContent = "RUNNING DIAGNOSTICS…";
+        $("vehicleAdvice").className = "notice good";
+        $("vehicleAdvice").innerHTML = "<strong>✓ RUNNING INTEGRATED BENCHMARK…</strong> Verifying structural loads, propellant margins, and power bus.";
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = "RUN SYSTEM CHECK →";
+          next(3);
+        }, 550);
+      }
+      function inspectAllSystems() {
+        PARTS.forEach((p) => state.inspected.add(p.id));
+        $("inspection").textContent = "6 / 6 systems inspected";
+        $("designReviewNotice").className = "notice good";
+        $("designReviewNotice").textContent = "✓ All 6 spacecraft systems inspected and verified. Ready to sign off design.";
+      }
+      function completeDesign() {
+        if (state.inspected.size < 6) {
+          $("designReviewNotice").className = "notice warn";
+          $("designReviewNotice").innerHTML =
+            "<strong>⚠ INSPECTION INCOMPLETE (" + state.inspected.size + " / 6)</strong> — Click each part chip on the hologram or use <b>INSPECT ALL SYSTEMS</b> to complete sign-off.";
+          $("designReviewNotice").scrollIntoView({ behavior: "smooth", block: "nearest" });
+          return;
+        }
+        $("status").textContent = "LAUNCH PREPARATION";
+        next(4);
+      }
+      function togglePanel() {
+        state.panel = !state.panel;
+        $("partPanel").style.display = state.panel ? "block" : "none";
+      }
+
+      /* 3D Hologram geometry and interaction */
+      const ring = (x, r, n, oy = 0, oz = 0) =>
+        Array.from({ length: n }, (_, i) => {
+          const t = (i / n) * Math.PI * 2;
+          return [x, oy + Math.cos(t) * r, oz + Math.sin(t) * r];
+        });
+      const tube = (R) => {
+        const s = [];
+        R.forEach((q, k) =>
+          q.forEach((p, i) => {
+            s.push([p, q[(i + 1) % q.length]]);
+            if (k < R.length - 1) s.push([p, R[k + 1][i]]);
+          }),
+        );
+        return s;
+      };
+      const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+      let wings = [];
+      [-1, 1].forEach((s) => {
+        const A = [1.5, 0, 1.2 * s],
+          B = [-3.5, 0, 1.2 * s],
+          C = [-3.5, 0, 5.5 * s],
+          D = [-1.5, 0, 4 * s];
+        wings.push([A, B], [B, C], [C, D], [D, A]);
+        [0.25, 0.5, 0.75].forEach((t) =>
+          wings.push([lerp(A, B, t), lerp(D, C, t)]),
+        );
+      });
+      let dish = [];
+      for (let i = 0; i < 14; i++) {
+        const a = (i / 14) * Math.PI * 2,
+          b = ((i + 1) / 14) * Math.PI * 2;
+        dish.push(
+          [
+            [-1 + Math.cos(a) * 0.9, 2, Math.sin(a) * 0.9],
+            [-1 + Math.cos(b) * 0.9, 2, Math.sin(b) * 0.9],
+          ],
+          [
+            [-1, 2, 0],
+            [-1 + Math.cos(a) * 0.9, 2, Math.sin(a) * 0.9],
+          ],
+        );
+      }
+      let eng = [];
+      [-1.1, 1.1].forEach(
+        (z) =>
+          (eng = eng.concat(
+            tube([
+              ring(-4, 0.55, 8, -0.2, z),
+              ring(-5.6, 0.7, 8, -0.2, z),
+              ring(-6.2, 0.45, 8, -0.2, z),
+            ]),
+          )),
+      );
+      const PARTS = [
+        {
+          id: "cockpit",
+          name: "Crew Module",
+          desc: "Pressurised flight deck and crew quarters.",
+          segs: tube([ring(3, 1.2, 8), ring(4.5, 0.8, 8), ring(6, 0.15, 8)]),
+          anchor: [5, 0.5, 0],
+          specs: { Crew: "4", Pressure: "101 kPa", Endurance: "30 days" },
+          gl: "Cabin oxygen (%)",
+          base: 21,
+          amp: 0.4,
+        },
+        {
+          id: "hull",
+          name: "Main Hull",
+          desc: "Load-bearing structure holding every system together.",
+          segs: tube([ring(-4, 1.2, 8), ring(-1, 1.2, 8), ring(3, 1.2, 8)]),
+          anchor: [1.2, 1.3, 0],
+          specs: { Material: "Ti-Al alloy", Mass: "12.4 t", Length: "12 m" },
+          gl: "Hull stress (MPa)",
+          base: 140,
+          amp: 18,
+        },
+        {
+          id: "fuel",
+          name: "Propellant Tank",
+          desc: "Stores fuel and oxidiser for the main propulsion burn.",
+          segs: tube([
+            ring(-3, 1.55, 10),
+            ring(-1.5, 1.7, 10),
+            ring(0, 1.55, 10),
+          ]),
+          anchor: [-1.5, -1.7, 0],
+          specs: {
+            Capacity: "8,200 kg",
+            Type: "LOX / CH4",
+            Fill: () => val("fuel") + "%",
+          },
+          gl: "Tank pressure (bar)",
+          base: 3.2,
+          amp: 0.3,
+        },
+        {
+          id: "engines",
+          name: "Main Thrusters",
+          desc: "Twin engines provide the impulse required for manoeuvres.",
+          segs: eng,
+          anchor: [-5.6, -0.2, 0],
+          specs: { Thrust: "2 × 420 kN", Isp: "358 s", Burn: "540 s" },
+          gl: "Thrust output (kN)",
+          base: 840,
+          amp: 60,
+        },
+        {
+          id: "wings",
+          name: "Solar Arrays",
+          desc: "Deployable panels convert sunlight into electrical power.",
+          segs: wings,
+          anchor: [-2.2, 0, 4.4],
+          specs: {
+            Output: () => val("solar") + " kW",
+            Area: "64 m²",
+            Efficiency: "29%",
+          },
+          gl: "Power generation (kW)",
+          base: 18,
+          amp: 2.5,
+        },
+        {
+          id: "dish",
+          name: "Comms Dish",
+          desc: "High-gain antenna links the spacecraft to mission control.",
+          segs: dish,
+          anchor: [-1, 2, 0],
+          specs: { Band: "X / Ka", Rate: "120 Mbps", Range: "384,000 km" },
+          gl: "Signal strength (dBm)",
+          base: -82,
+          amp: 3,
+        },
+      ];
+      const cv = $("shipCanvas"),
+        g = cv.getContext("2d");
+      let W = 0,
+        H = 0,
+        yaw = -0.7,
+        pitch = 0.32,
+        zoom = 1,
+        sel = null,
+        hov = null;
+      function resizeCanvas() {
+        const r = cv.getBoundingClientRect(),
+          d = window.devicePixelRatio || 1;
+        W = r.width;
+        H = r.height;
+        cv.width = W * d;
+        cv.height = H * d;
+        g.setTransform(d, 0, 0, d, 0, 0);
+      }
+      window.addEventListener("resize", resizeCanvas);
+      function proj(p) {
+        let [x, y, z] = p,
+          c = Math.cos(yaw),
+          s = Math.sin(yaw),
+          x1 = x * c + z * s,
+          z1 = -x * s + z * c;
+        c = Math.cos(pitch);
+        s = Math.sin(pitch);
+        let y1 = y * c - z1 * s,
+          z2 = y * s + z1 * c,
+          f = 1 / (1 + z2 * 0.04),
+          k = (Math.min(W * 0.5, H * 0.9) / 16) * zoom;
+        return [W * 0.43 + x1 * k * f, H * 0.54 - y1 * k * f];
+      }
+      function line(a, b) {
+        const p = proj(a),
+          q = proj(b);
+        g.moveTo(p[0], p[1]);
+        g.lineTo(q[0], q[1]);
+      }
+      const inp = { x: -99, y: -99, down: false, prev: false },
+        drag = { on: false, x: 0, y: 0 };
+      let handSeen = 0,
+        idle = performance.now();
+      cv.addEventListener("pointermove", (e) => {
+        if (performance.now() - handSeen < 400) return;
+        inp.x = e.clientX - cv.getBoundingClientRect().left;
+        inp.y = e.clientY - cv.getBoundingClientRect().top;
+      });
+      cv.addEventListener("pointerdown", (e) => {
+        if (performance.now() - handSeen < 400) return;
+        inp.x = e.clientX - cv.getBoundingClientRect().left;
+        inp.y = e.clientY - cv.getBoundingClientRect().top;
+        inp.down = true;
+      });
+      window.addEventListener("pointerup", () => {
+        if (performance.now() - handSeen >= 400) inp.down = false;
+      });
+      cv.addEventListener(
+        "wheel",
+        (e) => {
+          zoom = Math.max(
+            0.5,
+            Math.min(2.4, zoom * (e.deltaY < 0 ? 1.08 : 0.92)),
+          );
+        },
+        { passive: true },
+      );
+      function pick(id) {
+        sel = PARTS.find((p) => p.id === id) || null;
+        if (!sel) return;
+        state.inspected.add(id);
+        $("partName").textContent = sel.name;
+        $("partDesc").textContent = sel.desc;
+        $("partSpecs").innerHTML = Object.entries(sel.specs)
+          .map(
+            ([k, v]) =>
+              `<div class="row"><span>${k}</span><strong>${typeof v === "function" ? v() : v}</strong></div>`,
+          )
+          .join("");
+        $("graphLabel").textContent = sel.gl;
+        $("inspection").textContent =
+          state.inspected.size + " / 6 systems inspected";
+        if (state.inspected.size === 6) {
+          $("designReviewNotice").className = "notice good";
+          $("designReviewNotice").textContent = "✓ All 6 spacecraft systems inspected and verified. Ready to sign off design.";
+        }
+        document
+          .querySelectorAll("#partChips button")
+          .forEach((b) => b.classList.toggle("on", b.dataset.id === id));
+      }
+      PARTS.forEach((p) => {
+        const b = document.createElement("button");
+        b.textContent = p.name;
+        b.dataset.id = p.id;
+        b.onclick = () => pick(p.id);
+        $("partChips").appendChild(b);
+      });
+      function resetView() {
+        yaw = -0.7;
+        pitch = 0.32;
+        zoom = 1;
+      }
+      function drawGraph(t) {
+        const c = $("graph"),
+          x = c.getContext("2d");
+        x.clearRect(0, 0, c.width, c.height);
+        x.strokeStyle = "#1b3a4d";
+        for (let i = 1; i < 4; i++) {
+          x.beginPath();
+          x.moveTo(0, i * 16);
+          x.lineTo(c.width, i * 16);
+          x.stroke();
+        }
+        x.strokeStyle = "#5ff3ff";
+        x.lineWidth = 2;
+        x.beginPath();
+        for (let i = 0; i <= c.width; i += 3) {
+          let y =
+            32 -
+            (Math.sin(i * 0.045 + t * 2) * 0.6 +
+              Math.sin(i * 0.13 - t * 3) * 0.4) *
+              23;
+          i ? x.lineTo(i, y) : x.moveTo(i, y);
+        }
+        x.stroke();
+      }
+      function frame(now) {
+        if (state.screen === 3) {
+          const t = now / 1000;
+          g.clearRect(0, 0, W, H);
+          const pressed = inp.down && !inp.prev;
+          hov = null;
+          let best = 46;
+          PARTS.forEach((p) => {
+            const a = proj(p.anchor),
+              d = Math.hypot(a[0] - inp.x, a[1] - inp.y);
+            if (d < best) {
+              best = d;
+              hov = p;
+            }
+          });
+          if (pressed) {
+            if (hov) pick(hov.id);
+            else {
+              drag.on = true;
+              drag.x = inp.x;
+              drag.y = inp.y;
+            }
+          }
+          if (!inp.down) drag.on = false;
+          if (drag.on) {
+            yaw += (inp.x - drag.x) * 0.008;
+            pitch = Math.max(
+              -1.2,
+              Math.min(1.2, pitch + (inp.y - drag.y) * 0.008),
+            );
+            drag.x = inp.x;
+            drag.y = inp.y;
+            idle = now;
+          }
+          if (now - idle > 3000) yaw += 0.0025;
+          inp.prev = inp.down;
+          g.lineWidth = 1;
+          g.strokeStyle = "#1b3a4d";
+          [4, 7, 10].forEach((r) => {
+            g.beginPath();
+            for (let i = 0; i <= 64; i++) {
+              const a = (i / 64) * Math.PI * 2,
+                p = proj([Math.cos(a) * r, -2.6, Math.sin(a) * r]);
+              i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]);
+            }
+            g.stroke();
+          });
+          g.lineJoin = "round";
+          PARTS.forEach((p) => {
+            const on = sel === p || hov === p;
+            g.beginPath();
+            p.segs.forEach((s) => line(s[0], s[1]));
+            g.strokeStyle = on ? "#ffb347" : "#5ff3ff";
+            g.globalAlpha = on ? 1 : 0.58;
+            g.lineWidth = on ? 2 : 1.2;
+            g.shadowColor = on ? "#ffb347" : "#5ff3ff";
+            g.shadowBlur = on ? 16 : 8;
+            g.stroke();
+          });
+          g.globalAlpha = 1;
+          g.shadowBlur = 0;
+          const sx = Math.sin(t * 0.9) * 6;
+          g.beginPath();
+          for (let i = 0; i <= 40; i++) {
+            const a = (i / 40) * Math.PI * 2,
+              p = proj([sx, Math.cos(a) * 2.4, Math.sin(a) * 2.4]);
+            i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]);
+          }
+          g.strokeStyle = "#5ff3ff55";
+          g.stroke();
+          PARTS.forEach((p) => {
+            const a = proj(p.anchor),
+              on = sel === p || hov === p;
+            g.beginPath();
+            g.arc(a[0], a[1], on ? 9 : 6, 0, Math.PI * 2);
+            g.strokeStyle = on ? "#ffb347" : "#5ff3ff";
+            g.lineWidth = 2;
+            g.stroke();
+            if (on) {
+              g.beginPath();
+              g.moveTo(a[0] + 9, a[1]);
+              g.lineTo(a[0] + 40, a[1] - 26);
+              g.lineTo(a[0] + 60, a[1] - 26);
+              g.stroke();
+              g.fillStyle = "#ffb347";
+              g.font = "600 15px Rajdhani";
+              g.fillText(p.name, a[0] + 44, a[1] - 32);
+            }
+          });
+          if (inp.x > -50) {
+            g.beginPath();
+            g.arc(inp.x, inp.y, inp.down ? 7 : 13, 0, Math.PI * 2);
+            g.strokeStyle = inp.down ? "#ffb347" : "#ffffff";
+            g.lineWidth = 2;
+            g.stroke();
+          }
+          drawGraph(t);
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+      pick("cockpit");
+
+      (function () {
+        const buildShip = (c) => {
+          const wg = [];
+          [-1, 1].forEach((s) => {
+            const A = [c.w.xf, 0, c.w.zi * s],
+              B = [c.w.xb, 0, c.w.zi * s],
+              C = [c.w.xb, 0, c.w.zo * s],
+              D = [c.w.xt, 0, c.w.zt * s];
+            wg.push([A, B], [B, C], [C, D], [D, A]);
+            [0.25, 0.5, 0.75].forEach((q) =>
+              wg.push([lerp(A, B, q), lerp(D, C, q)]),
+            );
+          });
+          const dish = [];
+          for (let i = 0; i < 14; i++) {
+            const a = (i / 14) * Math.PI * 2,
+              b = ((i + 1) / 14) * Math.PI * 2;
+            dish.push(
+              [
+                [c.d.x + Math.cos(a) * c.d.r, c.d.y, Math.sin(a) * c.d.r],
+                [c.d.x + Math.cos(b) * c.d.r, c.d.y, Math.sin(b) * c.d.r],
+              ],
+              [
+                [c.d.x, c.d.y, 0],
+                [c.d.x + Math.cos(a) * c.d.r, c.d.y, Math.sin(a) * c.d.r],
+              ],
+            );
+          }
+          let eng = [];
+          c.e.pos.forEach(([oy, oz]) => {
+            eng = eng.concat(
+              tube(c.e.rings.map(([x, r]) => ring(x, r, 8, oy, oz))),
+            );
+          });
+          return {
+            cockpit: {
+              segs: tube(c.nose.map(([x, r]) => ring(x, r, 8))),
+              anchor: c.a.cockpit,
+            },
+            hull: {
+              segs: tube(c.hull.map(([x, r]) => ring(x, r, 8))),
+              anchor: c.a.hull,
+            },
+            fuel: {
+              segs: tube(c.tank.map(([x, r]) => ring(x, r, 10))),
+              anchor: c.a.fuel,
+            },
+            engines: { segs: eng, anchor: c.a.engines },
+            wings: { segs: wg, anchor: c.a.wings },
+            dish: { segs: dish, anchor: c.a.dish },
+          };
+        };
+
+        const SHIPS = {};
+        SHIPS.medium = {};
+        PARTS.forEach((q) => {
+          SHIPS.medium[q.id] = {
+            segs: q.segs,
+            anchor: q.anchor,
+            specs: q.specs,
+            base: q.base,
+          };
+        });
+
+        const heavy = buildShip({
+          nose: [[3.5, 1.5], [5.2, 1.0], [6.8, 0.2]],
+          hull: [[-5, 1.5], [-1.5, 1.5], [3.5, 1.5]],
+          tank: [[-4, 1.9], [-2, 2.1], [0, 1.9]],
+          e: {
+            pos: [[0.9, 0.9], [0.9, -0.9], [-0.9, 0.9], [-0.9, -0.9]],
+            rings: [[-5, 0.5], [-6.5, 0.62], [-7.2, 0.4]],
+          },
+          w: { xf: 2, xb: -4.5, xt: -2, zi: 1.5, zo: 6.5, zt: 5 },
+          d: { x: -1, y: 2.6, r: 1.2 },
+          a: {
+            cockpit: [5.4, 0.7, 0],
+            hull: [1.5, 1.6, 0],
+            fuel: [-2, -2.1, 0],
+            engines: [-6.5, 0, 0],
+            wings: [-2.8, 0, 5.2],
+            dish: [-1, 2.6, 0],
+          },
+        });
+
+        const solar = () => val("solar") + " kW",
+          fill = () => val("fuel") + "%";
+        const extra = {
+          heavy: {
+            cockpit: { Crew: "6", Pressure: "101 kPa", Endurance: "60 days" },
+            hull: { Material: "Ti-Al alloy", Mass: "21.8 t", Length: "15 m" },
+            fuel: { Capacity: "14,500 kg", Type: "LOX / CH4", Fill: fill },
+            engines: { Thrust: "4 × 420 kN", Isp: "358 s", Burn: "540 s" },
+            wings: { Output: solar, Area: "96 m²", Efficiency: "29%" },
+            dish: { Band: "X / Ka", Rate: "240 Mbps", Range: "384,000 km" },
+            base: { engines: 1680 },
+          },
+        };
+        SHIPS.heavy = {};
+        PARTS.forEach((q) => {
+          SHIPS.heavy[q.id] = {
+            segs: heavy[q.id].segs,
+            anchor: heavy[q.id].anchor,
+            specs: extra.heavy[q.id],
+            base: extra.heavy.base[q.id] ?? q.base,
+          };
+        });
+
+        function applyShip(key) {
+          const S = SHIPS[key] || SHIPS.medium;
+          PARTS.forEach((q) => Object.assign(q, S[q.id]));
+          if (sel) pick(sel.id);
+        }
+        document
+          .querySelectorAll("[data-rocket]")
+          .forEach((c) =>
+            c.addEventListener("click", () => {
+              if (!c.classList.contains("disabled")) applyShip(c.dataset.rocket);
+            }),
+          );
+        applyShip(state.rocket);
+      })();
+
+      /* Phase 05: Mission Operations (Levels 01 - 03) */
+      let opsCleared = [false, false, false], sequenceProgress = 0;
+      let weatherVerified = false, finalTestingPassed = false;
+      let currentLaunchDate = "20 NOV 2026 · 02:00 IST";
+
+      function checkAllGates() {
+        const opsDone = opsCleared.every(Boolean);
+        if (weatherVerified) {
+          $("finalTestingPanel").style.display = "block";
+        }
+        if (weatherVerified && finalTestingPassed) {
+          $("launchUnlock").style.display = "block";
+          if (!opsDone) {
+            $("launchUnlock").querySelector("p").innerHTML =
+              "Weather is sunny and final testing passed 100%. <span style='color:var(--gold)'>(Tip: You can also complete Levels 01–03 above for bonus mission score, or launch immediately below.)</span>";
+          } else {
+            $("launchUnlock").querySelector("p").textContent =
+              "Mission operations are cleared, weather is sunny and GO, and final pre-launch testing passed 100%.";
+          }
+          $("launchUnlock").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+
+      function showOpsLevel(level) {
+        for (let i = 0; i < 3; i++) {
+          $("opsLevel" + i).style.display = i === level ? "block" : "none";
+          $("tab" + i).classList.toggle("active", i === level);
+        }
+      }
+      function clearOpsLevel(level) {
+        if (opsCleared[level]) return;
+        opsCleared[level] = true;
+        $("opsProgress").textContent = opsCleared.filter(Boolean).length + " / 3";
+        $("tab" + level).classList.add("cleared");
+        if (level < 2) $("tab" + (level + 1)).disabled = false;
+        checkAllGates();
+      }
+      function chooseOrbit(btn, choice) {
+        document.querySelectorAll("#opsLevel0 .ops-choice").forEach(x => x.classList.remove("picked"));
+        btn.classList.add("picked");
+        const f = $("orbitFeedback");
+        if (choice === "correct") {
+          f.className = "ops-feedback good";
+          f.textContent = "✓ CORRECT · 2.42 km/s provides the required velocity change for the target circular orbit. Trajectory locked.";
+          clearOpsLevel(0);
+        } else {
+          f.className = "ops-feedback bad";
+          f.textContent = choice === "low"
+            ? "INSUFFICIENT Δv · The spacecraft will not reach the target orbit. Select 2.42 km/s."
+            : "EXCESSIVE Δv · The spacecraft risks entering an unintended high-energy orbit. Select 2.42 km/s.";
+        }
+      }
+      function selectSequence(step) {
+        const f = $("sequenceFeedback");
+        if (step === sequenceProgress) {
+          document.querySelectorAll(".sequence-step")[step].classList.add("done");
+          sequenceProgress++;
+          f.className = "ops-feedback good";
+          if (sequenceProgress === 4) {
+            f.textContent = "✓ PAYLOAD DEPLOYED · Telemetry handshake confirmed. Payload operations complete.";
+            clearOpsLevel(1);
+          } else {
+            f.textContent = "✓ Step " + sequenceProgress + " confirmed. Proceed to the next operation.";
+          }
+        } else {
+          f.className = "ops-feedback bad";
+          f.textContent = "SEQUENCE INTERLOCK · Follow order: 01 Stabilise → 02 Verify Zone → 03 Release Payload → 04 Confirm Signal.";
+        }
+      }
+      function resetSequence() {
+        sequenceProgress = 0;
+        document.querySelectorAll(".sequence-step").forEach(x => x.classList.remove("done"));
+        $("sequenceFeedback").className = "ops-feedback";
+        $("sequenceFeedback").textContent = "Sequence reset. Begin by stabilising the spacecraft.";
+      }
+      function chooseAnomaly(btn, choice) {
+        document.querySelectorAll("#opsLevel2 .ops-choice").forEach(x => x.classList.remove("picked"));
+        btn.classList.add("picked");
+        const f = $("anomalyFeedback");
+        if (choice === "correct") {
+          f.className = "ops-feedback good";
+          f.textContent = "✓ FLIGHT DIRECTOR APPROVED · Thermal-safe mode pauses non-essential payload activity, adjusts orientation and protects battery health.";
+          clearOpsLevel(2);
+        } else {
+          f.className = "ops-feedback bad";
+          f.textContent = choice === "wrong1"
+            ? "RISK INCREASING · Continuing payload operations adds load while battery temperature is already rising."
+            : "UNNECESSARY SHUTDOWN · A controlled thermal-safe mode preserves critical communications.";
+        }
+      }
+
+      /* LEVEL 04: Randomized Temperature & Auto-Reschedule to Next Sunny Day */
+      let weatherRollCount = 0;
+      function checkLaunchWeather() {
+        const button = $("weatherCheckBtn");
+        const feedback = $("weatherFeedback");
+        const stateLabel = $("weatherState");
+        const tempDisplay = $("weatherTempDisplay");
+
+        button.disabled = true;
+        button.textContent = "SAMPLING PAD SENSORS…";
+        stateLabel.textContent = "SCANNING";
+
+        setTimeout(() => {
+          weatherRollCount++;
+          // Generate random pad temperature (19°C to 34°C) and randomized weather outcome
+          // Guarantee rainy demo at least once if desired, or ~45% rainy on initial check so user sees auto-reschedule
+          const isRainy = weatherRollCount === 1 ? Math.random() < 0.55 : Math.random() < 0.35;
+
+          if (!isRainy) {
+            const sunnyTemp = Math.floor(24 + Math.random() * 9); // 24°C - 32°C
+            const wind = Math.floor(8 + Math.random() * 10);
+            const skyType = Math.random() < 0.65 ? "SUNNY & CLEAR" : "PARTLY CLOUDY · FAIR";
+            tempDisplay.textContent = sunnyTemp + "°C · " + skyType + " (WIND " + wind + " KM/H)";
+            stateLabel.textContent = "GO · WEATHER OKAY";
+            feedback.className = "ops-feedback good";
+            feedback.innerHTML =
+              "✓ <strong>WEATHER OKAY · GO FOR LAUNCH</strong> · Pad temperature is <strong>" + sunnyTemp +
+              "°C</strong> (" + skyType + ", wind " + wind + " km/h). Unlocked <strong>Level 05 · Final Testing Level</strong> below.";
+            weatherVerified = true;
+            button.disabled = false;
+            button.textContent = "RE-CHECK WEATHER SENSOR";
+            checkAllGates();
+            $("finalTestingPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+          } else {
+            const rainyTemp = Math.floor(20 + Math.random() * 4); // 20°C - 23°C
+            const sunnyNextTemp = Math.floor(25 + Math.random() * 6); // 25°C - 30°C
+            const nextDates = ["22 NOV 2026 · 06:30 IST", "23 NOV 2026 · 07:00 IST", "24 NOV 2026 · 06:15 IST"];
+            const nextSunnyDate = nextDates[weatherRollCount % nextDates.length];
+
+            tempDisplay.textContent = rainyTemp + "°C · RAINY SQUALL → RESCHEDULED";
+            stateLabel.textContent = "GO (RESCHEDULED TO NEXT SUNNY DAY)";
+            feedback.className = "ops-feedback warn";
+            feedback.innerHTML =
+              "🌧 <strong>RAINY WEATHER DETECTED (" + rainyTemp + "°C)</strong> — Current window held due to rain over Sriharikota.<br>" +
+              "☀ <strong>LAUNCH SCHEDULED FOR NEXT SUNNY DAY:</strong> <strong>" + nextSunnyDate +
+              "</strong> (Forecast: Sunny & Clear, <strong>" + sunnyNextTemp + "°C</strong>, Wind 10 km/h).<br>" +
+              "<span class='good'>✓ Sunny launch window locked & verified GO! Proceed to <strong>Level 05 · Final Testing Level</strong> below.</span>";
+
+            currentLaunchDate = nextSunnyDate;
+            $("launchDateLabel").textContent = nextSunnyDate + " (SUNNY WINDOW)";
+            weatherVerified = true;
+            button.disabled = false;
+            button.textContent = "RE-SAMPLE WEATHER";
+            checkAllGates();
+            $("finalTestingPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        }, 420);
+      }
+
+      /* LEVEL 05: Final Pre-Launch Testing Level with Error Diagnostics & Auto-Fix */
+      let finalTestAttempt = 0;
+      let detectedFinalFault = null;
+      const finalFaultCatalog = [
+        {
+          idx: 0,
+          code: "ERR-PROP-402: Cryogenic LOX Bleed Valve Pressure Drift (+1.8 bar)",
+          fixDesc: "Recalibrated helium regulator & purged LOX/CH4 manifold to nominal 3.2 bar."
+        },
+        {
+          idx: 1,
+          code: "ERR-IMU-305: Ring-Laser Gyro Pitch Axis Alignment Drift (0.14°)",
+          fixDesc: "Executed star-tracker optical alignment & zeroed inertial guidance bias."
+        },
+        {
+          idx: 2,
+          code: "ERR-AVN-112: Avionics Bus-B Voltage Ripple (26.1V / Nominal 28.0V)",
+          fixDesc: "Balanced redundant solid-state power controller & stabilized 28.0V bus."
+        },
+        {
+          idx: 3,
+          code: "ERR-TLM-118: S-Band Transponder Carrier Phase Jitter",
+          fixDesc: "Switched to redundant X/S-band exciter and locked ground telemetry carrier."
+        },
+        {
+          idx: 4,
+          code: "ERR-PYRO-209: Stage-2 Interstage Separation Bus Impedance High (4.8 Ω)",
+          fixDesc: "Re-indexed pyro firing capacitor bank A/B; ordnance continuity verified at 1.02 Ω."
+        }
+      ];
+
+      function runFinalTestingLevel() {
+        const btn = $("runFinalTestBtn");
+        const feedback = $("finalTestFeedback");
+        btn.disabled = true;
+        btn.textContent = "EXECUTING FINAL SYSTEM SWEEP…";
+        finalTestAttempt++;
+        detectedFinalFault = null;
+
+        for (let i = 0; i < 5; i++) {
+          $("ftest" + i).className = "ftest-item";
+          $("ftestState" + i).textContent = "TESTING…";
+          $("ftestState" + i).style.color = "var(--cyan)";
+          $("ftestFill" + i).style.width = "40%";
+        }
+
+        // Simulate a recoverable subsystem fault on first run so user sees exact error + Auto-Fix option
+        const triggerFault = finalTestAttempt === 1;
+        const faultObj = finalFaultCatalog[Math.floor(Math.random() * finalFaultCatalog.length)];
+
+        setTimeout(() => {
+          for (let i = 0; i < 5; i++) {
+            if (triggerFault && i === faultObj.idx) {
+              $("ftest" + i).className = "ftest-item fault";
+              $("ftestState" + i).textContent = "ERROR DETECTED";
+              $("ftestState" + i).style.color = "var(--red)";
+              $("ftestFill" + i).style.width = "65%";
+            } else {
+              $("ftest" + i).className = "ftest-item pass";
+              $("ftestState" + i).textContent = "PASS · 100%";
+              $("ftestState" + i).style.color = "var(--green)";
+              $("ftestFill" + i).style.width = "100%";
+            }
+          }
+
+          if (triggerFault) {
+            detectedFinalFault = faultObj;
+            feedback.className = "ops-feedback bad";
+            feedback.innerHTML =
+              "<strong>⚠ SUBSYSTEM ERROR IDENTIFIED IN FINAL TESTING:</strong><br>" +
+              "• <strong>" + faultObj.code + "</strong><br>" +
+              "Click below to apply the automated ground-control patch and verify all 5 subsystems.";
+            $("finalTestActions").innerHTML =
+              "<button class='btn fix-btn' onclick='autoFixFinalTest()'>⚡ AUTO-FIX SUBSYSTEM ERROR</button>";
+          } else {
+            completeFinalTesting("✓ <strong>FINAL TESTING LEVEL PASSED (5/5 SUBSYSTEMS NOMINAL)</strong> — Flight Director has authorized the launch countdown.");
+          }
+        }, 800);
+      }
+
+      function autoFixFinalTest() {
+        if (!detectedFinalFault) return;
+        const i = detectedFinalFault.idx;
+        $("ftest" + i).className = "ftest-item pass";
+        $("ftestState" + i).textContent = "FIXED · 100%";
+        $("ftestState" + i).style.color = "var(--green)";
+        $("ftestFill" + i).style.width = "100%";
+
+        completeFinalTesting(
+          "✓ <strong>AUTO-FIX APPLIED:</strong> " + detectedFinalFault.fixDesc +
+          "<br>✓ <strong>ALL 5/5 FINAL PRE-LAUNCH TESTS VERIFIED NOMINAL</strong> — Ready for launch!"
+        );
+      }
+
+      function completeFinalTesting(msg) {
+        finalTestingPassed = true;
+        const feedback = $("finalTestFeedback");
+        feedback.className = "ops-feedback good";
+        feedback.innerHTML = msg;
+        $("finalTestActions").innerHTML =
+          "<button class='btn secondary' disabled>✓ FINAL TESTING VERIFIED</button>";
+        checkAllGates();
+      }
+
+      /* REALISTIC MULTI-STAGE LAUNCH ANIMATION WITH STAGE SEPARATIONS */
+      let launchCtx = null, launchStart = 0, launchAnimationId = 0, launchCanvas = null, launchG = null;
+      function resizeLaunchCanvas() {
+        launchCanvas = $("launchCanvas");
+        if (!launchCanvas) return;
+        const r = $("launchStage").getBoundingClientRect();
+        const d = window.devicePixelRatio || 1;
+        launchCanvas.width = Math.max(1, r.width * d);
+        launchCanvas.height = Math.max(1, r.height * d);
+        launchG = launchCanvas.getContext("2d");
+        launchG.setTransform(d, 0, 0, d, 0, 0);
+      }
+
+      function drawLaunchScene(elapsed) {
+        if (!launchG || !launchCanvas) return;
+        const w = $("launchStage").clientWidth;
+        const h = $("launchStage").clientHeight;
+        const g2 = launchG;
+        g2.clearRect(0, 0, w, h);
+
+        // Timeline:
+        // 0.0 - 3.0s : Main engine ignition, thrust buildup & hold-down clamp release
+        // 3.0 - 7.5s : Stage 1 + Side Boosters ascent through atmosphere & Max-Q shockwave
+        // 7.5s       : MECO & Stage 1 / Booster Separation + Stage 2 Ignition
+        // 10.5s      : Payload Fairing Separation (clam-shell halves split)
+        // 13.5s      : Stage 2 Separation & Kick Stage (Stage 3) Ignition
+        // 16.5s      : Kick Stage Burnout & Spacecraft Payload Separation + Solar Array Deployment
+        // 19.0s      : Orbital Insertion Complete
+
+        const flightT = Math.max(0, elapsed - 3.0);
+        const spaceRatio = Math.min(1, flightT / 10.0);
+
+        // Camera micro-vibration during atmospheric ascent
+        g2.save();
+        if (elapsed > 1.2 && elapsed < 7.5) {
+          const shakeAmp = elapsed < 3.0 ? 2.2 : Math.max(0.4, 2.5 - flightT * 0.4);
+          g2.translate((Math.random() - 0.5) * shakeAmp, (Math.random() - 0.5) * shakeAmp);
+        }
+
+        // Dynamic sky gradient transitioning from coastal twilight into deep orbit space
+        const sky = g2.createLinearGradient(0, 0, 0, h);
+        sky.addColorStop(0, spaceRatio > 0.55 ? "#01040a" : "#041122");
+        sky.addColorStop(0.5, spaceRatio > 0.65 ? "#051224" : "#133b59");
+        sky.addColorStop(1, spaceRatio > 0.75 ? "#0b2239" : "#4b6f84");
+        g2.fillStyle = sky;
+        g2.fillRect(0, 0, w, h);
+
+        // Twinkling stars fading in brighter as altitude increases
+        const starAlpha = 0.25 + spaceRatio * 0.75;
+        for (let i = 0; i < 150; i++) {
+          const x = (i * 137.3 + flightT * (i % 3) * 1.6) % w;
+          const y = (i * 79.1 + flightT * 15) % h;
+          const twinkle = 0.65 + 0.35 * Math.sin(elapsed * 4 + i);
+          g2.fillStyle = "rgba(225, 246, 255, " + (starAlpha * twinkle * (0.3 + (i % 5) * 0.14)) + ")";
+          g2.fillRect(x, y, i % 9 === 0 ? 2.2 : 1.2, i % 9 === 0 ? 2.2 : 1.2);
+        }
+
+        // Earth curvature horizon & atmospheric glow rising into view during orbital phase
+        if (spaceRatio > 0.32) {
+          const curveProgress = (spaceRatio - 0.32) / 0.68;
+          const earthY = h + 530 - curveProgress * 450;
+          const earthGrad = g2.createRadialGradient(w * 0.5, earthY, 420, w * 0.5, earthY, 645);
+          earthGrad.addColorStop(0, "#0e4672");
+          earthGrad.addColorStop(0.86, "#1e78b4");
+          earthGrad.addColorStop(0.95, "#7ce8ff");
+          earthGrad.addColorStop(1, "rgba(95, 243, 255, 0)");
+          g2.fillStyle = earthGrad;
+          g2.beginPath();
+          g2.arc(w * 0.5, earthY, 625, 0, Math.PI * 2);
+          g2.fill();
+        }
+
+        // Launch pad & service tower descending out of frame after liftoff
+        const padDrop = Math.pow(flightT, 1.75) * 35;
+        if (padDrop < h * 0.65) {
+          g2.save();
+          g2.translate(0, padDrop);
+          g2.fillStyle = "#07131d";
+          g2.fillRect(0, h * 0.84, w, h * 0.25);
+          g2.fillStyle = "#1d455c";
+          g2.fillRect(0, h * 0.82, w, 6);
+
+          // Flame trench & concrete pad with glowing exhaust blast light
+          if (elapsed > 0.5) {
+            const blastGlow = g2.createRadialGradient(w * 0.5, h * 0.82, 10, w * 0.5, h * 0.82, 220);
+            blastGlow.addColorStop(0, "rgba(255, 200, 110, 0.55)");
+            blastGlow.addColorStop(1, "rgba(255, 110, 30, 0)");
+            g2.fillStyle = blastGlow;
+            g2.fillRect(w * 0.5 - 220, h * 0.68, 440, 140);
+          }
+          g2.fillStyle = "#2b4252";
+          g2.fillRect(w * 0.5 - 72, h * 0.80, 144, 16);
+
+          // Umbilical service tower & retracting swing arms
+          const retract = elapsed > 1.2 ? Math.min(26, (elapsed - 1.2) * 20) : 0;
+          g2.strokeStyle = "#8da3ae";
+          g2.lineWidth = 5;
+          g2.beginPath();
+          g2.moveTo(w * 0.5 + 84, h * 0.82);
+          g2.lineTo(w * 0.5 + 84, h * 0.22);
+          g2.moveTo(w * 0.5 + 84, h * 0.35);
+          g2.lineTo(w * 0.5 + 36 + retract, h * 0.35);
+          g2.moveTo(w * 0.5 + 84, h * 0.52);
+          g2.lineTo(w * 0.5 + 38 + retract, h * 0.52);
+          g2.moveTo(w * 0.5 + 84, h * 0.68);
+          g2.lineTo(w * 0.5 + 42 + retract, h * 0.68);
+          g2.stroke();
+          g2.restore();
+        }
+
+        // Volumetric billowing pad smoke & flame trench exhaust
+        if (elapsed > 1.0 && padDrop < h * 0.6) {
+          const smokeAlpha = Math.max(0.05, 0.48 - flightT * 0.065);
+          for (let i = 0; i < 34; i++) {
+            const spread = 1 + Math.min(3.8, elapsed * 0.35);
+            const sx = w * 0.5 + Math.sin(i * 6.7 + elapsed * 1.5) * (24 + i * 3.3) * spread;
+            const sy = h * 0.82 + padDrop - 8 + (i % 7) * 9 + Math.cos(elapsed * 2 + i) * 7;
+            const r = 12 + (i % 6) * 6 + Math.min(30, elapsed * 2.6);
+            g2.fillStyle = "rgba(220, 232, 238, " + (smokeAlpha * (0.4 + (i % 4) * 0.14)) + ")";
+            g2.beginPath();
+            g2.arc(sx, sy, r, 0, Math.PI * 2);
+            g2.fill();
+          }
+        }
+
+        // Rocket vertical climb position & gravity turn pitch
+        const climb = Math.min(h * 0.33, Math.pow(flightT, 1.35) * 27);
+        const cx = w * 0.5 + Math.max(0, flightT - 3.5) * 5.5;
+        const base = h * 0.79 - climb;
+        const pitchAngle = Math.min(0.46, Math.max(0, (flightT - 2.0) * 0.036));
+        const heavyVehicle = state.rocket === "heavy";
+        const scale = heavyVehicle ? 1.08 : 0.94;
+
+        // Multi-stage separation timers
+        const stage1SepT = Math.max(0, elapsed - 7.5);
+        const fairingSepT = Math.max(0, elapsed - 10.5);
+        const stage2SepT = Math.max(0, elapsed - 13.5);
+        const kickSepT = Math.max(0, elapsed - 16.5);
+
+        // Max-Q aerodynamic vapor cone around nose (elapsed 4.8s - 6.6s)
+        if (elapsed > 4.8 && elapsed < 6.6) {
+          const maxQAlpha = Math.sin(((elapsed - 4.8) / 1.8) * Math.PI) * 0.32;
+          g2.save();
+          g2.translate(cx, base);
+          g2.rotate(pitchAngle);
+          g2.strokeStyle = "rgba(210, 245, 255, " + maxQAlpha + ")";
+          g2.lineWidth = 2;
+          g2.beginPath();
+          g2.moveTo(-42, -96);
+          g2.quadraticCurveTo(0, -148, 42, -96);
+          g2.stroke();
+          g2.restore();
+        }
+
+        // Pyrotechnic separation flash rings & cold-gas RCS thrusters
+        [stage1SepT, fairingSepT, stage2SepT, kickSepT].forEach((sepT, idx) => {
+          if (sepT > 0 && sepT < 0.9) {
+            const flashAlpha = 1 - sepT / 0.9;
+            const yOffset = -55 - idx * 24;
+            g2.strokeStyle = "rgba(255, 225, 130, " + flashAlpha + ")";
+            g2.lineWidth = 2.5;
+            g2.beginPath();
+            g2.arc(cx, base + yOffset, 16 + sepT * 95, 0, Math.PI * 2);
+            g2.stroke();
+
+            [-1, 1].forEach((dir) => {
+              g2.fillStyle = "rgba(210, 245, 255, " + (flashAlpha * 0.55) + ")";
+              g2.beginPath();
+              g2.arc(cx + dir * (20 + sepT * 54), base + yOffset + sepT * 16, 6 + sepT * 13, 0, Math.PI * 2);
+              g2.fill();
+            });
+          }
+        });
+
+        g2.save();
+        g2.translate(cx, base);
+        g2.rotate(pitchAngle);
+        g2.scale(scale, scale);
+
+        // --- 1. STAGE 1 & SIDE BOOSTERS (Detaches at elapsed >= 7.5s with retro-rocket firing) ---
+        g2.save();
+        if (stage1SepT > 0) {
+          g2.translate(-stage1SepT * 15, stage1SepT * 88);
+          g2.rotate(-stage1SepT * 0.24);
+        }
+        if (stage1SepT < 4.5) {
+          // Stage 1 exhaust plume
+          if (elapsed > 1.2 && stage1SepT === 0) {
+            const flicker = Math.sin(elapsed * 24) * 11;
+            const plume = 122 + Math.min(82, flightT * 8) + flicker;
+            const flame = g2.createLinearGradient(0, 12, 0, plume);
+            flame.addColorStop(0, "#ffffff");
+            flame.addColorStop(0.2, "#ffe07d");
+            flame.addColorStop(0.58, "#ff731c");
+            flame.addColorStop(1, "rgba(255, 65, 15, 0)");
+            g2.fillStyle = flame;
+            g2.beginPath();
+            g2.moveTo(-18, 12);
+            g2.quadraticCurveTo(-28, plume * 0.5, -5, plume);
+            g2.quadraticCurveTo(0, plume + 20 + flicker, 5, plume);
+            g2.quadraticCurveTo(28, plume * 0.5, 18, 12);
+            g2.closePath();
+            g2.fill();
+
+            // Shock diamonds
+            for (let d = 1; d <= 3; d++) {
+              g2.fillStyle = "rgba(255, 250, 225, " + (0.75 - d * 0.18) + ")";
+              g2.beginPath();
+              g2.ellipse(0, 14 + d * 22, 6 - d, 9 - d, 0, 0, Math.PI * 2);
+              g2.fill();
+            }
+          }
+
+          // Stage 1 retro-rocket firing upon separation
+          if (stage1SepT > 0 && stage1SepT < 1.3) {
+            g2.fillStyle = "rgba(255, 195, 95, 0.85)";
+            g2.beginPath();
+            g2.moveTo(-16, -54);
+            g2.lineTo(-28, -68);
+            g2.lineTo(-12, -58);
+            g2.moveTo(16, -54);
+            g2.lineTo(28, -68);
+            g2.lineTo(12, -58);
+            g2.fill();
+          }
+
+          // Stage 1 Core Tank & Grid Fins
+          const s1Grad = g2.createLinearGradient(-20, 0, 20, 0);
+          s1Grad.addColorStop(0, "#4c677a");
+          s1Grad.addColorStop(0.3, "#e4eef5");
+          s1Grad.addColorStop(0.7, "#9bb1c0");
+          s1Grad.addColorStop(1, "#324b5e");
+          g2.fillStyle = s1Grad;
+          g2.fillRect(-18, -58, 36, 70);
+          g2.fillStyle = "#1c394f";
+          g2.fillRect(-18, -58, 36, 6);
+          g2.fillRect(-18, 4, 36, 8);
+          // Grid fins
+          g2.fillStyle = "#627d91";
+          g2.fillRect(-23, -52, 5, 8);
+          g2.fillRect(18, -52, 5, 8);
+
+          g2.fillStyle = "#143852";
+          g2.font = "bold 9px Orbitron";
+          g2.textAlign = "center";
+          g2.fillText(heavyVehicle ? "ARES-H" : "ARES-M", 0, -24);
+
+          const bells = heavyVehicle ? [-11, 0, 11] : [-7, 7];
+          bells.forEach((bx) => {
+            g2.fillStyle = "#486073";
+            g2.beginPath();
+            g2.moveTo(bx - 5, 12);
+            g2.lineTo(bx - 8, 22);
+            g2.lineTo(bx + 8, 22);
+            g2.lineTo(bx + 5, 12);
+            g2.closePath();
+            g2.fill();
+          });
+
+          // Side Boosters
+          [-1, 1].forEach((side) => {
+            g2.save();
+            if (stage1SepT > 0) {
+              g2.translate(side * stage1SepT * 30, stage1SepT * 38);
+              g2.rotate(side * stage1SepT * 0.36);
+            }
+            const bx = side * 24;
+            g2.fillStyle = "#b5c7d4";
+            g2.fillRect(bx - 6, -46, 12, 58);
+            g2.beginPath();
+            g2.moveTo(bx - 6, -46);
+            g2.lineTo(bx, -58);
+            g2.lineTo(bx + 6, -46);
+            g2.closePath();
+            g2.fill();
+            if (elapsed > 1.2 && stage1SepT === 0) {
+              g2.fillStyle = "#ffb84d";
+              g2.beginPath();
+              g2.moveTo(bx - 5, 12);
+              g2.lineTo(bx, 58 + Math.sin(elapsed * 21) * 7);
+              g2.lineTo(bx + 5, 12);
+              g2.fill();
+            }
+            g2.restore();
+          });
+        }
+        g2.restore();
+
+        // --- 2. STAGE 2 UPPER STAGE (Ignites at 7.5s, separates at 13.5s) ---
+        g2.save();
+        if (stage2SepT > 0) {
+          g2.translate(-stage2SepT * 16, stage2SepT * 78);
+          g2.rotate(-stage2SepT * 0.2);
+        }
+        if (stage2SepT < 4.2) {
+          if (stage1SepT > 0.15 && stage2SepT === 0) {
+            const s2Plume = 80 + Math.sin(elapsed * 20) * 8;
+            const s2Flame = g2.createLinearGradient(0, -56, 0, -56 + s2Plume);
+            s2Flame.addColorStop(0, "#ffffff");
+            s2Flame.addColorStop(0.35, "#7be8ff");
+            s2Flame.addColorStop(0.75, "#3b82f6");
+            s2Flame.addColorStop(1, "rgba(59, 130, 246, 0)");
+            g2.fillStyle = s2Flame;
+            g2.beginPath();
+            g2.moveTo(-12, -56);
+            g2.quadraticCurveTo(-22, -56 + s2Plume * 0.6, 0, -56 + s2Plume);
+            g2.quadraticCurveTo(22, -56 + s2Plume * 0.6, 12, -56);
+            g2.closePath();
+            g2.fill();
+          }
+
+          g2.fillStyle = "#dce8f0";
+          g2.fillRect(-15, -96, 30, 38);
+          g2.fillStyle = "#2b4c65";
+          g2.fillRect(-15, -96, 30, 5);
+          g2.fillStyle = "#526c80";
+          g2.beginPath();
+          g2.moveTo(-6, -58);
+          g2.lineTo(-9, -49);
+          g2.lineTo(9, -49);
+          g2.lineTo(6, -58);
+          g2.closePath();
+          g2.fill();
+        }
+        g2.restore();
+
+        // --- 3. STAGE 3 / ORBITAL KICK STAGE (Ignites at 13.5s, separates from payload at 16.5s) ---
+        g2.save();
+        if (kickSepT > 0) {
+          g2.translate(-kickSepT * 14, kickSepT * 62);
+          g2.rotate(-kickSepT * 0.16);
+        }
+        if (kickSepT < 3.5) {
+          // Kick stage apogee motor burn (13.5s - 16.5s)
+          if (stage2SepT > 0.15 && kickSepT === 0) {
+            const kickPlume = 54 + Math.sin(elapsed * 26) * 6;
+            const kFlame = g2.createLinearGradient(0, -96, 0, -96 + kickPlume);
+            kFlame.addColorStop(0, "#ffffff");
+            kFlame.addColorStop(0.4, "#ffb347");
+            kFlame.addColorStop(1, "rgba(255, 120, 40, 0)");
+            g2.fillStyle = kFlame;
+            g2.beginPath();
+            g2.moveTo(-7, -96);
+            g2.quadraticCurveTo(-12, -96 + kickPlume * 0.6, 0, -96 + kickPlume);
+            g2.quadraticCurveTo(12, -96 + kickPlume * 0.6, 7, -96);
+            g2.closePath();
+            g2.fill();
+          }
+
+          g2.fillStyle = "#9ab2c2";
+          g2.fillRect(-11, -112, 22, 16);
+          g2.fillStyle = "#365369";
+          g2.fillRect(-11, -112, 22, 3);
+        }
+        g2.restore();
+
+        // --- 4. SPACECRAFT PAYLOAD (Exposed at 10.5s, separates from Kick Stage & deploys solar wings at 16.5s) ---
+        g2.save();
+        const payloadFloatY = kickSepT > 0 ? -Math.min(18, kickSepT * 9) : 0;
+        g2.translate(0, -126 + payloadFloatY);
+        g2.fillStyle = "#f2b84b";
+        g2.fillRect(-9, -14, 18, 20);
+        g2.fillStyle = "#5ff3ff";
+        g2.beginPath();
+        g2.arc(0, -18, 6, Math.PI, 0);
+        g2.fill();
+
+        // Deployable Solar Arrays & High-Gain Dish after final payload separation
+        if (kickSepT > 0.15) {
+          const wingSpan = Math.min(42, (kickSepT - 0.15) * 34);
+          g2.fillStyle = "#1d6fb8";
+          g2.strokeStyle = "#5ff3ff";
+          g2.lineWidth = 1.2;
+          g2.fillRect(-9 - wingSpan, -9, wingSpan, 10);
+          g2.strokeRect(-9 - wingSpan, -9, wingSpan, 10);
+          g2.fillRect(9, -9, wingSpan, 10);
+          g2.strokeRect(9, -9, wingSpan, 10);
+        }
+        g2.restore();
+
+        // --- 5. PAYLOAD FAIRING HALVES (Splits open at elapsed >= 10.5s) ---
+        if (fairingSepT < 3.5) {
+          [-1, 1].forEach((side) => {
+            g2.save();
+            if (fairingSepT > 0) {
+              g2.translate(side * fairingSepT * 44, fairingSepT * 38);
+              g2.rotate(side * fairingSepT * 0.56);
+            }
+            g2.fillStyle = side === -1 ? "#e6f1f8" : "#c4d7e3";
+            g2.beginPath();
+            g2.moveTo(0, -96);
+            g2.lineTo(side * 16, -96);
+            g2.lineTo(side * 16, -134);
+            g2.quadraticCurveTo(side * 12, -158, 0, -168);
+            g2.closePath();
+            g2.fill();
+            g2.restore();
+          });
+        }
+
+        g2.restore();
+        g2.restore();
+
+        // Live Ascent Telemetry HUD at bottom of canvas
+        const altKm = Math.round(Math.pow(flightT, 1.62) * 4.2);
+        const velKmh = Math.round(Math.min(27610, Math.pow(flightT, 1.52) * 395));
+        const downrangeKm = Math.round(Math.pow(flightT, 1.48) * 10.4);
+        const hudW = Math.min(480, w - 28);
+        g2.fillStyle = "rgba(4, 16, 28, 0.85)";
+        g2.fillRect(14, h - 54, hudW, 40);
+        g2.strokeStyle = "rgba(95, 243, 255, 0.4)";
+        g2.strokeRect(14, h - 54, hudW, 40);
+        g2.fillStyle = "#5ff3ff";
+        g2.font = "600 12px Orbitron";
+        g2.textAlign = "left";
+        g2.fillText(
+          "T+" + flightT.toFixed(1) + "s  |  ALT: " + altKm + " KM  |  VEL: " + velKmh.toLocaleString() + " KM/H  |  DR: " + downrangeKm + " KM",
+          22,
+          h - 30
+        );
+      }
+
+      function playCountdownCue(count) {
+        // Synthesized console beep + clear spoken countdown callout
+        playLaunchBeep(count <= 3 ? 920 : 580, count <= 3 ? 0.24 : 0.16);
+        try {
+          if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(
+              count === 0 ? "Ignition. Liftoff!" : String(count)
+            );
+            utter.rate = count === 0 ? 1.05 : 1.15;
+            utter.pitch = count <= 3 ? 1.08 : 0.98;
+            utter.volume = 0.95;
+            window.speechSynthesis.speak(utter);
+          }
+        } catch (_) {}
+      }
+
+      function playLaunchBeep(freq = 660, duration = 0.16) {
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          launchCtx = launchCtx || new Ctx();
+          if (launchCtx.state === "suspended") launchCtx.resume();
+          const o = launchCtx.createOscillator(), gain = launchCtx.createGain();
+          o.type = "sine";
+          o.frequency.value = freq;
+          gain.gain.setValueAtTime(0.0001, launchCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.14, launchCtx.currentTime + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, launchCtx.currentTime + duration);
+          o.connect(gain);
+          gain.connect(launchCtx.destination);
+          o.start();
+          o.stop(launchCtx.currentTime + duration + 0.02);
+        } catch (_) {}
+      }
+
+      function playIgnitionRumble() {
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          launchCtx = launchCtx || new Ctx();
+          if (launchCtx.state === "suspended") launchCtx.resume();
+          const bufferSize = launchCtx.sampleRate * 2.2;
+          const buffer = launchCtx.createBuffer(1, bufferSize, launchCtx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (launchCtx.sampleRate * 1.4));
+          }
+          const noise = launchCtx.createBufferSource();
+          noise.buffer = buffer;
+          const filter = launchCtx.createBiquadFilter();
+          filter.type = "lowpass";
+          filter.frequency.value = 140;
+          const gain = launchCtx.createGain();
+          gain.gain.setValueAtTime(0.28, launchCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, launchCtx.currentTime + 2.2);
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(launchCtx.destination);
+          noise.start();
+        } catch (_) {}
+      }
+
+      function updateSepPill(activeIndex) {
+        for (let i = 0; i < 5; i++) {
+          const pill = $("sepPill" + i);
+          if (!pill) continue;
+          pill.classList.toggle("done", i < activeIndex);
+          pill.classList.toggle("active", i === activeIndex);
+        }
+      }
+
+      function beginLaunchSequence() {
+        if (!weatherVerified || !finalTestingPassed) {
+          $("finalTestFeedback").className = "ops-feedback warn";
+          $("finalTestFeedback").textContent = "Verify launch weather and complete Final Testing Level before liftoff.";
+          return;
+        }
+        $("launchButton").disabled = true;
+        $("launchVehicleLabel").textContent = rocketData[state.rocket].name + " · " + missionData[state.mission].name.toUpperCase();
+        $("launchStage").classList.add("show");
+        $("launchStage").scrollIntoView({ behavior: "smooth", block: "center" });
+        $("status").textContent = "COUNTDOWN";
+        resizeLaunchCanvas();
+        drawLaunchScene(0);
+        updateSepPill(0);
+
+        let count = 10;
+        $("launchStatus").textContent = "ALL SYSTEMS NOMINAL · T−10";
+        $("launchStageBadge").textContent = "TERMINAL COUNTDOWN · ON PAD";
+        playCountdownCue(10);
+
+        const timer = setInterval(() => {
+          count--;
+          if (count > 0) {
+            $("launchStatus").textContent = "ALL SYSTEMS NOMINAL · T−" + count;
+            if (count === 3) $("launchStageBadge").textContent = "UMBILICAL RETRACT · T−3";
+            playCountdownCue(count);
+          } else {
+            clearInterval(timer);
+            $("launchStatus").textContent = "MAIN ENGINE IGNITION · LIFTOFF!";
+            $("launchStageBadge").textContent = "STAGE 1 BURN · MAX-Q ASCENT";
+            updateSepPill(0);
+            playCountdownCue(0);
+            playIgnitionRumble();
+            $("launchStage").classList.add("liftoff");
+            launchStart = performance.now();
+            animateLaunch();
+          }
+        }, 1000);
+      }
+
+      let lastAnnouncedStage = -1;
+      function animateLaunch() {
+        const elapsed = (performance.now() - launchStart) / 1000;
+        drawLaunchScene(elapsed);
+
+        if (elapsed >= 7.5 && elapsed < 10.5) {
+          $("launchStatus").textContent = "MECO · STAGE 1 & BOOSTER SEPARATION · STAGE 2 IGNITION";
+          $("launchStageBadge").textContent = "STAGE 1 SEPARATED · STAGE 2 BURN";
+          updateSepPill(1);
+          if (lastAnnouncedStage < 1) { lastAnnouncedStage = 1; playLaunchBeep(740, 0.14); }
+        } else if (elapsed >= 10.5 && elapsed < 13.5) {
+          $("launchStatus").textContent = "PAYLOAD FAIRING JETTISON · SPACECRAFT EXPOSED";
+          $("launchStageBadge").textContent = "FAIRING SEPARATION CONFIRMED";
+          updateSepPill(2);
+          if (lastAnnouncedStage < 2) { lastAnnouncedStage = 2; playLaunchBeep(780, 0.14); }
+        } else if (elapsed >= 13.5 && elapsed < 16.5) {
+          $("launchStatus").textContent = "SECO · STAGE 2 SEPARATION · KICK STAGE IGNITION";
+          $("launchStageBadge").textContent = "STAGE 2 SEPARATED · ORBITAL TRANSFER BURN";
+          updateSepPill(3);
+          if (lastAnnouncedStage < 3) { lastAnnouncedStage = 3; playLaunchBeep(820, 0.14); }
+        } else if (elapsed >= 16.5 && elapsed < 19.0) {
+          $("launchStatus").textContent = "KICK STAGE SEPARATION · PAYLOAD DEPLOYED & SOLAR ARRAYS OPEN";
+          $("launchStageBadge").textContent = "SPACECRAFT SEPARATION · ORBITAL INSERTION";
+          updateSepPill(4);
+          if (lastAnnouncedStage < 4) { lastAnnouncedStage = 4; playLaunchBeep(880, 0.18); }
+        }
+
+        if (elapsed < 19.0) {
+          launchAnimationId = requestAnimationFrame(animateLaunch);
+        } else {
+          $("launchStage").classList.remove("liftoff");
+          updateSepPill(5);
+          $("launchDone").style.display = "block";
+          $("liveStatusCta").style.display = "block";
+          $("launchStatus").textContent = missionData[state.mission].name + " · Orbital insertion confirmed";
+          $("launchStageBadge").textContent = "ALL 4 SEPARATIONS COMPLETE · NOMINAL ORBIT";
+          $("status").textContent = "LAUNCH SUCCESSFUL";
+          playLaunchBeep(1046, 0.35);
+
+          $("missionDebrief").style.display = "block";
+          $("debriefRocket").textContent = rocketData[state.rocket].name;
+          $("debriefMass").textContent = mass().toLocaleString() + " kg";
+          const score = Math.min(100, 68 + opsCleared.filter(Boolean).length * 8 + (weatherVerified ? 4 : 0) + (finalTestingPassed ? 4 : 0));
+          $("debriefScore").textContent = score + " / 100";
+          $("debriefText").textContent = missionData[state.mission].name + " launched successfully on " +
+            currentLaunchDate + " from Sriharikota aboard " + rocketData[state.rocket].name +
+            ". Stage 1 separation, payload fairing jettison, Stage 2 separation, and Kick Stage spacecraft deployment completed nominally.";
+
+          document.querySelectorAll(".step").forEach((step, i) => {
+            step.classList.toggle("done", i < 5);
+            step.classList.toggle("active", i === 5);
+          });
+        }
+      }
+
+      window.addEventListener("resize", () => {
+        if (state.screen === 4) resizeLaunchCanvas();
+      });
+
+      function restartCampaign() {
+        if (launchAnimationId) cancelAnimationFrame(launchAnimationId);
+        closeLiveStatus();
+        location.reload();
+      }
+
+      /* Embedded 3D Live Orbital Navigation & Telemetry Engine (works in blob: and standalone HTML) */
+      let navLoopId = 0, navActive = false, navState = null;
+
+      function openLiveStatus() {
+        const overlay = $("navOverlay");
+        overlay.classList.add("open");
+        navActive = true;
+        initEmbeddedNavigation();
+      }
+
+      function closeLiveStatus() {
+        navActive = false;
+        if (navLoopId) cancelAnimationFrame(navLoopId);
+        $("navOverlay").classList.remove("open");
+        $("liveStatusModal").classList.remove("open");
+      }
+
+      function initEmbeddedNavigation() {
+        if (navLoopId) cancelAnimationFrame(navLoopId);
+        const canvas = $("navGL");
+        const V = THREE.Vector3;
+        const u0 = new V(0, 1, 0);
+        const EARTH_C = new V(0, -620, -150);
+        const eR = new V(0, 620, 150).normalize();
+        const eX = new V(1, 0, 0);
+        const orbitPt = (d) => {
+          const t = (d * Math.PI) / 180;
+          return EARTH_C.clone().addScaledVector(eR, 640 * Math.cos(t)).addScaledVector(eX, 640 * Math.sin(t));
+        };
+
+        const NAV_MISSIONS = {
+          lunar: {
+            name: "Lunar Survey",
+            days: 6,
+            body: { k: "moon", p: [200, 40, -5200], r: 150 },
+            wps: [
+              ["Trans-lunar injection", new V(0, 60, -900)],
+              ["Mid-course correction", new V(140, 90, -2700)],
+              ["Lunar approach", new V(120, 260, -4500)],
+              ["Polar orbit insertion", new V(200, 290, -5200)]
+            ]
+          },
+          earth: {
+            name: "Earth Observer",
+            days: 30,
+            body: { k: "moon", p: [900, 200, -3000], r: 150 },
+            wps: [
+              ["Ascent insertion", orbitPt(60)],
+              ["Orbit sector 2", orbitPt(120)],
+              ["Ground-track pass", orbitPt(180)],
+              ["Orbit sector 4", orbitPt(240)],
+              ["Downlink window", orbitPt(300)],
+              ["Orbit closed", orbitPt(355)]
+            ]
+          },
+          mars: {
+            name: "Mars Pathfinder",
+            days: 210,
+            body: { k: "mars", p: [-300, -230, -7800], r: 220 },
+            wps: [
+              ["Trans-Mars injection", new V(0, 40, -1400)],
+              ["Mid-course correction 1", new V(-260, 120, -3400)],
+              ["Deep-space cruise", new V(-420, -60, -5200)],
+              ["Mid-course correction 2", new V(-360, 40, -6600)],
+              ["Mars orbit insertion", new V(-300, 20, -7600)]
+            ]
+          }
+        };
+
+        const curM = NAV_MISSIONS[state.mission] || NAV_MISSIONS.lunar;
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight, false);
+
+        const scene = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.5, 20000);
+
+        scene.add(new THREE.AmbientLight(0x1a2547, 1.3));
+        const sun = new THREE.DirectionalLight(0xfff2dd, 1.7);
+        sun.position.set(1, 0.6, 0.8);
+        scene.add(sun);
+
+        // Starfield
+        const starPts = [];
+        for (let i = 0; i < 2800; i++) {
+          const v = new V(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(9000);
+          starPts.push(v.x, v.y, v.z);
+        }
+        const starGeo = new THREE.BufferGeometry();
+        starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPts, 3));
+        const bgGroup = new THREE.Group();
+        bgGroup.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 2, sizeAttenuation: false, color: 0xffffff })));
+        scene.add(bgGroup);
+
+        function makePlanetTex(base, cols, n, rm) {
+          const c = document.createElement("canvas");
+          c.width = 512;
+          c.height = 256;
+          const x = c.getContext("2d");
+          x.fillStyle = base;
+          x.fillRect(0, 0, 512, 256);
+          for (let i = 0; i < n; i++) {
+            x.fillStyle = cols[i % cols.length];
+            x.globalAlpha = 0.25 + Math.random() * 0.5;
+            x.beginPath();
+            x.arc(Math.random() * 512, Math.random() * 256, 3 + Math.random() * rm, 0, Math.PI * 2);
+            x.fill();
+          }
+          x.globalAlpha = 1;
+          return new THREE.CanvasTexture(c);
+        }
+
+        const earth = new THREE.Mesh(
+          new THREE.SphereGeometry(500, 48, 32),
+          new THREE.MeshStandardMaterial({ map: makePlanetTex("#1d4ed8", ["#2f7d3c", "#3a8f4a", "#e8f1ff", "#1e40af"], 220, 40), roughness: 1 })
+        );
+        earth.position.copy(EARTH_C);
+        scene.add(earth);
+
+        const atm = new THREE.Mesh(
+          new THREE.SphereGeometry(520, 36, 24),
+          new THREE.MeshBasicMaterial({ color: 0x4aa8ff, side: THREE.BackSide, transparent: true, opacity: 0.22 })
+        );
+        atm.position.copy(EARTH_C);
+        scene.add(atm);
+
+        const targetBody = new THREE.Mesh(
+          new THREE.SphereGeometry(curM.body.r, 40, 28),
+          new THREE.MeshStandardMaterial({
+            map: curM.body.k === "mars"
+              ? makePlanetTex("#b4532a", ["#8a3d1e", "#d98a5a", "#6e2f18"], 240, 26)
+              : makePlanetTex("#8a8a8f", ["#6d6d72", "#a5a5aa", "#5a5a5f"], 240, 14),
+            roughness: 1
+          })
+        );
+        targetBody.position.set(...curM.body.p);
+        scene.add(targetBody);
+
+        const pts = curM.wps.map((w) => w[1].clone());
+        const curve = new THREE.CatmullRomCurve3([new V(0, 0, 0), ...pts]);
+        const pathLine = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(curve.getPoints(160)),
+          new THREE.LineBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.65 })
+        );
+        scene.add(pathLine);
+
+        const wpm = new THREE.Mesh(
+          new THREE.TorusGeometry(16, 0.8, 8, 48),
+          new THREE.MeshBasicMaterial({ color: 0xfbbf24 })
+        );
+        wpm.position.copy(pts[0]);
+        scene.add(wpm);
+
+        // Setup HUD bars
+        $("navBars").innerHTML = [
+          ["FUEL", "nbf"],
+          ["OXYGEN", "nbo"],
+          ["ENERGY", "nbe"],
+          ["HULL", "nbh"],
+          ["SHIELD", "nbs"]
+        ].map(([l, id]) => `<div class="nav-bar"><span>${l}</span><i><b id="${id}"></b></i></div>`).join("");
+
+        const setNavBar = (id, v) => {
+          const el = $(id);
+          if (!el) return;
+          el.style.width = Math.max(0, Math.min(100, v)) + "%";
+          el.style.background = v < 20 ? "#f87171" : v < 45 ? "#fbbf24" : "#34d399";
+        };
+
+        let wi = 0;
+        let tgt = pts[0].clone();
+        let vel = pts[0].clone().normalize().multiplyScalar(28);
+        let fuel = Math.max(60, val("fuel"));
+        let o2 = 100;
+        let ene = Math.min(100, 75 + val("solar"));
+        let hull = 100;
+        let sh = 100;
+        let dist0 = 0;
+        let auto = true;
+        const keys = {};
+        let mx = 0, my = 0;
+
+        const onKeyDown = (e) => {
+          if (!navActive) return;
+          const k = e.key.toLowerCase();
+          keys[k] = 1;
+          if (k === "p") auto = !auto;
+          if (k === "escape") closeLiveStatus();
+        };
+        const onKeyUp = (e) => { keys[e.key.toLowerCase()] = 0; };
+        const onMouseMove = (e) => {
+          mx = (e.clientX / window.innerWidth) * 2 - 1;
+          my = (e.clientY / window.innerHeight) * 2 - 1;
+        };
+        window.addEventListener("keydown", onKeyDown);
+        window.addEventListener("keyup", onKeyUp);
+        window.addEventListener("mousemove", onMouseMove);
+
+        cam.position.set(0, 0, 0);
+        cam.lookAt(tgt);
+
+        let lastT = performance.now();
+        const startT = lastT;
+
+        function navTick(now) {
+          if (!navActive) {
+            window.removeEventListener("keydown", onKeyDown);
+            window.removeEventListener("keyup", onKeyUp);
+            window.removeEventListener("mousemove", onMouseMove);
+            renderer.dispose();
+            return;
+          }
+          navLoopId = requestAnimationFrame(navTick);
+          const dt = Math.min(0.05, (now - lastT) / 1000);
+          lastT = now;
+
+          earth.rotation.y += dt * 0.025;
+          targetBody.rotation.y += dt * 0.015;
+
+          const q = cam.quaternion;
+          const f = new V(0, 0, -1).applyQuaternion(q);
+          const r = new V(1, 0, 0).applyQuaternion(q);
+          const u = new V(0, 1, 0).applyQuaternion(q);
+          const dz = (v) => (Math.abs(v) < 0.12 ? 0 : v);
+
+          cam.rotateY(-dz(mx) * 1.4 * dt);
+          cam.rotateX(-dz(my) * 1.1 * dt);
+          if (keys.q) cam.rotateZ(1.2 * dt);
+          if (keys.e) cam.rotateZ(-1.2 * dt);
+
+          const acc = new V();
+          if (keys.w) acc.add(f);
+          if (keys.s) acc.sub(f);
+          if (keys.d) acc.add(r);
+          if (keys.a) acc.sub(r);
+          if (keys[" "]) acc.add(u);
+          if (keys.c || keys.control) acc.sub(u);
+          if (acc.lengthSq() > 0) auto = false;
+
+          const dd = cam.position.distanceTo(tgt);
+          const last = wi === pts.length - 1;
+
+          if (auto) {
+            const qt = new THREE.Quaternion().setFromRotationMatrix(
+              new THREE.Matrix4().lookAt(cam.position, tgt, u0)
+            );
+            cam.quaternion.slerp(qt, Math.min(1, dt * 1.8));
+            const desiredSpd = last && dd < 320 ? 18 : 68;
+            vel.addScaledVector(f, (desiredSpd - vel.dot(f)) * Math.min(1, dt * 1.8));
+            fuel = Math.max(15, fuel - 0.12 * dt);
+          }
+
+          vel.addScaledVector(acc.multiplyScalar(keys.shift ? 65 : 30), dt);
+          vel.multiplyScalar(Math.pow(0.993, dt * 60));
+          vel.clampLength(0, 180);
+          cam.position.addScaledVector(vel, dt);
+          bgGroup.position.copy(cam.position);
+
+          const sp = vel.length();
+          dist0 += sp * dt;
+
+          if (dd < 45) {
+            if (!last) {
+              wi++;
+              tgt.copy(pts[wi]);
+              wpm.position.copy(tgt);
+            } else {
+              // Loop gently in target orbit once destination is reached
+              vel.multiplyScalar(0.95);
+            }
+          }
+
+          wpm.lookAt(cam.position);
+          const elapsedSec = Math.floor((now - startT) / 1000);
+          const hh = String(Math.floor(elapsedSec / 3600)).padStart(2, "0");
+          const mm = String(Math.floor(elapsedSec / 60) % 60).padStart(2, "0");
+          const ss = String(elapsedSec % 60).padStart(2, "0");
+
+          setNavBar("nbf", fuel);
+          setNavBar("nbo", o2);
+          setNavBar("nbe", ene);
+          setNavBar("nbh", hull);
+          setNavBar("nbs", sh);
+
+          $("navSpd").innerHTML =
+            `<b>${sp.toFixed(0)}</b> m/s<br>TO WAYPOINT ${dd.toFixed(0)} m<br>ALTITUDE ${val("altitude")} KM<br>` +
+            `${auto ? '<span style="color:#fbbf24">AUTOPILOT ENGAGED (P)</span>' : '<span style="color:#34d399">MANUAL FLIGHT (WASD)</span>'}`;
+
+          $("navObj").innerHTML =
+            `<h2>${curM.name.toUpperCase()} · LIVE TRACK</h2>` +
+            `Vehicle: <b>${rocketData[state.rocket].name}</b><br>` +
+            `Waypoint ${wi + 1}/${pts.length}: ${curM.wps[wi][0]}<br>` +
+            `Orbit: ${$("orbit").value.toUpperCase()} · ${val("altitude")} km<br>` +
+            `<small style="color:#8ba8b8">Mouse: steer · WASD: thrust · P: autopilot · Esc: close</small>`;
+
+          const row = (l, v, col = "") =>
+            `<div class="r"><span>${l}</span><b style="${col ? "color:" + col : ""}">${v}</b></div>`;
+          $("navTel").innerHTML =
+            `<div class="th"><h2>LIVE TELEMETRY</h2><span class="ch" style="color:#34d399">NOMINAL</span></div>` +
+            row("MET", `00:${hh}:${mm}:${ss}`) +
+            row("VELOCITY", sp.toFixed(1) + " m/s") +
+            row("DISTANCE FLOWN", (dist0 / 1000).toFixed(2) + " km") +
+            row("STAGE SEP 1–4", "CONFIRMED", "#34d399") +
+            row("SOLAR ARRAY", val("solar") + " kW", "#38bdf8") +
+            row("CABIN PRESSURE", "101.3 kPa") +
+            row("DOWNLINK", "-78 dBm · LOCK", "#34d399") +
+            `<button id="navCloseBtn" onclick="closeLiveStatus()">← RETURN TO MISSION DEBRIEF</button>`;
+
+          // Waypoint reticle projection
+          const projPt = tgt.clone().project(cam);
+          const wpEl = $("navWp");
+          if (projPt.z < 1) {
+            wpEl.style.left = Math.max(50, Math.min(window.innerWidth - 50, ((projPt.x + 1) / 2) * window.innerWidth)) + "px";
+            wpEl.style.top = Math.max(50, Math.min(window.innerHeight - 190, ((1 - projPt.y) / 2) * window.innerHeight)) + "px";
+            wpEl.innerHTML = "◇<br>" + dd.toFixed(0) + " m";
+          } else {
+            wpEl.style.left = "50%";
+            wpEl.style.top = "26%";
+            wpEl.innerHTML = "▼ WAYPOINT BEHIND";
+          }
+
+          // Radar
+          const rx = $("navRad").getContext("2d");
+          rx.clearRect(0, 0, 136, 136);
+          rx.strokeStyle = "rgba(56,189,248,0.45)";
+          rx.beginPath();
+          rx.arc(68, 68, 65, 0, Math.PI * 2);
+          rx.moveTo(68, 3);
+          rx.lineTo(68, 133);
+          rx.moveTo(3, 68);
+          rx.lineTo(133, 68);
+          rx.stroke();
+          const iq = cam.quaternion.clone().invert();
+          const loc = tgt.clone().sub(cam.position).applyQuaternion(iq);
+          let X = (loc.x * 65) / 500;
+          let Y = (loc.z * 65) / 500;
+          const m = Math.hypot(X, Y);
+          if (m > 60) {
+            X *= 60 / m;
+            Y *= 60 / m;
+          }
+          rx.fillStyle = "#fbbf24";
+          rx.fillRect(68 + X - 3, 68 + Y - 3, 6, 6);
+          rx.fillStyle = "#38bdf8";
+          rx.fillRect(65, 65, 6, 6);
+
+          renderer.render(scene, cam);
+        }
+
+        navLoopId = requestAnimationFrame(navTick);
+      }
+      function closeLiveStatus() {
+        navActive = false;
+        if (navLoopId) cancelAnimationFrame(navLoopId);
+        $("navOverlay").classList.remove("open");
+        $("liveStatusModal").classList.remove("open");
+      }
+
+      /* MediaPipe Hand Tracking */
+      const preview = $("preview"),
+        pg = preview.getContext("2d"),
+        video = $("cameraVideo");
+      let pinching = false,
+        lastSpread = 0;
+      function onHands(results) {
+        pg.save();
+        pg.scale(-1, 1);
+        pg.drawImage(results.image, -190, 0, 190, 140);
+        pg.restore();
+        const L = results.multiHandLandmarks || [];
+        if (!L.length) {
+          lastSpread = 0;
+          return;
+        }
+        handSeen = performance.now();
+        const h = L[0],
+          d = Math.hypot(h[4].x - h[8].x, h[4].y - h[8].y);
+        pinching = pinching ? d < 0.08 : d < 0.05;
+        inp.x += (1 - h[8].x) * W - inp.x;
+        inp.y += (h[8].y * H - inp.y) * 0.5;
+        inp.down = pinching;
+        if (L.length > 1) {
+          const s = Math.hypot(L[0][8].x - L[1][8].x, L[0][8].y - L[1][8].y);
+          if (lastSpread)
+            zoom = Math.max(0.5, Math.min(2.4, zoom * (s / lastSpread)));
+          lastSpread = s;
+        } else lastSpread = 0;
+        pg.fillStyle = "#5ff3ff";
+        L.forEach((m) =>
+          m.forEach((p) =>
+            pg.fillRect((1 - p.x) * 190 - 1, p.y * 140 - 1, 3, 3),
+          ),
+        );
+      }
+      $("enableHands").onclick = async () => {
+        if (!window.Hands || !window.Camera) {
+          $("cameraStatus").textContent =
+            "Tracking library unavailable. Check internet connection.";
+          return;
+        }
+        try {
+          const hands = new Hands({
+            locateFile: (f) =>
+              `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}`,
+          });
+          hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.5,
+          });
+          hands.onResults(onHands);
+          $("cameraStatus").textContent = "Starting camera…";
+          const camera = new Camera(video, {
+            onFrame: async () => {
+              await hands.send({ image: video });
+            },
+            width: 640,
+            height: 480,
+          });
+          await camera.start();
+          preview.style.display = "block";
+          $("cameraStatus").textContent = "✓ Hand tracking active";
+          $("enableHands").style.display = "none";
+        } catch (e) {
+          $("cameraStatus").textContent =
+            "Camera unavailable. Allow camera access or use mouse controls.";
+        }
+      };
+
+      updatePlan();
+      updateVehicle();
+    </script>
+  </body>
+</html>

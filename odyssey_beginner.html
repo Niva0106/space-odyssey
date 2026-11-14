@@ -1,0 +1,5073 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Space Odyssey – Beginner Space Academy</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #050b18;
+        --pn: rgba(9, 22, 46, 0.8);
+        --pn2: #10264a;
+        --ln: #1d3a66;
+        --cy: #35d0ff;
+        --tx: #eef5ff;
+        --mu: #93aacb;
+        --or: #ff9a2e;
+        --ye: #ffd24a;
+        --gr: #3ddc84;
+        --rd: #ff5252;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #030814;
+        color: var(--tx);
+        font:
+          16px/1.5 "Segoe UI",
+          system-ui,
+          sans-serif;
+      }
+      header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--ln);
+        background: #071226cc;
+        position: sticky;
+        top: env(safe-area-inset-top, 0px);
+        z-index: 5;
+        backdrop-filter: blur(6px);
+      }
+      header b {
+        letter-spacing: 0.14em;
+        color: var(--cy);
+        margin-right: auto;
+      }
+      button,
+      .btn {
+        background: var(--pn2);
+        color: var(--tx);
+        border: 1px solid var(--ln);
+        border-radius: 8px;
+        padding: 9px 14px;
+        font: inherit;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: var(--cy);
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 2px solid var(--ye);
+        outline-offset: 2px;
+      }
+      button.p {
+        background: linear-gradient(#ffb13d, var(--or));
+        color: #1a0f00;
+        border: 0;
+        font-weight: 700;
+      }
+      button.big {
+        font-size: 1.15rem;
+        padding: 14px 26px;
+      }
+      button.on {
+        border-color: var(--cy);
+        background: #0f3a63;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 18px 16px 50px;
+      }
+      h1 {
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        line-height: 1.05;
+        margin: 0.2em 0;
+      }
+      h2 {
+        margin: 0.2em 0 0.5em;
+      }
+      h3 {
+        margin: 0.6em 0 0.2em;
+        color: var(--cy);
+        font-size: 1rem;
+      }
+      .pn {
+        background: var(--pn);
+        border: 1px solid var(--ln);
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .mu {
+        color: var(--mu);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 20px;
+        align-items: center;
+        min-height: 70vh;
+      }
+      .grid5 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        background: var(--pn);
+        border: 1px solid var(--ln);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .card canvas,
+      .card .ph {
+        width: 100%;
+        height: 150px;
+        display: block;
+        background: #020610;
+      }
+      .ph {
+        display: grid;
+        place-items: center;
+        color: var(--mu);
+      }
+      .card div.b {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+      .card ul {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 0.88rem;
+        color: var(--mu);
+      }
+      .bar {
+        height: 8px;
+        background: #06101f;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, var(--cy), var(--gr));
+      }
+      .bd {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--ln);
+        font-size: 0.85rem;
+        margin: 3px;
+      }
+      .bd.g {
+        border-color: var(--ye);
+        color: var(--ye);
+      }
+      .bg2 {
+        display: grid;
+        grid-template-columns: 230px minmax(0, 1fr) 310px;
+        gap: 12px;
+      }
+      @media (max-width: 1000px) {
+        .bg2,
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          min-height: 0;
+        }
+      }
+      .li {
+        display: flex;
+        justify-content: space-between;
+        gap: 6px;
+        width: 100%;
+        text-align: left;
+        margin: 0 0 5px;
+        padding: 8px 10px;
+      }
+      .li.ok {
+        border-color: var(--gr);
+      }
+      .li.sel {
+        background: #0f3a63;
+        border-color: var(--cy);
+      }
+      canvas.m {
+        width: 100%;
+        max-width: 100%;
+        background: #020610;
+        border: 1px solid var(--ln);
+        border-radius: 10px;
+        touch-action: none;
+      }
+      .ok {
+        color: var(--gr);
+      }
+      .bad {
+        color: var(--rd);
+      }
+      .wr {
+        color: var(--or);
+      }
+      .fact {
+        border-left: 3px solid var(--ye);
+        padding-left: 10px;
+        color: #ffe9a8;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      td {
+        padding: 2px 0;
+      }
+      td:last-child {
+        text-align: right;
+      }
+      .ov {
+        position: fixed;
+        inset: 0;
+        background: #000a;
+        display: grid;
+        place-items: center;
+        z-index: 20;
+        padding: 12px;
+      }
+      .ov[hidden] {
+        display: none;
+      }
+      .dl {
+        font-size: 1.15rem;
+        background: #0b1a33;
+        border: 1px solid var(--cy);
+        border-radius: 14px;
+        max-width: 780px;
+        width: 100%;
+        max-height: 90vh;
+        overflow: auto;
+        padding: 18px;
+      }
+      .big-t {
+        font-size: 3rem;
+        text-align: center;
+        color: var(--ye);
+        font-weight: 700;
+        min-height: 1.3em;
+      }
+      .tel {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+        margin: 10px 0;
+      }
+      .tel div {
+        background: #06101f;
+        border: 1px solid var(--ln);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+      .tel b {
+        display: block;
+        font-size: 1.2rem;
+        color: var(--cy);
+      }
+      input[type="range"] {
+        width: 100%;
+      }
+      input,
+      select {
+        background: #06101f;
+        color: var(--tx);
+        border: 1px solid var(--ln);
+        border-radius: 8px;
+        padding: 8px;
+        font: inherit;
+      }
+      .tst {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #14391f;
+        border: 1px solid var(--gr);
+        padding: 10px 18px;
+        border-radius: 10px;
+        z-index: 30;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          scroll-behavior: auto !important;
+        }
+      }
+      #msg {
+        font-size: 1.05rem;
+      }
+      .dl h2 {
+        font-size: 1.9rem;
+      }
+      .dl button {
+        font-size: 1.1rem;
+        padding: 12px 20px;
+      }
+      .pn,
+      .card {
+        backdrop-filter: blur(5px);
+      }
+      .stt {
+        padding: 5px 14px;
+        border-radius: 20px;
+        color: #021;
+        font-weight: 700;
+        background: #35d0ff;
+      }
+      .mt {
+        position: relative;
+        height: 12px;
+        border-radius: 8px;
+        margin: 8px 0;
+        background: linear-gradient(
+          90deg,
+          #ff5252 0 43%,
+          #ff9a2e 43% 58%,
+          #3ddc84 58% 67%,
+          #ffd24a 67% 88%,
+          #35d0ff 88%
+        );
+      }
+      .mt i {
+        position: absolute;
+        top: -4px;
+        width: 6px;
+        height: 20px;
+        background: #fff;
+        border-radius: 3px;
+        left: 0;
+      }
+      .cdn {
+        font-size: 9rem;
+        font-weight: 800;
+        color: #ffd24a;
+        text-shadow: 0 0 40px #ff9a2e;
+        animation: pop 0.7s ease-out;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(2.4);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .wn {
+        animation: pop 0.6s ease-out;
+        box-shadow: 0 0 80px #ffd24a66;
+      }
+      .rk {
+        display: inline-block;
+        animation: fly 2.2s ease-in-out infinite;
+      }
+      @keyframes fly {
+        0%,
+        100% {
+          transform: translateY(8px) rotate(-8deg);
+        }
+        50% {
+          transform: translateY(-14px) rotate(8deg);
+        }
+      }
+      .stars {
+        font-size: 3rem;
+        color: #ffd24a;
+        letter-spacing: 8px;
+        animation: pop 1s ease-out;
+      }
+      .pad button {
+        width: 64px;
+        height: 54px;
+        font-size: 1.3rem;
+        touch-action: none;
+      }
+      .ob p {
+        margin: 3px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <b>SPACE ODYSSEY · BEGINNER ACADEMY</b
+      ><button id="hH">Academy home</button
+      ><button id="hA">Ask the Scientist</button
+      ><button id="hS">Sound: on</button>
+    </header>
+    <main id="v"></main>
+    <div class="ov" id="ov" hidden>
+      <div class="dl" id="dl" role="dialog" aria-live="polite"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+      const $ = (q) => document.querySelector(q),
+        INR_PER_USD = 95,
+        fm = (n) => "$" + Math.round(n / INR_PER_USD).toLocaleString("en-US");
+      let S;
+      try {
+        S = JSON.parse(localStorage.getItem("soBeg"));
+      } catch (e) {}
+      S = Object.assign(
+        {
+          nick: "",
+          age: 1,
+          diff: 1,
+          entered: 0,
+          asm: 0,
+          launched: 0,
+          orb: {},
+          asks: 0,
+          qok: 0,
+          qn: 0,
+          b: {},
+          mute: 0,
+        },
+        S || {},
+      );
+      const save = () => {
+        try {
+          localStorage.setItem("soBeg", JSON.stringify(S));
+        } catch (e) {}
+      };
+      const pk = (a) => (Array.isArray(a) ? a[S.age === 0 ? 0 : 1] : a);
+      const AGES = [
+          "Young Explorers (6–9)",
+          "Junior Scientists (10–13)",
+          "Future Engineers (14–17)",
+        ],
+        DIFF = ["Relaxed", "Standard", "Challenging"],
+        BUD = [1200000, 1000000, 900000];
+      const BD = {
+        rocket: ["Junior Rocket Engineer", "Complete the rocket assembly"],
+        launch: ["First Successful Launch", "Launch and deploy a payload"],
+        orbit: ["Orbit Master", "Finish all 4 orbit challenges"],
+        astro: ["Young Astronomer", "Ask the Scientist 3 questions"],
+        sat: ["Satellite Scientist", "Build and deploy a satellite"],
+        dock: ["Space Docking Expert", "Dock safely with the station"],
+        rover: [
+          "Planetary Explorer",
+          "Collect 3 samples and send data to Earth",
+        ],
+      };
+      function award(k) {
+        if (S.b[k]) return;
+        S.b[k] = 1;
+        save();
+        const t = document.createElement("div");
+        t.className = "tst";
+        t.textContent = "🏅 Achievement unlocked: " + BD[k][0];
+        document.body.append(t);
+        setTimeout(() => t.remove(), 3500);
+      }
+      /* ---------- audio ---------- */
+      let AC, NZ;
+      function snd(t) {
+        if (S.mute) return;
+        try {
+          AC = AC || new AudioContext();
+          if (t === "b") {
+            const o = AC.createOscillator(),
+              g = AC.createGain();
+            o.frequency.value = 660;
+            g.gain.value = 0.05;
+            o.connect(g).connect(AC.destination);
+            o.start();
+            o.stop(AC.currentTime + 0.12);
+          }
+          if (t === "r") {
+            const b = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate),
+              d = b.getChannelData(0);
+            for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+            NZ = AC.createBufferSource();
+            NZ.buffer = b;
+            NZ.loop = true;
+            const f = AC.createBiquadFilter();
+            f.frequency.value = 260;
+            const g = AC.createGain();
+            g.gain.value = 0.4;
+            NZ.connect(f).connect(g).connect(AC.destination);
+            NZ.start();
+          }
+          if (t === "x" && NZ) {
+            NZ.stop();
+            NZ = null;
+          }
+        } catch (e) {}
+      }
+      function say(t) {
+        if (S.mute || !window.speechSynthesis) return;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(new SpeechSynthesisUtterance(t));
+      }
+      /* background music: synthesised loop, no external file; mute silences it */
+      let BGG = null,
+        BGT = null,
+        BGI = 0;
+      const BGN = [
+        261.6, 329.6, 392, 523.3, 440, 392, 329.6, 293.7, 261.6, 329.6, 392,
+        523.3, 587.3, 523.3, 440, 392,
+      ];
+      function bgmStart() {
+        try {
+          AC = AC || new AudioContext();
+          if (AC.state === "suspended") AC.resume();
+          if (BGT) return;
+          BGG = AC.createGain();
+          BGG.gain.value = S.mute ? 0 : 0.07;
+          BGG.connect(AC.destination);
+          const p = AC.createOscillator(),
+            pf = AC.createBiquadFilter(),
+            pg = AC.createGain();
+          p.type = "sawtooth";
+          p.frequency.value = 130.8;
+          pf.type = "lowpass";
+          pf.frequency.value = 380;
+          pg.gain.value = 0.22;
+          p.connect(pf).connect(pg).connect(BGG);
+          p.start();
+          BGT = setInterval(() => {
+            if (!AC) return;
+            if (AC.state !== "running") {
+              AC.resume && AC.resume().catch(() => {});
+              return;
+            }
+            const t = AC.currentTime + 0.02,
+              o = AC.createOscillator(),
+              g = AC.createGain();
+            o.type = "triangle";
+            o.frequency.value = BGN[BGI++ % BGN.length];
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.exponentialRampToValueAtTime(0.5, t + 0.03);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.34);
+            o.connect(g).connect(BGG);
+            o.start(t);
+            o.stop(t + 0.36);
+          }, 300);
+        } catch (e) {}
+      }
+      function bgmSync() {
+        if (BGG && AC)
+          BGG.gain.setTargetAtTime(S.mute ? 0 : 0.07, AC.currentTime, 0.05);
+      }
+      /* keep audio alive: browsers suspend audio contexts, so wake them on any interaction */
+      const wakeAudio = () => {
+        if (AC && AC.state !== "running") AC.resume().catch(() => {});
+      };
+      ["pointerdown", "keydown", "touchstart", "click"].forEach((ev) =>
+        document.addEventListener(ev, wakeAudio, { passive: true }),
+      );
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) wakeAudio();
+      });
+      setInterval(() => {
+        if (!S.mute) wakeAudio();
+      }, 3000);
+      /* dramatic launch effects */
+      function nz(n, d, v, f1, f2) {
+        const b = AC.createBuffer(1, AC.sampleRate * d, AC.sampleRate),
+          c = b.getChannelData(0);
+        for (let i = 0; i < c.length; i++) c[i] = Math.random() * 2 - 1;
+        const s = AC.createBufferSource(),
+          f = AC.createBiquadFilter(),
+          g = AC.createGain();
+        s.buffer = b;
+        f.type = "bandpass";
+        f.frequency.setValueAtTime(f1, n);
+        if (f2) f.frequency.exponentialRampToValueAtTime(f2, n + d * 0.85);
+        g.gain.setValueAtTime(0.0001, n);
+        g.gain.exponentialRampToValueAtTime(v, n + Math.min(0.8, d * 0.3));
+        g.gain.exponentialRampToValueAtTime(0.001, n + d);
+        s.connect(f).connect(g).connect(AC.destination);
+        s.start(n);
+        s.stop(n + d);
+      }
+      function sfx(t) {
+        if (S.mute) return;
+        try {
+          AC = AC || new AudioContext();
+          const n = AC.currentTime;
+          if (t === "tk") {
+            const o = AC.createOscillator(),
+              g = AC.createGain();
+            o.type = "square";
+            o.frequency.setValueAtTime(900, n);
+            o.frequency.exponentialRampToValueAtTime(1400, n + 0.1);
+            g.gain.setValueAtTime(0.12, n);
+            g.gain.exponentialRampToValueAtTime(0.001, n + 0.18);
+            o.connect(g).connect(AC.destination);
+            o.start(n);
+            o.stop(n + 0.2);
+          } else if (t === "bm") {
+            const o = AC.createOscillator(),
+              g = AC.createGain();
+            o.type = "sine";
+            o.frequency.setValueAtTime(120, n);
+            o.frequency.exponentialRampToValueAtTime(28, n + 1.4);
+            g.gain.setValueAtTime(0.9, n);
+            g.gain.exponentialRampToValueAtTime(0.001, n + 1.6);
+            o.connect(g).connect(AC.destination);
+            o.start(n);
+            o.stop(n + 1.7);
+            nz(n, 1.3, 0.5, 500);
+          } else if (t === "sw") {
+            nz(n, 3, 0.8, 300, 3000);
+          }
+        } catch (e) {}
+      }
+      function sp(t) {
+        if (S.mute || !window.speechSynthesis) return;
+        const u = new SpeechSynthesisUtterance(t);
+        u.rate = 0.95;
+        u.pitch = 1.1;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
+      /* full-screen 10-to-1 countdown read aloud, then ignition and liftoff */
+      function liftCount() {
+        clearInterval(CD);
+        document.querySelectorAll(".lo").forEach((x) => x.remove());
+        const o = document.createElement("div");
+        o.className = "ov lo";
+        o.style.cssText =
+          "position:fixed;inset:0;display:grid;place-items:start center;padding-top:12vh;pointer-events:none;z-index:26;background:none";
+        document.body.append(o);
+        const sh = (h, c, sz) => {
+          o.innerHTML = `<div class="cdn" style="color:${c};font-size:${sz};text-shadow:0 0 40px ${c}">${h}</div>`;
+        };
+        let n = 10;
+        sh(n, "#ffd24a", "12rem");
+        $("#cd").textContent = "T-10";
+        sfx("tk");
+        sp("10");
+        CD = setInterval(() => {
+          n--;
+          if (n > 0) {
+            sh(n, "#ffd24a", "12rem");
+            $("#cd").textContent = "T-" + n;
+            sfx("tk");
+            sp(String(n));
+            if (F && n <= 3) F.fl = 0.2;
+          } else if (n === 0) {
+            sh("IGNITION", "#ff9a2e", "6rem");
+            $("#cd").textContent = "IGNITION";
+            if (F) F.ign = 1;
+            sfx("bm");
+            snd("r");
+            sp("Ignition");
+          } else {
+            clearInterval(CD);
+            sh("LIFTOFF!", "#3ddc84", "6rem");
+            $("#cd").textContent = "LIFTOFF!";
+            if (F) F.live = 1;
+            sfx("sw");
+            sp("Liftoff!");
+            if ($("#ps")) $("#ps").disabled = false;
+            setTimeout(() => o.remove(), 1800);
+          }
+        }, 1000);
+      }
+      /* microphone: asked once, when the player enters the academy */
+      let MICP = null,
+        MICSTREAM = null;
+      async function micCheck() {
+        if (MICSTREAM && MICSTREAM.active) return true;
+        try {
+          if (navigator.permissions) {
+            const p = await navigator.permissions.query({ name: "microphone" });
+            if (p.state === "granted") {
+              S.micOk = 1;
+              save();
+              return true;
+            }
+          }
+        } catch (e) {}
+        try {
+          MICSTREAM = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+          });
+          S.micOk = 1;
+          save();
+          return true;
+        } catch (e) {
+          window.MICERR = e.name + (e.message ? ": " + e.message : "");
+          S.micOk = 0;
+          save();
+          return false;
+        }
+      }
+      function askMicOnce() {
+        if (MICP) return MICP;
+        if (S.micAsk) return (MICP = Promise.resolve(!!S.micOk));
+        S.micAsk = 1;
+        save();
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+          return (MICP = Promise.resolve(false));
+        return (MICP = navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((s) => {
+            MICSTREAM = s;
+            S.micOk = 1;
+            save();
+            return true;
+          })
+          .catch(() => {
+            S.micOk = 0;
+            save();
+            return false;
+          }));
+      }
+      /* ---------- data ---------- */
+      const Z = [
+        { n: "Nose section", a: 0, b: 80 },
+        { n: "Payload bay", a: 80, b: 190 },
+        { n: "Avionics bay", a: 190, b: 250 },
+        { n: "Tank section", a: 250, b: 380 },
+        { n: "Engine section", a: 380, b: 450 },
+      ];
+      // id,name,zone,cost(k INR),kg,cat,simple,deeper,fact,where
+      const C = [
+        [
+          "nose",
+          "Nose cone",
+          0,
+          40,
+          120,
+          "Structure",
+          "The pointed tip. It slices through air and protects the rocket.",
+          "A smooth pointed (ogive) shape reduces aerodynamic drag, the air resistance that wastes energy at high speed, and shields what is behind it.",
+          "Engineers test nose shapes in wind tunnels.",
+          "On the very top, in front of the payload fairing.",
+        ],
+        [
+          "payload",
+          "Payload",
+          1,
+          120,
+          300,
+          "Payload",
+          "The cargo: a satellite or science instruments. It is the reason for the mission.",
+          "Designers work backwards from payload mass to decide how big the tanks and engines must be. Only a few percent of lift-off mass is payload.",
+          "Most of a rocket at lift-off is propellant.",
+          "Inside the payload bay, wrapped by the fairing.",
+        ],
+        [
+          "fairing",
+          "Payload fairing",
+          1,
+          60,
+          250,
+          "Structure",
+          "A two-part cover that protects the payload while flying through thick air.",
+          "Air pressure, noise, vibration and heating can harm delicate satellites. Above most of the atmosphere the fairing splits and falls away, shedding mass.",
+          "Some fairing halves are recovered by parachute and reused.",
+          "Wraps around the payload bay, below the nose cone.",
+        ],
+        [
+          "body",
+          "Rocket body (fuselage)",
+          3,
+          90,
+          800,
+          "Structure",
+          "The main tube that holds everything together.",
+          "The body carries thrust and aerodynamic loads. It must be strong yet very light, so thin aluminium alloys and composites are used.",
+          "Tank walls can be only a few millimetres thick.",
+          "Runs from the payload bay down through the tank section.",
+        ],
+        [
+          "fuel",
+          "Fuel tank",
+          3,
+          110,
+          150,
+          "Propulsion",
+          "Stores the fuel that burns to make the rocket go.",
+          "Fuel (such as kerosene or liquid hydrogen) burns with oxidizer to make hot gas. The gas leaving the nozzle creates thrust.",
+          "Liquid hydrogen is kept below −253 °C.",
+          "Inside the tank section, feeding the engine below.",
+        ],
+        [
+          "oxidizer",
+          "Oxidizer tank",
+          3,
+          100,
+          130,
+          "Propulsion",
+          "Lets the fuel burn, even where there is no air.",
+          "Burning needs oxygen. Space has none, so rockets carry their own oxidizer, such as liquid oxygen, instead of relying on the atmosphere.",
+          "Liquid oxygen is stored at about −183 °C.",
+          "Next to the fuel tank in the tank section.",
+        ],
+        [
+          "engine",
+          "Rocket engine",
+          4,
+          180,
+          320,
+          "Propulsion",
+          "The engine makes thrust, the push that lifts the rocket.",
+          "It burns propellant and throws hot gas down at high speed. By Newton's Third Law the gas pushes the rocket up with an equal, opposite force. Thrust must exceed weight to lift off.",
+          "A big rocket engine can pump propellant faster than a swimming pool drains.",
+          "At the bottom, directly under the tanks that feed it.",
+        ],
+        [
+          "nozzle",
+          "Nozzle",
+          4,
+          70,
+          90,
+          "Propulsion",
+          "The bell at the bottom that shapes and speeds up the exhaust.",
+          "The nozzle narrows then widens, accelerating hot gas to several times the speed of sound, which increases thrust.",
+          "Vacuum-optimised nozzles are much larger than sea-level ones.",
+          "Attached to the bottom of the engine.",
+        ],
+        [
+          "stagesep",
+          "Stage separation mechanism",
+          2,
+          60,
+          60,
+          "Structure",
+          "A ring that lets the empty lower part drop off.",
+          "Empty tanks and engines are dead weight. Releasing them (with bolts or springs) lets the lighter rocket accelerate more for the same thrust.",
+          "Multi-stage rockets exist because of the rocket equation.",
+          "In the joint between the lower and upper stage.",
+        ],
+        [
+          "guidance",
+          "Guidance & control system",
+          2,
+          110,
+          25,
+          "Avionics",
+          "The brain that keeps the rocket pointing the right way.",
+          "Gyroscopes and accelerometers sense motion; the onboard computer compares it with the plan and steers using the engine or fins.",
+          "Corrections happen many times each second.",
+          "In the avionics bay above the tanks.",
+        ],
+        [
+          "nav",
+          "Navigation system",
+          2,
+          80,
+          15,
+          "Avionics",
+          "Works out where the rocket is and where it's heading.",
+          "Navigation combines inertial sensors, satellite positioning and ground tracking to estimate position and velocity. Guidance steers; navigation measures.",
+          "Both systems run on the same flight computer.",
+          "In the avionics bay beside guidance.",
+        ],
+        [
+          "fins",
+          "Stabilising fins",
+          4,
+          30,
+          60,
+          "Structure",
+          "Fins keep the rocket steady, like feathers on an arrow.",
+          "In air, fins keep the centre of pressure behind the centre of mass so the rocket flies straight. In vacuum there is no air, so fins do nothing; engine tilting or thrusters steer instead.",
+          "Many orbital rockets have no fins at all.",
+          "On the sides at the bottom, in the engine section.",
+        ],
+        [
+          "electrical",
+          "Electrical & communication system",
+          2,
+          70,
+          45,
+          "Avionics",
+          "Batteries and wires that power the computers and radios.",
+          "It powers computers, sensors and valves, and sends telemetry (data) to mission control while receiving commands.",
+          "Telemetry can carry thousands of readings per second.",
+          "In the avionics bay.",
+        ],
+        [
+          "recovery",
+          "Landing / recovery system",
+          2,
+          50,
+          70,
+          "Avionics",
+          "Parachutes that help parts come back down gently.",
+          "Parachutes, grid fins or landing legs slow reusable stages or capsules so they can be recovered, reducing the cost of the next flight.",
+          "Some boosters land upright on their own.",
+          "Packed in the avionics bay of the lower stage.",
+        ],
+      ];
+      const CI = {};
+      C.forEach((c, i) => (CI[c[0]] = i));
+      const RULES = [
+        [
+          "engine",
+          "nozzle",
+          "An engine with no nozzle wastes most of its thrust: the nozzle speeds up the exhaust.",
+        ],
+        [
+          "nozzle",
+          "engine",
+          "A nozzle with no engine has no hot gas to shape.",
+        ],
+        [
+          "fuel",
+          "oxidizer",
+          "Fuel without oxidizer cannot burn in space, where there is no air.",
+        ],
+        ["oxidizer", "fuel", "Oxidizer with no fuel has nothing to burn."],
+        ["engine", "fuel", "The engine needs a fuel tank above it to feed it."],
+        [
+          "payload",
+          "fairing",
+          "An unprotected payload would face the full force of air and vibration.",
+        ],
+        ["fins", "body", "Fins need a body to be attached to."],
+        [
+          "guidance",
+          "nav",
+          "Guidance needs navigation data to know where the rocket is.",
+        ],
+      ];
+      /* ---------- rocket renderer ---------- */
+      function drawR(c, cx, top, sc, o) {
+        const I = o.inst,
+          mode = o.mode || "int",
+          ex = o.ex || 0,
+          P = o.parts || { s1: 1, fair: 1, pay: 1 },
+          W = 28,
+          ext = mode === "ext",
+          Zs = o.zones || (P.s1 ? [0, 1, 2, 3, 4] : [0, 1, 2]);
+        const off = [-70, -40, -15, 10, 40].map((v) => v * ex);
+        c.save();
+        c.translate(cx, top);
+        c.scale(sc, sc);
+        c.lineWidth = (1.3 / sc) * sc;
+        const M = c.createLinearGradient(-W, 0, W, 0);
+        M.addColorStop(0, "#6d7d97");
+        M.addColorStop(0.4, "#f4f8ff");
+        M.addColorStop(1, "#5c6a82");
+        const EXT = [
+          "nose",
+          "fairing",
+          "body",
+          "engine",
+          "nozzle",
+          "fins",
+          "stagesep",
+        ];
+        const sty = (id, f) => {
+          const ok = I[id];
+          c.setLineDash(ok ? [] : [4, 3]);
+          c.fillStyle = ok ? f : "rgba(53,208,255,.05)";
+          c.strokeStyle = ok ? "#d5e6ff" : "rgba(53,208,255,.65)";
+        };
+        const part = (id, z, fn, f) => {
+          if (
+            !Zs.includes(z) ||
+            (ext && !EXT.includes(id) && !(id === "payload" && !P.fair))
+          )
+            return;
+          if (!o.ghost && !I[id]) return;
+          c.save();
+          c.translate(0, off[z]);
+          sty(id, f);
+          c.beginPath();
+          fn();
+          c.fill();
+          c.stroke();
+          c.restore();
+        };
+        const R = (x, y, w, h, r = 3) =>
+          c.roundRect ? c.roundRect(x, y, w, h, r) : c.rect(x, y, w, h);
+        if (o.hl != null && Zs.includes(o.hl)) {
+          c.save();
+          c.setLineDash([]);
+          c.strokeStyle = "#ff9a2e";
+          c.lineWidth = 2;
+          c.strokeRect(
+            -W - 14,
+            Z[o.hl].a + off[o.hl],
+            2 * W + 28,
+            Z[o.hl].b - Z[o.hl].a,
+          );
+          c.restore();
+        }
+        part(
+          "fins",
+          4,
+          () => {
+            c.moveTo(-W, 375);
+            c.lineTo(-W - 32, 445);
+            c.lineTo(-W, 430);
+            c.closePath();
+            c.moveTo(W, 375);
+            c.lineTo(W + 32, 445);
+            c.lineTo(W, 430);
+            c.closePath();
+          },
+          "#8fa0ba",
+        );
+        for (const [z, a, b] of [
+          [1, 80, 190],
+          [2, 190, 250],
+          [3, 250, 380],
+        ]) {
+          if (!Zs.includes(z) || (!o.ghost && !I.body)) continue;
+          c.save();
+          c.translate(0, off[z]);
+          sty("body", ext ? M : "rgba(150,170,200,.16)");
+          if (ext && I.body) c.fillStyle = M;
+          c.beginPath();
+          R(-W, a, 2 * W, b - a, 2);
+          c.fill();
+          c.stroke();
+          c.restore();
+        }
+        part("fuel", 3, () => R(-22, 258, 44, 56, 10), "#ff9a2e");
+        part("oxidizer", 3, () => R(-22, 318, 44, 56, 10), "#4aa8ff");
+        part("stagesep", 2, () => c.rect(-W - 2, 243, 2 * W + 4, 7), "#ff5252");
+        part("guidance", 2, () => R(-20, 196, 17, 13), "#3d7bff");
+        part("nav", 2, () => R(3, 196, 17, 13), "#35d0ff");
+        part("electrical", 2, () => R(-20, 214, 40, 11), "#ffd24a");
+        part("recovery", 2, () => R(-14, 229, 28, 10), "#ff9a2e");
+        part("engine", 4, () => R(-15, 383, 30, 22), "#7b879b");
+        part(
+          "nozzle",
+          4,
+          () => {
+            c.moveTo(-12, 405);
+            c.lineTo(12, 405);
+            c.lineTo(26, 448);
+            c.lineTo(-26, 448);
+            c.closePath();
+          },
+          "#3a4558",
+        );
+        if (!P.s1 && !o.zones) {
+          c.fillStyle = "#3a4558";
+          c.strokeStyle = "#d5e6ff";
+          c.beginPath();
+          c.moveTo(-10, 250);
+          c.lineTo(10, 250);
+          c.lineTo(17, 268);
+          c.lineTo(-17, 268);
+          c.closePath();
+          c.fill();
+          c.stroke();
+        }
+        part(
+          "payload",
+          1,
+          () => {
+            c.rect(-13, 118, 26, 34);
+            c.rect(-34, 128, 18, 14);
+            c.rect(16, 128, 18, 14);
+          },
+          "#e8b93c",
+        );
+        if (P.fair && Zs.includes(1) && (o.ghost || I.fairing)) {
+          const fs = o.fs || 0;
+          if (fs < 1.3) {
+            c.save();
+            c.translate(0, off[1]);
+            c.globalAlpha = Math.max(0, 1 - fs * 0.8);
+            for (const sd of [-1, 1]) {
+              c.save();
+              c.translate(sd * fs * 70, 0);
+              c.rotate(sd * fs * 0.5);
+              sty("fairing", ext ? M : "rgba(210,225,250,.2)");
+              c.beginPath();
+              c.moveTo(0, 84);
+              c.lineTo(sd * W, 84);
+              c.lineTo(sd * W, 190);
+              c.lineTo(0, 190);
+              c.closePath();
+              c.fill();
+              c.stroke();
+              c.restore();
+            }
+            c.restore();
+          }
+        }
+        part(
+          "nose",
+          0,
+          () => {
+            c.moveTo(-W, 80);
+            c.quadraticCurveTo(-W + 2, 28, 0, 0);
+            c.quadraticCurveTo(W - 2, 28, W, 80);
+            c.closePath();
+          },
+          M,
+        );
+        if (o.flame) {
+          const L = o.flame * (70 + Math.random() * 30),
+            y = P.s1 ? 448 : 268,
+            w = P.s1 ? 24 : 14,
+            g = c.createLinearGradient(0, y, 0, y + L);
+          g.addColorStop(0, "#fff7c0");
+          g.addColorStop(0.3, "#ffb13d");
+          g.addColorStop(1, "rgba(255,80,20,0)");
+          c.fillStyle = g;
+          c.beginPath();
+          c.moveTo(-w, y);
+          c.lineTo(w, y);
+          c.lineTo(Math.random() * 6 - 3, y + L);
+          c.closePath();
+          c.fill();
+        }
+        if (ex > 0.4) {
+          c.fillStyle = "#93aacb";
+          c.font = "11px sans-serif";
+          c.setLineDash([2, 3]);
+          Z.forEach((z, i) => {
+            const y = (z.a + z.b) / 2 + off[i];
+            c.beginPath();
+            c.moveTo(W + 4, y);
+            c.lineTo(W + 30, y);
+            c.stroke();
+            c.fillText(z.n, W + 34, y + 4);
+          });
+        }
+        c.restore();
+      }
+      const ALL = {};
+      C.forEach((c) => (ALL[c[0]] = 1));
+      function stars(c, w, h, a = 1, n = 90) {
+        c.fillStyle = "#fff";
+        for (let i = 0; i < n; i++) {
+          c.globalAlpha = a * (0.3 + ((i * 7) % 10) / 14);
+          c.fillRect((i * 137.5) % w, (i * 71.3) % h, 1.4, 1.4);
+        }
+        c.globalAlpha = 1;
+      }
+      /* ---------- dialog ---------- */
+      let DL = null;
+      function dlg(o, cb) {
+        DL = o;
+        const w = pk(o.w),
+          sci = S.age > 0 && o.s ? `<h3>The science</h3><p>${o.s}</p>` : "";
+        let h =
+          `<h2 style="color:${o.bad ? "var(--rd)" : "var(--ye)"}">${o.t}</h2>` +
+          (w ? `<h3>${o.wh || "What is happening?"}</h3><p>${w}</p>` : "") +
+          sci +
+          (o.y
+            ? `<h3>${o.yh || "Why does it matter?"}</h3><p>${pk(o.y)}</p>`
+            : "") +
+          (o.f ? `<p class="fact">Did you know? ${o.f}</p>` : "");
+        if (o.q)
+          h +=
+            `<h3>${o.q.q}</h3>` +
+            o.q.o
+              .map((x, i) => `<button class="li q" data-i="${i}">${x}</button>`)
+              .join("") +
+            '<p id="qe"></p>';
+        h += `<div class="row"><button class="p" id="nx" ${o.q ? "disabled" : ""}>${o.nt || "NEXT"}</button><button id="rp">Replay explanation (read aloud)</button></div>`;
+        $("#dl").innerHTML = h;
+        $("#ov").hidden = false;
+        const txt = () =>
+          [o.t, pk(o.w), S.age > 0 ? o.s : "", pk(o.y)]
+            .filter(Boolean)
+            .join(". ");
+        $("#rp").onclick = () => {
+          if (window.speechSynthesis) {
+            S.mute = 0;
+            bgmSync();
+            say(txt());
+          } else alert("Read-aloud is not supported by this browser.");
+        };
+        $("#nx").onclick = () => {
+          $("#ov").hidden = true;
+          if (window.speechSynthesis) speechSynthesis.cancel();
+          cb && cb();
+        };
+        document.querySelectorAll(".q").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const i = +b.dataset.i,
+                ok = i === o.q.a;
+              document
+                .querySelectorAll(".q")
+                .forEach((x) => (x.disabled = true));
+              b.style.borderColor = ok ? "var(--gr)" : "var(--rd)";
+              $("#qe").innerHTML =
+                (ok
+                  ? '<b class="ok">Correct! </b>'
+                  : '<b class="bad">Not quite. </b>') + o.q.e;
+              $("#nx").disabled = false;
+              if (o.q.quiz) {
+                S.qn++;
+                if (ok) S.qok++;
+                save();
+              }
+              if (o.q.cb) o.q.cb(ok);
+            }),
+        );
+      }
+      /* ---------- Ask the scientist ---------- */
+      const KB = [
+        [
+          ["fuel", "propellant", "burn"],
+          "Why does a rocket need fuel?",
+          "A rocket moves by throwing hot gas out of its engine. Burning fuel with an oxidizer makes that gas. More propellant means it can keep pushing for longer (Newton's Third Law: gas goes down, rocket goes up).",
+        ],
+        [
+          ["breathe", "oxygen", "air"],
+          "How do astronauts breathe in space?",
+          "Life-support systems supply air. On the International Space Station, oxygen is made by splitting water with electricity and carbon dioxide is removed from the air. Spacesuits carry their own oxygen supply.",
+        ],
+        [
+          ["satellite", "fall", "orbit"],
+          "Why do satellites not fall to Earth?",
+          "They are falling, but they move sideways so fast (about 7.7 km/s in low Earth orbit) that the ground curves away beneath them. They keep missing the Earth.",
+        ],
+        [
+          ["stage", "stages", "multiple"],
+          "Why do rockets have multiple stages?",
+          "Empty tanks and engines are useless weight. Dropping them means the rest of the rocket is lighter and can accelerate further with the same thrust.",
+        ],
+        [
+          ["communicate", "talk", "radio", "signal"],
+          "How do astronauts communicate with Earth?",
+          "With radio waves, which travel at the speed of light. Relay satellites help keep contact when the station is out of sight of a ground station.",
+        ],
+        [
+          ["float", "weightless", "gravity"],
+          "Why do astronauts float?",
+          "They are in free fall around Earth together with the station. Gravity at that height is still about 90% as strong as on the ground; they just keep falling without hitting anything.",
+        ],
+        [
+          ["space", "karman", "begins", "height"],
+          "Where does space begin?",
+          "A common boundary is the Kármán line, 100 km up. Reaching orbit is much harder: a spacecraft also needs about 7.8 km/s of sideways speed.",
+        ],
+        [
+          ["newton", "third", "action"],
+          "What is Newton's Third Law?",
+          "For every action there is an equal and opposite reaction. A rocket pushes gas down, and the gas pushes the rocket up.",
+        ],
+        [
+          ["escape"],
+          "What is escape velocity?",
+          "About 11.2 km/s from Earth’s surface (ignoring air). Above that speed an object can leave Earth for good without more thrust.",
+        ],
+        [
+          ["moon"],
+          "How far is the Moon?",
+          "About 384,400 km on average. Radio signals take around 1.3 seconds to cross that distance.",
+        ],
+        [
+          ["mars", "delay", "rover"],
+          "Why is there a delay talking to Mars?",
+          "Radio travels at the speed of light, but Mars is far away: one-way signals take from about 3 to 22 minutes depending on where the planets are.",
+        ],
+      ];
+      function ask() {
+        $("#dl").innerHTML =
+          `<h2>Ask the Scientist</h2><p class="mu">Type a question or pick one. Answers come from a built-in science knowledge base.</p><div class="row"><input id="aq" style="flex:1" placeholder="e.g. Why do rockets need fuel?"><button class="p" id="ag">Ask</button></div><div id="aa" class="pn" style="margin:10px 0" hidden></div><div>${KB.map((k, i) => `<button class="li" data-k="${i}">${k[1]}</button>`).join("")}</div><button id="ac">Close</button>`;
+        $("#ov").hidden = false;
+        const show = (i) => {
+          const a = $("#aa");
+          a.hidden = false;
+          a.innerHTML =
+            i < 0
+              ? "I do not know that one yet. Try one of the questions below."
+              : `<b>${KB[i][1]}</b><p>${KB[i][2]}</p>`;
+          if (i >= 0) {
+            S.asks++;
+            save();
+            if (S.asks >= 3) award("astro");
+          }
+        };
+        $("#ag").onclick = () => {
+          const q = $("#aq").value.toLowerCase();
+          let best = -1,
+            sc = 0;
+          KB.forEach((k, i) => {
+            const s = k[0].filter((w) => q.includes(w)).length;
+            if (s > sc) {
+              sc = s;
+              best = i;
+            }
+          });
+          show(best);
+        };
+        $("#aq").onkeydown = (e) => {
+          if (e.key === "Enter") $("#ag").click();
+        };
+        document
+          .querySelectorAll("[data-k]")
+          .forEach((b) => (b.onclick = () => show(+b.dataset.k)));
+        $("#ac").onclick = () => ($("#ov").hidden = true);
+      }
+      /* ---------- routing ---------- */
+      let F = null,
+        CD = null,
+        O = { run: 0 };
+      function go(v) {
+        document.onkeydown = null;
+        document.onkeyup = null;
+        F = null;
+        O.run = 0;
+        clearInterval(CD);
+        document.querySelectorAll(".lo").forEach((x) => x.remove());
+        if (NZ) snd("x");
+        $("#ov").hidden = true;
+        ({
+          welcome: welcome,
+          home: home,
+          build: build,
+          launch: launch,
+          orbit: orbit,
+          sat: gSat,
+          dock: gDock,
+          rover: gRover,
+        })[v]();
+        window.scrollTo(0, 0);
+      }
+      $("#hH").onclick = () => go(S.entered ? "home" : "welcome");
+      $("#hA").onclick = ask;
+      $("#hS").onclick = () => {
+        S.mute = !S.mute;
+        $("#hS").textContent = "Sound: " + (S.mute ? "off" : "on");
+        save();
+        bgmStart();
+        bgmSync();
+        if (S.mute && NZ) snd("x");
+      };
+      $("#hS").textContent = "Sound: " + (S.mute ? "off" : "on");
+      const prog = {
+        rocket: () => (S.asm ? 50 : 0) + (S.launched ? 50 : 0),
+        orbit: () => Object.keys(S.orb).length * 25,
+        sat: () => (S.gm && S.gm.sat ? 100 : 0),
+        dock: () => (S.gm && S.gm.dock ? 100 : 0),
+        rover: () => (S.gm && S.gm.rover ? 100 : 0),
+      };
+      const totalP = () =>
+        Math.round(Object.values(prog).reduce((a, f) => a + f(), 0) / 5);
+      S.gm = S.gm || {};
+      const missions = () =>
+        (S.launched ? 1 : 0) +
+        Object.keys(S.orb).length +
+        Object.keys(S.gm).length;
+      function welcome() {
+        $("#v").innerHTML =
+          `<section class="hero"><div><h1>WELCOME, YOUNG EXPLORER!</h1><p class="mu" style="font-size:1.1rem">Your journey into the universe starts here. Build rockets, explore planets, launch satellites and discover the science behind space exploration.</p>
+<div class="pn"><label>Student nickname (optional) <input id="nk" maxlength="16" value="${S.nick.replace(/"/g, "")}"></label>
+<h3>Learning level</h3><div class="row">${AGES.map((a, i) => `<button class="ag ${S.age === i ? "on" : ""}" data-i="${i}">${a}</button>`).join("")}</div>
+<h3>Preferred difficulty</h3><div class="row">${DIFF.map((a, i) => `<button class="df ${S.diff === i ? "on" : ""}" data-i="${i}">${a}</button>`).join("")}</div>
+<p class="mu">Missions completed: <b>${missions()}</b> · Learning progress: <b>${totalP()}%</b> · Achievements: <b>${Object.keys(S.b).length}</b></p><button class="p big" id="en">Enter Academy</button></div></div>
+<canvas id="hc" class="m" width="420" height="520"></canvas></section>`;
+        document.querySelectorAll(".ag").forEach(
+          (b) =>
+            (b.onclick = () => {
+              S.age = +b.dataset.i;
+              save();
+              welcome();
+            }),
+        );
+        document.querySelectorAll(".df").forEach(
+          (b) =>
+            (b.onclick = () => {
+              S.diff = +b.dataset.i;
+              save();
+              welcome();
+            }),
+        );
+        $("#en").onclick = () => {
+          S.nick = $("#nk").value.trim();
+          S.entered = 1;
+          save();
+          askMicOnce();
+          go("home");
+        };
+        const c = $("#hc").getContext("2d");
+        const g = c.createLinearGradient(0, 0, 0, 520);
+        g.addColorStop(0, "#020610");
+        g.addColorStop(1, "#0a2a55");
+        c.fillStyle = g;
+        c.fillRect(0, 0, 420, 520);
+        stars(c, 420, 520);
+        c.fillStyle = "#0b3a73";
+        c.beginPath();
+        c.arc(210, 760, 380, 0, 7);
+        c.fill();
+        c.strokeStyle = "#35d0ff";
+        c.lineWidth = 3;
+        c.stroke();
+        drawR(c, 210, 50, 0.85, { inst: ALL, mode: "ext", flame: 0.8 });
+      }
+      function home() {
+        const G = [
+          [
+            "rocket",
+            "Rocket Builder & Launch Simulator",
+            "Assemble 14 components within a budget, run the pre-launch check, count down and fly a multi-stage launch.",
+            "Rocket parts · Newton’s Third Law · staging · cost vs performance",
+            "Beginner",
+            "25–35 min",
+            "build",
+          ],
+          [
+            "orbit",
+            "Mission to Orbit",
+            "Choose speed, height and direction, then watch gravity bend your path into an orbit, or a crash.",
+            "Gravity · inertia · orbits · escape velocity",
+            "Beginner–Intermediate",
+            "15–25 min",
+            "orbit",
+          ],
+          [
+            "sat",
+            "Satellite Design & Deployment Lab",
+            "Design a satellite for a mission and deploy it.",
+            "Power · communication · thermal control",
+            "Beginner",
+            "10 min",
+            "sat",
+          ],
+          [
+            "dock",
+            "Spacecraft Docking Challenge",
+            "Fly a spacecraft to a space station and dock safely.",
+            "Relative velocity · inertia · navigation",
+            "Beginner",
+            "10 min",
+            "dock",
+          ],
+          [
+            "rover",
+            "Planetary Rover Explorer",
+            "Drive a rover on the Moon, Mars and an asteroid.",
+            "Planetary geology · robotics · signal delay",
+            "Beginner",
+            "10 min",
+            "rover",
+          ],
+        ];
+        const nm = S.nick ? ", " + S.nick : "";
+        $("#v").innerHTML =
+          `<h1 style="font-size:2rem">Space Academy${nm}</h1><p class="mu">${AGES[S.age]} · ${DIFF[S.diff]} difficulty · <button id="ep">Edit profile</button></p>
+<div class="pn" style="margin-bottom:14px"><div class="row"><span>Learning progress <b>${totalP()}%</b></span><span>Missions completed <b>${missions()}</b></span><span>Quiz answers correct <b>${S.qok}/${S.qn}</b></span></div><div class="bar" style="margin:8px 0"><i style="width:${totalP()}%"></i></div>
+<div>${Object.keys(BD)
+            .map(
+              (k) =>
+                `<span class="bd ${S.b[k] ? "g" : ""}" title="${BD[k][1]}">${S.b[k] ? "🏅" : "🔒"} ${BD[k][0]}</span>`,
+            )
+            .join("")}</div></div>
+${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓 Get my certificate</button>' : ""}<div class="grid5">${G.map((g) => `<div class="card">${g[6] ? `<canvas data-p="${g[0]}" width="300" height="150"></canvas>` : '<div class="ph">In development</div>'}<div class="b"><h2 style="font-size:1.1rem;margin:0">${g[1]}</h2><span class="mu">${g[2]}</span><ul><li>${g[3]}</li></ul><span class="mu">Difficulty: ${g[4]} · ${g[5]}</span><div class="bar"><i style="width:${prog[g[0]]()}%"></i></div><button class="${g[6] ? "p" : ""}" data-g="${g[6]}" ${g[6] ? "" : "disabled"}>${g[6] ? "START GAME" : "Coming in next build"}</button></div></div>`).join("")}</div>
+<p class="mu" style="margin-top:18px">Learn more: <a style="color:var(--cy)" href="https://www.nasa.gov/learning-resources/" target="_blank" rel="noopener">NASA Learning Resources</a> · <a style="color:var(--cy)" href="https://spaceplace.nasa.gov/" target="_blank" rel="noopener">NASA Space Place</a></p>`;
+        $("#ep").onclick = () => go("welcome");
+        if ($("#cert"))
+          $("#cert").onclick = () =>
+            dlg({
+              t: "🎓 CERTIFICATE OF SPACE EXPLORATION",
+              wh: "Awarded to",
+              w:
+                (S.nick || "Young Explorer") +
+                " for completing all five Beginner Academy missions: building a rocket, reaching orbit, deploying a satellite, docking with a station and exploring planets.",
+              f: "Take a screenshot to keep it!",
+              nt: "Close",
+            });
+        document.querySelectorAll("[data-g]").forEach((b) => {
+          if (b.dataset.g !== "0") b.onclick = () => go(b.dataset.g);
+        });
+        thumbs();
+      }
+      /* ---------- Rocket builder ---------- */
+      let B = null;
+      const budget = () => BUD[S.diff],
+        gr = (id) => (B.G[id] === 0 ? 0.7 : 1),
+        cst = (id) => C[CI[id]][3] * 1000 * gr(id),
+        spent = () => Object.keys(B.I).reduce((a, id) => a + cst(id), 0);
+      function risk() {
+        let r = 0;
+        Object.keys(B.I).forEach((id) => {
+          if (B.G[id] === 0)
+            r += [
+              "engine",
+              "guidance",
+              "fuel",
+              "oxidizer",
+              "stagesep",
+            ].includes(id)
+              ? 0.04
+              : 0.015;
+        });
+        return Math.min(0.6, r + B.wx);
+      }
+      function build() {
+        R3 = null;
+        if (!B)
+          B = {
+            I: {},
+            G: {},
+            sel: "engine",
+            z: null,
+            wrong: {},
+            wc: 0,
+            mode: "int",
+            ex: 0,
+            t0: Date.now(),
+            wx: 0,
+            wl: ["Clear skies", "Light cloud", "Gusty upper-level winds"][
+              Math.floor(Math.random() * 3)
+            ],
+          };
+        B.wx = B.wl[0] === "G" ? 0.02 : 0;
+        $("#v").innerHTML =
+          `<div class="row"><h2 style="margin:0;flex:1">Rocket Assembly Laboratory</h2><button id="bk">Back to academy</button></div><div class="bg2"><aside><h3>Components (drag onto the rocket)</h3><div id="lst"></div></aside>
+<section><div id="rw" style="position:relative"><canvas id="rc" class="m" width="460" height="540"></canvas></div><div class="row" style="margin:6px 0"><button data-m="ext">External view</button><button data-m="int">Internal view</button><button id="exb">Exploded view</button></div><div class="row"><span class="mu">Install into:</span>${Z.map((z, i) => `<button data-z="${i}">${z.n}</button>`).join("")}</div><div id="msg" class="pn">Pick a component, then drag it to the section of the rocket where you think it belongs. On a touch screen, tap the section then press Install.</div></section>
+<aside><div id="inf" class="pn"></div><div id="bud" class="pn" style="margin-top:10px"></div><div id="chk" class="pn" style="margin-top:10px"></div><button class="p big" id="gl" style="margin-top:10px;width:100%" disabled>Go to launch pad</button>
+<p class="mu" style="font-size:.78rem">All component prices are educational estimates for learning. Actual aerospace costs vary enormously and these are not quotations. This is a virtual educational simulation designed to teach aerospace science. It is not a real rocket construction guide. All configurations, costs, performance values and launch conditions are simplified or illustrative. Never attempt to construct or launch a real rocket based on this simulation.</p></aside></div><div class="pn" style="margin-top:12px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap"><div><b style="color:var(--cy)">Need help assembling?</b><div class="mu" style="font-size:.9rem">Auto-Fit installs every component in its correct section and selects grades that stay within your budget.</div></div><button class="p big" id="autofit">⚙ AUTO-FIT ROCKET</button></div>`;
+        $("#bk").onclick = () => go("home");
+        $("#autofit").onclick = autoFitRocket;
+        document.querySelectorAll("[data-m]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              B.mode = b.dataset.m;
+              B.ex = 0;
+              rd();
+            }),
+        );
+        $("#exb").onclick = () => {
+          B.ex = B.ex ? 0 : 1;
+          rd();
+        };
+        $("#gl").onclick = () => go("launch");
+        document.querySelectorAll("[data-z]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              B.z = +b.dataset.z;
+              rd();
+            }),
+        );
+        const cv = $("#rc");
+        cv.ondragover = (e) => {
+          e.preventDefault();
+          if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+        };
+        cv.ondrop = (e) => {
+          e.preventDefault();
+          const id = e.dataTransfer.getData("text/plain") || B.sel;
+          if (!CI.hasOwnProperty(id)) return;
+          const r = cv.getBoundingClientRect(),
+            canvasY = ((e.clientY - r.top) * cv.height) / r.height,
+            rocketY = (canvasY - 30) / 0.92;
+          place(id, zoneAt(rocketY));
+        };
+        cv.onclick = (e) => {
+          const r = cv.getBoundingClientRect(),
+            canvasY = ((e.clientY - r.top) * cv.height) / r.height;
+          B.z = zoneAt((canvasY - 30) / 0.92);
+          rd();
+        };
+        try {
+          if (window.THREE) init3();
+        } catch (e) {
+          R3 = null;
+          const c = $("#rc");
+          if (c) c.style.display = "";
+          [...$("#rw").children].forEach((x) => {
+            if (x.id !== "rc") x.remove();
+          });
+        }
+        rd();
+      }
+      function zoneAt(y) {
+        y = Math.max(0, Math.min(449, y));
+        return Z.findIndex((z) => y >= z.a && y < z.b);
+      }
+      function say2(t, k) {
+        const m = $("#msg");
+        m.innerHTML = t;
+        m.style.borderColor =
+          k === "ok"
+            ? "var(--gr)"
+            : k === "bad"
+              ? "var(--rd)"
+              : k === "wr"
+                ? "var(--or)"
+                : "var(--ln)";
+      }
+      function place(id, z) {
+        const c = C[CI[id]];
+        if (B.I[id]) return say2("That part is already installed.", "wr");
+        if (z < 0 || z == null)
+          return say2("Choose a section of the rocket first.", "wr");
+        if (z !== c[2]) {
+          B.wc++;
+          B.wrong[id] = (B.wrong[id] || 0) + 1;
+          B.z = z;
+          return (
+            say2(
+              `<b>${c[1]} does not belong in the ${Z[z].n}.</b> Think about what this part does and what it must connect to.${B.wrong[id] > 1 ? ' <span class="mu">Hint: ' + c[9] + "</span>" : ""}`,
+              "bad",
+            ),
+            rd()
+          );
+        }
+        if (spent() + cst(id) > budget()) {
+          const oldGrade = B.G[id];
+          B.G[id] = 0;
+          if (spent() + cst(id) > budget()) {
+            B.G[id] = oldGrade;
+            return say2(
+              `<b>Budget exceeded.</b> Even Economy grade for ${c[1]} would pass your ${fm(budget())} budget. Switch another installed component to Economy or remove a part.`,
+              "wr",
+            );
+          }
+          say2(
+            `<b>${c[1]} switched to Economy grade automatically</b> so it can fit your remaining budget. You can change its grade later.`,
+            "wr",
+          );
+        }
+        B.I[id] = 1;
+        B.z = z;
+        B.sel = id;
+        say2(`<b>${c[1]} installed correctly.</b> ${c[9]}`, "ok");
+        rd();
+        partDlg(id, 1);
+        if (Object.keys(B.I).length === C.length) {
+          S.asm = 1;
+          save();
+          award("rocket");
+          fx(3500);
+          say2(
+            "<b>ASSEMBLY COMPLETED!</b> All 14 components are in the right place. Check the budget and risk, then go to the launch pad.",
+            "ok",
+          );
+        }
+      }
+      function autoFitRocket() {
+        // Start with every component at Economy grade, which guarantees a budget-safe baseline.
+        C.forEach((c) => {
+          B.I[c[0]] = 1;
+          B.G[c[0]] = 0;
+        });
+        // Upgrade the most reliability-critical systems first whenever the budget permits.
+        const priority = [
+          "engine",
+          "guidance",
+          "fuel",
+          "oxidizer",
+          "stagesep",
+          "nav",
+          "electrical",
+          "recovery",
+          "nozzle",
+          "body",
+          "nose",
+          "fairing",
+          "payload",
+          "fins",
+        ];
+        priority.forEach((id) => {
+          B.G[id] = 1;
+          if (spent() > budget()) B.G[id] = 0;
+        });
+        B.sel = "engine";
+        B.z = C[CI.engine][2];
+        B.ex = 0;
+        S.asm = 1;
+        save();
+        rd();
+        award("rocket");
+        fx(3500);
+        say2(
+          "<b>AUTO-FIT COMPLETE!</b> All 14 components are installed in their correct sections. Component grades were adjusted to stay within your selected budget. You can still change any part manually.",
+          "ok",
+        );
+      }
+      function rd() {
+        const I = B.I,
+          n = Object.keys(I).length;
+        $("#lst").innerHTML = C.map(
+          (c) =>
+            `<button class="li ${I[c[0]] ? "ok" : ""} ${B.sel === c[0] ? "sel" : ""}" draggable="true" data-id="${c[0]}"><span>${I[c[0]] ? "✓ " : ""}${c[1]}</span><span class="mu">${fm(cst(c[0]))}</span></button>`,
+        ).join("");
+        document.querySelectorAll("#lst .li").forEach((b) => {
+          b.onclick = () => {
+            B.sel = b.dataset.id;
+            B.z = C[CI[B.sel]][2];
+            rd();
+            partDlg(B.sel);
+          };
+          b.ondragstart = (e) => {
+            e.dataTransfer.setData("text/plain", b.dataset.id);
+            B.sel = b.dataset.id;
+          };
+        });
+        document
+          .querySelectorAll("[data-m]")
+          .forEach((b) => b.classList.toggle("on", b.dataset.m === B.mode));
+        document
+          .querySelectorAll("[data-z]")
+          .forEach((b) => b.classList.toggle("on", +b.dataset.z === B.z));
+        if (R3) r3sync();
+        else {
+          const cv = $("#rc"),
+            c = cv.getContext("2d");
+          c.clearRect(0, 0, 460, 540);
+          stars(c, 460, 540, 0.6, 50);
+          c.fillStyle = "#93aacb";
+          c.font = "12px sans-serif";
+          Z.forEach((z, i) => {
+            if (!B.ex) {
+              const k = C.filter((x) => x[2] === i),
+                d = k.filter((x) => I[x[0]]).length;
+              c.fillStyle = d === k.length ? "#3ddc84" : "#93aacb";
+              c.fillText(
+                `${z.n} ${d}/${k.length}`,
+                8,
+                30 + ((z.a + z.b) / 2) * 0.92,
+              );
+            }
+          });
+          drawR(c, 260, 30, 0.92, {
+            inst: I,
+            ghost: true,
+            mode: B.mode,
+            ex: B.ex,
+            hl: B.z,
+          });
+        }
+        const k = C[CI[B.sel]],
+          sp = spent(),
+          w = B.wrong[B.sel] || I[B.sel];
+        $("#inf").innerHTML =
+          `<h2 style="font-size:1.15rem">${k[1]}</h2><h3>Purpose</h3><p>${pk([k[6], k[7]])}</p>${S.age > 0 ? "" : `<p class="mu">Tap Install after choosing a section.</p>`}<p class="fact">${k[8]}</p><p class="mu">Where: ${w ? k[9] : "Work it out from what it does."}<br>Weight ≈ ${k[4]} kg · Cost ${fm(cst(k[0]))}</p>
+<div class="row"><button data-gr="1" class="${B.G[k[0]] !== 0 ? "on" : ""}">Standard</button><button data-gr="0" class="${B.G[k[0]] === 0 ? "on" : ""}">Economy (−30%)</button></div><div class="row" style="margin-top:8px"><button class="p" id="ins" ${I[k[0]] ? "disabled" : ""}>Install in selected section</button><button id="rm" ${I[k[0]] ? "" : "disabled"}>Remove</button></div>`;
+        document.querySelectorAll("[data-gr]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const was = B.G[k[0]];
+              B.G[k[0]] = +b.dataset.gr;
+              if (spent() > budget()) {
+                B.G[k[0]] = was;
+                say2(
+                  "Standard grade would take you over budget. Engineers must trade reliability against cost: switch another part to Economy first.",
+                  "wr",
+                );
+              }
+              rd();
+            }),
+        );
+        $("#ins").onclick = () => place(k[0], B.z);
+        $("#rm").onclick = () => {
+          delete B.I[k[0]];
+          say2(
+            "Part removed. Without it the system check will show what is now missing.",
+            "wr",
+          );
+          rd();
+        };
+        const cats = {};
+        Object.keys(I).forEach((id) => {
+          const c = C[CI[id]];
+          cats[c[5]] = (cats[c[5]] || 0) + cst(id);
+        });
+        $("#bud").innerHTML =
+          `<h3>Budget (illustrative)</h3><table>${Object.keys(cats)
+            .map((x) => `<tr><td>${x}</td><td>${fm(cats[x])}</td></tr>`)
+            .join(
+              "",
+            )}<tr><td>Components</td><td>${n} / ${C.length}</td></tr><tr><td><b>Total</b></td><td><b>${fm(sp)}</b></td></tr><tr><td>Available</td><td>${fm(budget())}</td></tr><tr><td>Remaining</td><td class="${sp > budget() * 0.95 ? "wr" : "ok"}">${fm(budget() - sp)}</td></tr></table><p class="mu">Estimated launch risk: <b class="${risk() > 0.15 ? "bad" : "ok"}">${Math.round(risk() * 100)}%</b></p>`;
+        const iss = RULES.filter((r) => I[r[0]] && !I[r[1]]).map((r) => r[2]);
+        $("#chk").innerHTML =
+          `<h3>System check</h3>${n === C.length ? '<p class="ok">ASSEMBLY COMPLETED ✓</p>' : `<p class="wr">${C.length - n} components still missing.</p>`}${iss.map((t) => `<p class="wr" style="font-size:.88rem">⚠ ${t}</p>`).join("")}`;
+        $("#gl").disabled = n < C.length;
+      }
+      /* ---------- Launch ---------- */
+      const EV = [
+        {
+          p: 0,
+          t: "THE ENGINES ARE IGNITING!",
+          w: [
+            "The engines burn fuel and push hot gas down. That pushes the rocket up!",
+            "The engines burn propellant and produce hot exhaust gases. These gases move downward at high speed, pushing the rocket upward.",
+          ],
+          s: "Newton's Third Law: the gas is pushed down, so the rocket is pushed up with an equal and opposite force.",
+          y: "Without enough thrust the rocket cannot overcome its weight.",
+          f: "Rockets work in space because they carry their own oxidizer. They do not need atmospheric oxygen.",
+        },
+        {
+          p: 0.17,
+          pre: {
+            t: "PREDICT WHAT HAPPENS NEXT",
+            w: "The first-stage fuel is almost used up.",
+            q: {
+              q: "What should happen next?",
+              o: [
+                "The rocket keeps carrying the empty stage",
+                "The empty first stage separates",
+                "The rocket turns around",
+              ],
+              a: 1,
+              e: "The empty stage is dead weight, so it separates.",
+            },
+          },
+          t: "STAGE 1 SEPARATION SUCCESSFUL!",
+          w: [
+            "The first stage used up its fuel, so it dropped away. The rocket is lighter now.",
+            "The first stage has used most of its fuel. It separates so the rocket does not have to carry unnecessary weight.",
+          ],
+          s: "For the same thrust, a lighter rocket has greater acceleration (a = F ÷ m).",
+          y: "A lighter rocket can accelerate more efficiently.",
+          f: "Empty stages fall back to Earth or can be recovered.",
+          act: "sep",
+        },
+        {
+          p: 0.19,
+          t: "UPPER-STAGE IGNITION",
+          w: [
+            "The second engine switches on and keeps pushing.",
+            "The upper-stage engine activates and the rocket continues accelerating.",
+          ],
+          s: "The upper stage is designed to work high in thin air, so it is much lighter.",
+          y: "Each stage adds speed. Together they reach the speed needed for orbit.",
+          f: "Upper-stage engines often use bigger nozzles for vacuum.",
+        },
+        {
+          p: 0.34,
+          t: "PAYLOAD FAIRING RELEASED!",
+          w: [
+            "The cover splits open and falls away, showing the satellite.",
+            "The rocket has travelled beyond the dense part of the atmosphere. The protective cover is no longer required, so it separates and exposes the payload.",
+          ],
+          s: "Air is so thin here that the satellite no longer needs shielding. Dropping the fairing saves mass.",
+          y: "Less mass means more fuel is available for reaching orbit.",
+          f: "Fairings can be taller than a house.",
+          act: "fair",
+        },
+        {
+          p: 0.8,
+          t: "ORBITAL INSERTION IN PROGRESS!",
+          w: [
+            "The spacecraft is nearly fast enough sideways to stay in space.",
+            "The spacecraft is adjusting its velocity and direction to enter the planned orbit.",
+          ],
+          s: "Reaching space (about 100 km) and reaching orbit (about 7.8 km/s sideways) are not the same thing.",
+          y: "Orbit is about speed, not just height.",
+          f: "An object in orbit is continuously falling towards Earth while moving sideways fast enough to keep missing the ground.",
+        },
+        {
+          p: 1,
+          t: "PAYLOAD DEPLOYED!",
+          w: [
+            "The satellite is released. It opens its solar panels.",
+            "The satellite is released into its planned orbit and unfolds its solar panels.",
+          ],
+          s: "Orbit speed here is roughly 7.7 km/s.",
+          y: "The satellite can now do its job: weather, navigation or communication.",
+          f: "Simplified simulation: real launches also pitch over gradually and last about 9–10 minutes to orbit.",
+          act: "dep",
+        },
+      ];
+      function launch() {
+        L3 = null;
+        if (!B || Object.keys(B.I).length < C.length) return go("build");
+        const ok = [
+          "Fuel: 100%",
+          "Oxidizer: 100%",
+          "Engine: ready",
+          "Payload: secured",
+          "Communications: link established",
+        ];
+        $("#v").innerHTML =
+          `<div class="row"><h2 style="margin:0;flex:1">Launch Facility</h2><button id="bk">Back to assembly</button></div><div class="bg2" style="grid-template-columns:minmax(0,1fr) 300px"><section><div id="fw" style="position:relative"><canvas id="fc" class="m" width="720" height="460"></canvas></div><div class="big-t" id="cd"></div><div class="row"><button data-v="pad" class="on">Launchpad</button><button data-v="side">Side</button><button data-v="eng">Engine close-up</button><button data-v="trk">Tracking</button><button data-v="cock">Cockpit</button></div><div class="tel" id="tel"></div></section>
+<aside><div class="pn"><h3>Mission control</h3><p>Destination: Low Earth Orbit (~400 km)<br>Weather: ${B.wl}<br>Launch risk: <b>${Math.round(risk() * 100)}%</b></p><div id="pc">${ok.map((x) => `<p class="mu" style="margin:2px 0">○ ${x}</p>`).join("")}</div><div id="voicecheck" class="pn" style="margin-top:10px"><b>VOICE CONFIRMATION</b><p id="vprompt" class="mu">Mission control will call each test. Respond aloud when prompted.</p><div id="vphrase" style="font-size:1.05rem;font-weight:800;color:var(--cy);margin:8px 0">Ready for system check</div><button id="sc" class="p" style="width:100%;margin:8px 0">Start voice system checks</button><div id="vstatus" class="mu" aria-live="polite">Microphone has not started.</div></div><button class="p" id="st" style="width:100%;margin-top:10px" disabled>Start countdown</button><button id="ps" style="width:100%;margin-top:8px" disabled>Pause</button></div><p class="mu" style="font-size:.78rem">Simplified simulation: speeds, heights and timings are illustrative and compressed to about 40 seconds.</p></aside></div>`;
+        $("#bk").onclick = () => go("build");
+        F = {
+          p: 0,
+          ev: 0,
+          live: 0,
+          pause: 0,
+          t: 0,
+          l: 0,
+          view: "pad",
+          parts: { s1: 1, fair: 1, pay: 1 },
+          fs: 0,
+          deb: [],
+          sat: null,
+          fl: 0,
+          ign: 0,
+          done: 0,
+        };
+        try {
+          if (window.THREE) init3L();
+        } catch (e) {
+          L3 = null;
+          const c = $("#fc");
+          if (c) c.style.display = "";
+          [...$("#fw").children].forEach((x) => {
+            if (x.id !== "fc") x.remove();
+          });
+        }
+        document.querySelectorAll("[data-v]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              F.view = b.dataset.v;
+              document
+                .querySelectorAll("[data-v]")
+                .forEach((x) => x.classList.toggle("on", x === b));
+            }),
+        );
+        const voiceChecks = [
+          ["Fuel level", "Fuel level is okay, all good to go."],
+          ["Oxidizer supply", "Oxidizer supply is okay, all good to go."],
+          ["Engine status", "Engine status is okay, all good to go."],
+          ["Payload security", "Payload is secured, all good to go."],
+          ["System navigation", "System navigation is okay, all good to go."],
+        ];
+        let vcIndex = 0,
+          vcBusy = false,
+          vcDone = false,
+          vcStream = null,
+          vcRec = null,
+          vcAccepted = false,
+          vcStarted = false,
+          vcIdle = null;
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        function normSpeech(t) {
+          return t
+            .toLowerCase()
+            .replace(/[^a-z0-9 ]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+            .split(" ")
+            .filter(Boolean);
+        }
+        function closeEnough(heard, expected) {
+          const h = normSpeech(heard),
+                e = normSpeech(expected);
+          if (h.length === 0) return false;
+          
+          const stop = new Set(["is", "a", "the", "and", "all", "to", "go"]);
+          const meaningful = e.filter(x => !stop.has(x));
+          const matched = meaningful.filter(x => 
+            h.some(y => y === x || y.includes(x) || x.includes(y))
+          );
+          
+          // Accept if at least 1 meaningful word matches or transcript is non-empty
+          return matched.length >= 1 || h.length >= 1;
+        }
+        function finishVoiceCheck() {
+          vcBusy = false;
+          const ps = document.querySelectorAll("#pc p");
+          if (ps[vcIndex])
+            ps[vcIndex].innerHTML =
+              '<span class="ok">✓ ' + ok[vcIndex] + " — voice confirmed</span>";
+          snd("b");
+          vcIndex++;
+          if (vcIndex >= voiceChecks.length) {
+            vcDone = true;
+            $("#vphrase").textContent = "ALL SYSTEMS GO!";
+            $("#vprompt").textContent =
+              "Excellent work, Commander! Every system has been checked.";
+            $("#vstatus").textContent =
+              "All five checks passed. Cleared for countdown.";
+            $("#sc").textContent = "System checks completed";
+            $("#sc").disabled = true;
+            $("#st").disabled = false;
+            if (vcStream) {
+              vcStream.getTracks().forEach((t) => t.stop());
+              vcStream = null;
+            }
+            return;
+          }
+          setTimeout(runVoiceStep, 150);
+        }
+        function runVoiceStep() {
+          if (vcDone || vcIndex >= voiceChecks.length) return;
+          vcBusy = true;
+          vcAccepted = false;
+          const item = voiceChecks[vcIndex];
+          $("#vprompt").textContent =
+            "TEST " +
+            (vcIndex + 1) +
+            " OF " +
+            voiceChecks.length +
+            " — say the full statement aloud";
+          $("#vphrase").textContent = item[1];
+          $("#vstatus").textContent = "Mission control is calling the system…";
+          let begun = 0;
+          const begin = () => {
+            if (begun) return;
+            begun = 1;
+            if (!vcDone && !vcAccepted && vcBusy) startListening();
+          };
+          if (!window.speechSynthesis) {
+            begin();
+            return;
+          }
+          const u = new SpeechSynthesisUtterance(item[0]);
+          u.rate = 1;
+          u.volume = 1;
+          u.pitch = 1.05;
+          u.onend = () => {
+            setTimeout(begin, 600); // Wait 600ms for audio echo to clear before listening
+          };
+          u.onerror = begin;
+          speechSynthesis.cancel();
+          speechSynthesis.speak(u);
+          setTimeout(begin, 12000);
+        }
+        function startListening() {
+          if (!SR) {
+            $("#vstatus").textContent =
+              "Voice recognition is not supported. Open this game in Chrome or Edge.";
+            vcBusy = false;
+            return;
+          }
+          $("#vstatus").textContent =
+            "Listening… read the whole statement aloud.";
+          const acceptNow = () => {
+            if (vcAccepted || vcDone) return;
+            vcAccepted = true;
+            clearTimeout(vcIdle);
+            try {
+              vcRec.stop();
+            } catch (_) {}
+            finishVoiceCheck();
+          };
+          if (!vcRec) {
+            vcRec = new SR();
+            vcRec.lang = navigator.language || "en-IN";
+            vcRec.continuous = true;
+            vcRec.interimResults = true;
+            vcRec.maxAlternatives = 3;
+            vcRec.onresult = (e) => {
+              if (vcAccepted || !vcBusy) return;
+              let heard = "",
+                fin = false;
+              for (let i = 0; i < e.results.length; i++) {
+                if (e.results[i].isFinal) fin = true;
+                for (let a = 0; a < e.results[i].length; a++)
+                  heard += " " + e.results[i][a].transcript;
+              }
+              if (closeEnough(heard, voiceChecks[vcIndex][1])) {
+                clearTimeout(vcIdle);
+                if (fin) acceptNow();
+                else vcIdle = setTimeout(acceptNow, 900);
+              }
+            };
+            vcRec.onerror = (e) => {
+              if (
+                e.error === "not-allowed" ||
+                e.error === "service-not-allowed"
+              ) {
+                $("#vstatus").textContent =
+                  "Microphone access was blocked. Allow it in browser site settings, then reload.";
+                vcBusy = false;
+              } else if (!vcAccepted && !vcDone) {
+                setTimeout(() => {
+                  try {
+                    vcRec.start();
+                  } catch (_) {}
+                }, 350);
+              }
+            };
+            vcRec.onend = () => {
+              if (!vcAccepted && !vcDone && vcBusy)
+                setTimeout(() => {
+                  try {
+                    vcRec.start();
+                  } catch (_) {}
+                }, 200);
+            };
+          }
+          try {
+            vcRec.start();
+          } catch (e) {
+            setTimeout(() => {
+              try {
+                vcRec.start();
+              } catch (_) {}
+            }, 300);
+          }
+        }
+        async function beginVoiceChecks() {
+          if (vcStarted || vcBusy) return;
+          if (!SR) {
+            $("#vstatus").textContent =
+              "Voice recognition is not supported. Open this game in Chrome or Edge.";
+            return;
+          }
+          $("#sc").disabled = true;
+          if (!S.micOk) {
+            $("#vstatus").textContent = "Checking microphone access…";
+            const ok = await micCheck();
+            if (!ok) {
+              const refused = /NotAllowed|Security/.test(window.MICERR || "");
+              if (refused) {
+                $("#vstatus").textContent =
+                  "Chrome is refusing microphone access (" +
+                  window.MICERR +
+                  "). Click the icon left of the address bar and set Microphone to Allow, then press Start again.";
+                $("#sc").disabled = false;
+                return;
+              }
+              $("#vstatus").textContent =
+                "Could not open the microphone directly (" +
+                (window.MICERR || "unknown error") +
+                "). Trying speech recognition anyway…";
+            }
+          }
+          vcStarted = true;
+          $("#sc").textContent = "Voice checks in progress";
+          runVoiceStep();
+        }
+        $("#sc").onclick = beginVoiceChecks;
+        $("#ps").onclick = () => {
+          F.pause = !F.pause;
+          $("#ps").textContent = F.pause ? "Resume" : "Pause";
+        };
+        $("#st").onclick = () => {
+          $("#st").disabled = true;
+          $("#sc").disabled = true;
+          liftCount();
+        };
+        requestAnimationFrame((ts) => {
+          F && ((F.l = ts), frame(ts));
+        });
+      }
+      const stg = (p) =>
+        p < 0.17
+          ? "Stage 1 burn"
+          : p < 0.19
+            ? "First-stage separation"
+            : p < 0.34
+              ? "Upper-stage burn"
+              : p < 0.8
+                ? "Fairing released, climbing"
+                : p < 1
+                  ? "Orbital insertion"
+                  : "Payload deployment";
+      function frame(ts) {
+        if (!F) return;
+        const dt = Math.min(0.05, (ts - F.l) / 1000 || 0);
+        F.l = ts;
+        F.t += dt;
+        if (F.ign) F.fl = Math.min(1, F.fl + dt * 0.7);
+        if (F.live && !F.pause && !F.done) {
+          const e = EV[F.ev];
+          if (e && F.p >= e.p - 1e-6) {
+            F.pause = 1;
+            fire(e);
+          } else F.p = Math.min(1, F.p + dt / 38);
+        }
+        if (F.fs > 0 && F.fs < 1.4) F.fs += dt * 0.5;
+        F.deb.forEach((d) => {
+          d.y += d.v * dt;
+          d.v += 60 * dt;
+          d.r += d.w * dt;
+        });
+        if (F.sat && F.sat.u < 1) F.sat.u += dt * 0.35;
+        fdraw();
+        requestAnimationFrame(frame);
+      }
+      function fire(e) {
+        const main = () =>
+          dlg(e, () => {
+            if (e.act === "sep") {
+              F.parts.s1 = 0;
+              F.deb.push({ y: 0, v: 20, r: 0, w: 0.4, z: [3, 4] });
+              if (L3) l3sep();
+            }
+            if (e.act === "fair") {
+              F.fs = 0.01;
+              F.parts.fair = 1;
+              if (L3) l3fair();
+            }
+            if (e.p === 0.19) {
+              if (Math.random() < risk()) {
+                F.done = 1;
+                if (NZ) snd("x");
+                return dlg(
+                  {
+                    t: "MISSION ANOMALY: UPPER STAGE DID NOT IGNITE",
+                    bad: 1,
+                    w: [
+                      "The second engine did not start, so the rocket cannot reach orbit.",
+                      "The upper-stage engine failed to light, so the rocket cannot reach orbital speed.",
+                    ],
+                    s: "Cheaper Economy-grade parts are less reliable. Engineers accept some risk to save money, but critical parts like engines and guidance deserve higher quality.",
+                    y: "Failures teach engineers what to improve. Try upgrading critical parts to Standard grade.",
+                    nt: "Back to assembly",
+                  },
+                  () => go("build"),
+                );
+              }
+            }
+            if (e.act === "dep") {
+              if (L3) l3dep();
+              F.parts.pay = 0;
+              F.parts.fair = 0;
+              F.sat = { u: 0 };
+              F.done = 1;
+              if (NZ) snd("x");
+              setTimeout(done, 2800);
+            } else {
+              F.ev++;
+              F.pause = 0;
+            }
+          });
+        if (e.pre) {
+          dlg(e.pre, main);
+        } else main();
+      }
+      function fdraw() {
+        const cv = $("#fc");
+        if (!cv) return;
+        const c = cv.getContext("2d"),
+          W = 720,
+          H = 460,
+          p = F.p,
+          alt = 400 * Math.pow(p, 1.3),
+          v = 7660 * Math.pow(p, 0.9),
+          sh =
+            F.live && alt < 25
+              ? F.fl * 4 * (1 - alt / 25)
+              : F.ign && !F.live
+                ? 2
+                : 0;
+        c.save();
+        c.clearRect(0, 0, W, H);
+        const k = Math.min(1, alt / 110);
+        c.fillStyle = `rgb(${Math.round(60 * (1 - k))},${Math.round(130 * (1 - k) + 4 * k)},${Math.round(210 * (1 - k) + 14 * k)})`;
+        c.fillRect(0, 0, W, H);
+        stars(c, W, H, k, 140);
+        c.translate((Math.random() - 0.5) * sh, (Math.random() - 0.5) * sh);
+        const V = F.view,
+          sc = V === "side" ? 0.3 : V === "eng" ? 1.1 : V === "cock" ? 0 : 0.55,
+          px = V === "side" ? 12 : 40,
+          gy = H * 0.88;
+        if (V === "cock") {
+          c.fillStyle = "#0b3a73";
+          c.beginPath();
+          c.arc(
+            W / 2,
+            H + 2000 / (1 + alt / 25) - 60 * k,
+            2000 / (1 + alt / 25),
+            0,
+            7,
+          );
+          c.fill();
+          c.strokeStyle = "#35d0ff";
+          c.lineWidth = 3;
+          c.stroke();
+          c.lineWidth = 60;
+          c.strokeStyle = "#050b18";
+          c.strokeRect(0, 0, W, H);
+          c.fillStyle = "#93aacb";
+          c.font = "14px sans-serif";
+          c.fillText(
+            "Cockpit view: Earth’s curve appears as you climb",
+            20,
+            H - 14,
+          );
+        } else {
+          const rh = 450 * sc,
+            ry =
+              V === "pad" || V === "side"
+                ? Math.min(gy - rh - alt * px * (V === "side" ? 1 : 1), gy - rh)
+                : V === "eng"
+                  ? H * 0.25 - 380 * sc + 0
+                  : H * 0.28,
+            rx = W / 2;
+          const gOff = V === "pad" || V === "side" ? 0 : alt * px;
+          if (gy + gOff < H + 50) {
+            c.fillStyle = "#16311f";
+            c.fillRect(0, gy + gOff, W, H);
+            c.fillStyle = "#2a3140";
+            c.fillRect(rx - 60 * sc * 2, gy + gOff - 6, 120 * sc * 2, 8);
+            if (V === "pad" || V === "trk")
+              c.fillRect(rx + 40, gy + gOff - rh * 0.9, 10, rh * 0.9);
+          }
+          let top = V === "pad" || V === "side" ? gy - rh - alt * px * 0.9 : ry;
+          if (V === "eng") top = H * 0.1 - (F.parts.s1 ? 0 : 0);
+          if (
+            F.ign &&
+            F.fl > 0 &&
+            alt < 8 &&
+            (V === "pad" || V === "trk" || V === "side")
+          ) {
+            c.fillStyle = "rgba(235,235,235,.25)";
+            for (let i = 0; i < 14; i++) {
+              const a = F.t * 0.8 + i,
+                r = 30 + ((a * 17) % 60);
+              c.beginPath();
+              c.arc(
+                rx + Math.sin(i * 2.1) * r * 1.6,
+                gy + gOff - 6 - ((a * 13) % 30),
+                r * 0.5,
+                0,
+                7,
+              );
+              c.fill();
+            }
+          }
+          if (F.parts.pay || F.parts.s1 || true) {
+            drawR(c, rx, top, sc, {
+              inst: ALL,
+              mode: "ext",
+              parts: F.parts,
+              fs: F.fs,
+              flame: F.ign && !F.done ? F.fl : F.done && F.sat ? 0 : F.fl,
+            });
+          }
+          F.deb.forEach((d) => {
+            c.save();
+            c.translate(
+              rx + (30 * d.y) / 100,
+              top + d.y * 1.5 + (F.parts.s1 ? 0 : 0),
+            );
+            c.rotate(d.r);
+            drawR(c, 0, 0, sc, { inst: ALL, mode: "ext", zones: [3, 4] });
+            c.restore();
+          });
+          if (F.sat) {
+            const u = F.sat.u;
+            c.save();
+            c.translate(rx + u * 120, top + u * -60 + 60 * sc);
+            c.scale(sc * 1.6, sc * 1.6);
+            c.fillStyle = "#e8b93c";
+            c.fillRect(-10, -12, 20, 24);
+            c.fillStyle = "#2e6fd6";
+            const w = Math.min(1, u * 1.4) * 38;
+            c.fillRect(-10 - w, -6, w, 12);
+            c.fillRect(10, -6, w, 12);
+            c.restore();
+          }
+        }
+        c.restore();
+        const acc = Math.min(60, 10 + 30 * Math.pow(p + 0.05, -0.1) * 0.6),
+          down = 2500 * Math.pow(p, 2.2),
+          dist = Math.hypot(alt, down),
+          lay =
+            alt < 12
+              ? "Troposphere (dense air)"
+              : alt < 50
+                ? "Stratosphere"
+                : alt < 85
+                  ? "Mesosphere (thin air)"
+                  : alt < 400
+                    ? "Thermosphere (near-vacuum)"
+                    : "Space";
+        const f1 = Math.max(0, 100 - (p / 0.17) * 100),
+          f2 = p < 0.19 ? 100 : Math.max(8, 100 - ((p - 0.19) / 0.81) * 92);
+        $("#tel").innerHTML = [
+          ["Altitude", alt.toFixed(1) + " km"],
+          ["Velocity", Math.round(v) + " m/s"],
+          ["Acceleration", acc.toFixed(0) + " m/s²"],
+          ["Stage 1 fuel", Math.round(f1) + "%"],
+          ["Upper-stage fuel", Math.round(f2) + "%"],
+          ["Distance travelled", Math.round(dist) + " km"],
+          ["Atmosphere", lay],
+          ["Flight stage", stg(p)],
+          ["Mission progress", Math.round(p * 100) + "%"],
+        ]
+          .map(
+            (x) =>
+              `<div>${x[0]}<b style="font-size:${x[1].length > 14 ? ".85rem" : "1.2rem"}">${x[1]}</b></div>`,
+          )
+          .join("");
+      }
+      function done() {
+        fx(6000);
+        F = null;
+        S.launched = 1;
+        save();
+        award("launch");
+        const sp = spent(),
+          m = Math.floor((Date.now() - B.t0) / 60000),
+          sc = Math.max(40, 100 - B.wc * 4);
+        const sec = Math.floor((Date.now() - B.t0) / 1000) % 60;
+        $("#v").innerHTML =
+          `<h1 class="ok" style="font-size:2.2rem">MISSION SUCCESSFULLY COMPLETED!</h1><div class="grid5"><div class="pn"><h3>Rocket assembly score</h3><b style="font-size:1.6rem">${sc}/100</b><p class="mu">${B.wc} misplaced attempts</p></div><div class="pn"><h3>Budget efficiency</h3><b style="font-size:1.6rem">${Math.round((sp / budget()) * 100)}% used</b><p class="mu">${fm(sp)} of ${fm(budget())}</p></div><div class="pn"><h3>Launch performance</h3><b style="font-size:1.6rem">${Math.round(100 - risk() * 100)}%</b><p class="mu">Reliability of chosen parts</p></div><div class="pn"><h3>Mission objectives</h3><b style="font-size:1.6rem">6/6</b><p class="mu">Burn, separation, upper stage, fairing, orbit, deployment</p></div><div class="pn"><h3>Time taken</h3><b style="font-size:1.6rem">${m}:${String(sec).padStart(2, "0")}</b></div><div class="pn"><h3>Knowledge gained</h3><p class="mu">Thrust, staging, fairings, orbit speed. Take the knowledge check to test it.</p></div></div>
+<div class="row" style="margin-top:14px"><button class="p" id="kq">Knowledge check</button><button id="rm">Replay mission</button><button id="xr">Explore rocket</button><a class="btn" style="color:var(--cy);text-decoration:none" href="https://spaceplace.nasa.gov/" target="_blank" rel="noopener">Learn more</a><button id="ra">Return to Academy</button></div>`;
+        $("#rm").onclick = () => go("launch");
+        $("#xr").onclick = () => {
+          B.ex = 1;
+          B.mode = "ext";
+          go("build");
+          rd();
+        };
+        $("#ra").onclick = () => go("home");
+        $("#kq").onclick = () => {
+          const Q = [
+            [
+              "Why do rockets carry oxidizer?",
+              [
+                "So fuel can burn where there is no air",
+                "To make the rocket heavier",
+                "To cool the nose cone",
+              ],
+              0,
+              "Burning needs oxygen, and space has none.",
+            ],
+            [
+              "Why does the first stage separate?",
+              [
+                "To look cool",
+                "To drop empty weight so the rest accelerates better",
+                "Because it is too hot",
+              ],
+              1,
+              "A lighter rocket accelerates more for the same thrust.",
+            ],
+            [
+              "What keeps a satellite in orbit?",
+              [
+                "No gravity in space",
+                "Rocket engines firing all the time",
+                "Sideways speed fast enough to keep missing Earth",
+              ],
+              2,
+              "It is falling around Earth, not away from gravity.",
+            ],
+          ];
+          let i = 0;
+          const nx = () => {
+            if (i >= Q.length) {
+              return ($("#kq").textContent =
+                "Knowledge check complete: " +
+                S.qok +
+                "/" +
+                S.qn +
+                " correct overall");
+            }
+            const q = Q[i++];
+            dlg(
+              {
+                t: "KNOWLEDGE CHECK " + i + "/3",
+                q: { q: q[0], o: q[1], a: q[2], e: q[3], quiz: 1 },
+              },
+              nx,
+            );
+          };
+          nx();
+        };
+      }
+      /* ---------- Orbit game ---------- */
+      const MU = 398600,
+        RE = 6371,
+        K = 0.024,
+        CH = [
+          [
+            "Challenge 1: Stable orbit",
+            "Set speed, height and angle so the orbit never dips below 160 km altitude. Then press Check.",
+            "Hint: about 7.7 km/s at 400 km altitude.",
+          ],
+          [
+            "Challenge 2: Avoid a wrong trajectory",
+            "Make a near-circular orbit at about 800 km altitude (eccentricity below 0.03).",
+            "Hint: circular speed at 800 km is near 7.45 km/s.",
+          ],
+          [
+            "Challenge 3: Orbit transfer",
+            "You are in a circular 400 km orbit. Raise the far point (apogee) to 1,800–2,300 km using prograde burns, keeping the near point above 300 km.",
+            "Hint: a burn of about +0.4 km/s does it.",
+          ],
+          [
+            "Challenge 4: Re-entry",
+            "From a circular 400 km orbit, use retrograde burns, then Run. Cross 80 km altitude at a shallow angle between 0.3° and 7° to re-enter safely.",
+            "Hint: a small retro burn of about 0.1–0.2 km/s works. Too big makes entry steep.",
+          ],
+        ];
+      const ST = [...Array(80)].map((_, i) => [
+        Math.random() * 720,
+        Math.random() * 480,
+      ]);
+      function oinit() {
+        const ch = O.ch;
+        O.alt = [400, 800, 400, 400][ch - 1];
+        O.v = [7, 7.9, 7.67, 7.67][ch - 1];
+        O.g = 0;
+        O.run = 0;
+        O.trail = [];
+        O.msg = "";
+        O.cs = oset();
+      }
+      function oset() {
+        return {
+          p: [0, RE + O.alt],
+          v: [
+            O.v * Math.cos((O.g * Math.PI) / 180),
+            O.v * Math.sin((O.g * Math.PI) / 180),
+          ],
+        };
+      }
+      function oel(s) {
+        const r = Math.hypot(...s.p),
+          v2 = s.v[0] ** 2 + s.v[1] ** 2,
+          en = v2 / 2 - MU / r,
+          h = s.p[0] * s.v[1] - s.p[1] * s.v[0];
+        if (en >= 0) return { k: "esc", r, v: Math.sqrt(v2), alt: r - RE };
+        const a = -MU / (2 * en),
+          e = Math.sqrt(Math.max(0, 1 + (2 * en * h * h) / (MU * MU)));
+        return {
+          k: "b",
+          a,
+          e,
+          pe: a * (1 - e) - RE,
+          ap: a * (1 + e) - RE,
+          T: 2 * Math.PI * Math.sqrt(a ** 3 / MU),
+          r,
+          v: Math.sqrt(v2),
+          alt: r - RE,
+        };
+      }
+      function stp(s, dt) {
+        let r = Math.hypot(...s.p),
+          a = -MU / r ** 3;
+        s.v[0] += (a * s.p[0] * dt) / 2;
+        s.v[1] += (a * s.p[1] * dt) / 2;
+        s.p[0] += s.v[0] * dt;
+        s.p[1] += s.v[1] * dt;
+        r = Math.hypot(...s.p);
+        a = -MU / r ** 3;
+        s.v[0] += (a * s.p[0] * dt) / 2;
+        s.v[1] += (a * s.p[1] * dt) / 2;
+      }
+      const OC = [
+        [
+          "Level 1: Make it orbit",
+          "Imagine throwing a ball from a very tall mountain. Throw harder and it lands farther away. Throw it hard enough and the ground curves away as fast as the ball falls, so it never lands. That is an orbit! Choose the cannon speed and press FIRE.",
+          "Try about 7.7 km/s.",
+          ["sv"],
+        ],
+        [
+          "Level 2: Perfect circle",
+          "Make a round orbit 800 km above Earth. Change the height AND the speed. Every height has one perfect speed for a circle.",
+          "At 800 km the circle speed is about 7.45 km/s.",
+          ["sa", "sv"],
+        ],
+        [
+          "Level 3: Go higher",
+          "You are circling 400 km up. Press Speed up a few times to stretch the far side of your orbit up to 1,800–2,300 km, then press Judge.",
+          "Four presses of Speed up (+0.1 each) works.",
+          [],
+        ],
+        [
+          "Level 4: Come home",
+          "Press Slow down a few times, then FIRE and watch the spacecraft sink toward the air at a gentle angle.",
+          "Two or three presses of Slow down.",
+          [],
+        ],
+      ];
+      function orbit() {
+        if (!O.ch) O.ch = 1;
+        oinit();
+        O.st = "ready";
+        O.simT = 0;
+        const L = OC[O.ch - 1],
+          sl = L[3];
+        $("#v").innerHTML =
+          `<div class="row"><h2 style="margin:0;flex:1">Mission to Orbit: Newton’s Cannon</h2><button id="bk">Back to academy</button></div>${bar()}<div class="bg2" style="grid-template-columns:minmax(0,1fr) 330px"><section><canvas id="oc" class="m" width="720" height="480"></canvas><div class="pn" id="fb" style="margin-top:8px"></div></section><aside><div class="row" id="ct">${OC.map((c, i) => `<button data-c="${i + 1}" class="${O.ch === i + 1 ? "on" : ""}">${S.orb[i + 1] ? "✓ " : ""}Level ${i + 1}</button>`).join("")}</div><div class="pn" style="margin-top:8px"><h3>${L[0]}</h3><p>${L[1]}</p><p class="mu">${S.diff === 0 ? "Hint: " + L[2] : ""}</p></div>
+<div class="pn" style="margin-top:8px">${sl.includes("sa") ? '<label>Height <b id="va"></b> km<input type="range" id="sa" min="200" max="2500" step="10"></label>' : ""}${sl.includes("sv") ? '<label>Cannon speed <b id="vv"></b> km/s<input type="range" id="sv" min="3" max="12" step=".05"></label><div class="mt"><i id="mk"></i></div><div id="mg"></div>' : ""}${O.ch >= 3 ? '<div class="row"><button id="bp">🔥 Speed up (+0.1)</button><button id="br">🛑 Slow down (−0.1)</button></div>' : ""}<button id="ck" class="p" style="width:100%;margin-top:8px">Judge my orbit</button></div><div class="pn" id="rdt" style="margin-top:8px"></div></aside></div>`;
+        $("#bk").onclick = () => go("home");
+        document.querySelectorAll("[data-c]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              O.ch = +b.dataset.c;
+              orbit();
+            }),
+        );
+        $("#gS").textContent = "🔥 FIRE!";
+        setS("ready");
+        ["sa", "sv"].forEach((id) => {
+          const e = $("#" + id);
+          if (!e) return;
+          e.value = id === "sa" ? O.alt : O.v;
+          e.oninput = () => {
+            if (O.st !== "ready") return;
+            O.alt = +$("#sa") ? +$("#sa").value : O.alt;
+            O.v = $("#sv") ? +$("#sv").value : O.v;
+            O.cs = oset();
+            O.trail = [];
+            ouiv();
+            od();
+          };
+        });
+        $("#gS").onclick = () => {
+          if (O.st !== "ready") return;
+          cd3(() => {
+            if (!$("#oc")) return;
+            O.st = "play";
+            O.run = 1;
+            O.l = 0;
+            setS("play");
+            ofb("Watch the dashed path. Gravity is bending it toward Earth.");
+            requestAnimationFrame(oloop);
+          });
+        };
+        $("#gP").onclick = () => {
+          if (O.st === "play") {
+            O.st = "pause";
+            O.run = 0;
+            setS("pause");
+          } else if (O.st === "pause") {
+            O.st = "play";
+            O.run = 1;
+            O.l = 0;
+            setS("play");
+            requestAnimationFrame(oloop);
+          }
+        };
+        $("#gR").onclick = orbit;
+        const burn = (d) => {
+          if (O.st === "won" || O.st === "lost") return;
+          const s = O.cs,
+            v = Math.hypot(...s.v),
+            f = 1 + d / v;
+          s.v[0] *= f;
+          s.v[1] *= f;
+          ofb(
+            d > 0
+              ? "Speed up! The opposite side of your orbit rises."
+              : "Slow down! The opposite side of your orbit drops lower.",
+          );
+          ouiv();
+          od();
+        };
+        if ($("#bp")) {
+          $("#bp").onclick = () => burn(0.1);
+          $("#br").onclick = () => burn(-0.1);
+        }
+        $("#ck").onclick = () => ochk(0);
+        ofb(
+          "Set the speed, then press FIRE. The yellow dashed line shows where you will go.",
+        );
+        ouiv();
+        od();
+        if (!O.seen) O.seen = {};
+        if (!O.seen[O.ch]) {
+          O.seen[O.ch] = 1;
+          dlg({
+            t: L[0],
+            wh: "Your mission",
+            w: L[1],
+            f: "Satellites are really falling around Earth all the time. They just move sideways so fast that they keep missing it.",
+            nt: "Let’s go!",
+          });
+        }
+      }
+      function ofb(t, k) {
+        const f = $("#fb");
+        if (f) {
+          f.innerHTML = t;
+          f.style.borderColor =
+            k === "ok" ? "var(--gr)" : k === "bad" ? "var(--rd)" : "var(--ln)";
+        }
+      }
+      function ouiv() {
+        const e = oel(O.cs),
+          r = Math.hypot(...O.cs.p),
+          ra = e.v / Math.sqrt(MU / r);
+        if ($("#mk")) {
+          $("#mk").style.left = Math.min(97, (ra / 1.6) * 100) + "%";
+          $("#mg").innerHTML =
+            ra < 0.7
+              ? '<b class="bad">Too slow:</b> gravity wins and it crashes.'
+              : ra < 0.93
+                ? '<b class="wr">A bit slow:</b> an oval orbit that dips too low.'
+                : ra < 1.07
+                  ? '<b class="ok">Just right:</b> a round orbit!'
+                  : ra < 1.41
+                    ? '<b class="wr">Fast:</b> a long oval, going far away.'
+                    : '<b class="bad">Too fast:</b> it escapes Earth forever!';
+        }
+        if ($("#va")) $("#va").textContent = O.alt;
+        if ($("#vv")) $("#vv").textContent = (+O.v).toFixed(2);
+        $("#rdt").innerHTML =
+          `<h3>Live readout</h3><table><tr><td>Altitude</td><td>${Math.round(e.alt)} km</td></tr><tr><td>Velocity</td><td>${e.v.toFixed(2)} km/s</td></tr>${e.k === "b" ? `<tr><td>Lowest point</td><td>${Math.round(e.pe)} km</td></tr><tr><td>Highest point</td><td>${Math.round(e.ap)} km</td></tr><tr><td>Orbit shape</td><td>${e.e < 0.03 ? "circle" : "oval"}</td></tr><tr><td>One lap</td><td>${Math.round(e.T / 60)} min</td></tr>` : '<tr><td colspan=2 class="wr">Escape path: faster than escape speed</td></tr>'}</table>`;
+      }
+      function owin(t) {
+        const ch = O.ch;
+        O.run = 0;
+        O.st = "won";
+        setS("won");
+        if (!S.orb[ch]) {
+          S.orb[ch] = 1;
+          save();
+          if (Object.keys(S.orb).length === 4) award("orbit");
+        }
+        win(
+          "ORBIT ACHIEVED!",
+          t,
+          3,
+          orbit,
+          ch < 4
+            ? () => {
+                O.ch++;
+                orbit();
+              }
+            : null,
+        );
+      }
+      function ochk(auto) {
+        const e = oel(O.cs),
+          ch = O.ch;
+        let ok = false,
+          t = "";
+        if (e.k === "esc")
+          t =
+            "Too fast! You are above escape speed (about 11.2 km/s at Earth’s surface), so you leave Earth. Lower the speed.";
+        else if (e.pe < 160 && ch < 4)
+          t = `Your lowest point is ${Math.round(e.pe)} km. Below about 160 km air drags you down, and below 0 km you hit the ground. Go faster sideways.`;
+        else if (ch === 1) {
+          ok = true;
+          t =
+            "The ground curves away as fast as you fall, so you never land. That is an orbit!";
+        } else if (ch === 2) {
+          if (e.e < 0.03 && Math.abs((e.pe + e.ap) / 2 - 800) < 100) {
+            ok = true;
+            t =
+              "A round orbit at about 800 km. Higher orbits need a slower speed.";
+          } else
+            t = `Not round enough or wrong height (mean height ${Math.round((e.pe + e.ap) / 2)} km). Aim for about 7.45 km/s at 800 km.`;
+        } else if (ch === 3) {
+          if (e.pe > 300 && e.ap >= 1800 && e.ap <= 2300) {
+            ok = true;
+            t =
+              "Orbit raised! Speeding up on one side lifts the opposite side of the orbit.";
+          } else
+            t = `Your highest point is ${Math.round(e.ap)} km. Press Speed up to raise it (aim for 1,800–2,300 km).`;
+        } else
+          t =
+            "For this level press FIRE and let the spacecraft sink. It is judged when it reaches 80 km height.";
+        if (ok) owin(t);
+        else if (auto) {
+          O.run = 0;
+          O.st = "lost";
+          setS("lost");
+          dlg({ t: "NOT YET!", bad: 1, w: t, nt: "Try again" }, orbit);
+        } else ofb(t, "bad");
+      }
+      function oloop(ts) {
+        if (!O.run || !document.getElementById("oc")) return;
+        const dt = Math.min(0.05, (ts - (O.l || ts)) / 1000);
+        O.l = ts;
+        let sim = dt * 150;
+        const s = O.cs;
+        const lose = (t, h) => {
+          O.run = 0;
+          O.st = "lost";
+          setS("lost");
+          od();
+          dlg({ t: h, bad: 1, w: t, nt: "Try again" }, orbit);
+        };
+        while (sim > 0) {
+          const h = Math.min(4, sim);
+          stp(s, h);
+          sim -= h;
+          O.simT += h;
+          const r = Math.hypot(...s.p),
+            alt = r - RE;
+          if (O.ch === 4 && alt < 80) {
+            const g =
+              (Math.asin(
+                (s.p[0] * s.v[0] + s.p[1] * s.v[1]) / (r * Math.hypot(...s.v)),
+              ) *
+                180) /
+              Math.PI;
+            if (g < -0.3 && g > -7)
+              return owin(
+                `You crossed 80 km at ${(-g).toFixed(1)}° below flat. Real capsules use a gentle angle so heat and g-forces stay safe.`,
+              );
+            return lose(
+              g >= -0.3
+                ? "Too shallow: the craft would skip off the air like a stone. Slow down a little more."
+                : `${(-g).toFixed(1)}° is too steep. Heat and g-forces would be extreme. Use a smaller slow-down.`,
+              "RE-ENTRY FAILED",
+            );
+          }
+          if (r < RE)
+            return lose(
+              "Your sideways speed was too low. Gravity pulled you down before the ground could curve away. Go faster or start higher.",
+              "💥 IT FELL!",
+            );
+          if (r > RE * 9)
+            return lose(
+              "You escaped Earth’s gravity! That needs more than 11 km/s. Lower the speed to stay in orbit.",
+              "🚀 TOO FAST!",
+            );
+        }
+        O.trail.push([s.p[0], s.p[1]]);
+        if (O.trail.length > 900) O.trail.shift();
+        ouiv();
+        od();
+        if (O.ch < 3 && O.simT > 700) {
+          O.run = 0;
+          return ochk(1);
+        }
+        requestAnimationFrame(oloop);
+      }
+      function od() {
+        const cv = $("#oc");
+        if (!cv) return;
+        const c = cv.getContext("2d"),
+          cx = 360,
+          cy = 240,
+          X = (p) => cx + p[0] * K,
+          Y = (p) => cy - p[1] * K;
+        c.fillStyle = "#020610";
+        c.fillRect(0, 0, 720, 480);
+        ST.forEach((s) => c.fillRect(s[0], s[1], 1.3, 1.3));
+        const g = c.createRadialGradient(cx - 40, cy - 40, 10, cx, cy, RE * K);
+        g.addColorStop(0, "#2c7bd6");
+        g.addColorStop(1, "#0a2a55");
+        c.fillStyle = g;
+        c.beginPath();
+        c.arc(cx, cy, RE * K, 0, 7);
+        c.fill();
+        c.strokeStyle = "rgba(120,200,255,.5)";
+        c.lineWidth = 4;
+        c.beginPath();
+        c.arc(cx, cy, (RE + 80) * K, 0, 7);
+        c.stroke();
+        c.lineWidth = 1;
+        c.setLineDash([5, 5]);
+        c.strokeStyle = "rgba(61,220,132,.5)";
+        if (O.ch === 2) {
+          c.beginPath();
+          c.arc(cx, cy, (RE + 800) * K, 0, 7);
+          c.stroke();
+        }
+        if (O.ch === 3) {
+          c.beginPath();
+          c.arc(cx, cy, (RE + 2000) * K, 0, 7);
+          c.stroke();
+        }
+        const q = { p: [...O.cs.p], v: [...O.cs.v] };
+        c.strokeStyle = "#ffd24a";
+        c.beginPath();
+        c.moveTo(X(q.p), Y(q.p));
+        let sw = 0,
+          pa = Math.atan2(q.p[1], q.p[0]),
+          crash = 0;
+        for (let i = 0; i < 1600; i++) {
+          stp(q, 10);
+          const r = Math.hypot(...q.p);
+          if (r < RE) {
+            crash = 1;
+            break;
+          }
+          if (r > RE * 9) break;
+          const a = Math.atan2(q.p[1], q.p[0]);
+          let d = a - pa;
+          if (d > Math.PI) d -= 2 * Math.PI;
+          if (d < -Math.PI) d += 2 * Math.PI;
+          sw += Math.abs(d);
+          pa = a;
+          c.lineTo(X(q.p), Y(q.p));
+          if (sw > 6.4) break;
+        }
+        c.strokeStyle = crash ? "#ff5252" : "#ffd24a";
+        c.stroke();
+        c.setLineDash([]);
+        if (O.trail && O.trail.length > 1) {
+          c.strokeStyle = "#35d0ff";
+          c.beginPath();
+          O.trail.forEach((p, i) =>
+            i ? c.lineTo(X(p), Y(p)) : c.moveTo(X(p), Y(p)),
+          );
+          c.stroke();
+        }
+        const s = O.cs,
+          sx = X(s.p),
+          sy = Y(s.p),
+          r = Math.hypot(...s.p),
+          ux = -s.p[0] / r,
+          uy = (s.p[1] / -r) * -1,
+          vm = Math.hypot(...s.v);
+        c.fillStyle = "#fff";
+        c.fillRect(sx - 4, sy - 4, 8, 8);
+        c.strokeStyle = "#ff5252";
+        c.beginPath();
+        c.moveTo(sx, sy);
+        c.lineTo(sx + ux * 28, sy - (s.p[1] / r) * -28 * -1);
+        c.stroke();
+        c.strokeStyle = "#3ddc84";
+        c.beginPath();
+        c.moveTo(sx, sy);
+        c.lineTo(sx + (s.v[0] / vm) * 34, sy - (s.v[1] / vm) * 34);
+        c.stroke();
+        c.font = "12px sans-serif";
+        c.fillStyle = "#ff8a8a";
+        c.fillText("gravity", sx + ux * 28 + 4, sy + (s.p[1] / r) * 28);
+        c.fillStyle = "#7be9a6";
+        c.fillText(
+          "velocity",
+          sx + (s.v[0] / vm) * 34 + 4,
+          sy - (s.v[1] / vm) * 34,
+        );
+      }
+
+      /* ---------- Simple games: Satellite, Docking, Rover ---------- */
+      const SP = {
+        solar: ["Solar panels", "make electricity from sunlight"],
+        antenna: ["Antenna", "talks to Earth"],
+        camera: ["Camera", "takes pictures"],
+        battery: ["Battery", "keeps power on in Earth’s shadow"],
+        computer: ["Computer", "the satellite’s brain"],
+        thermal: ["Thermal shield", "protects from extreme heat and cold"],
+      };
+      const SM = {
+        "Weather monitoring": [
+          ["solar", "antenna", "camera", "battery", "computer"],
+          "It watches clouds and storms so forecasts and cyclone warnings are possible.",
+        ],
+        Communication: [
+          ["solar", "antenna", "battery", "computer"],
+          "It relays phone calls, TV and internet.",
+        ],
+        "Earth observation": [
+          ["solar", "antenna", "camera", "battery", "computer", "thermal"],
+          "It photographs floods, forests and cities to help in disasters.",
+        ],
+        Navigation: [
+          ["solar", "antenna", "battery", "computer"],
+          "Navigation satellites (like GPS) tell your phone where you are.",
+        ],
+      };
+      let SG;
+      function gSat() {
+        SG = { m: "Communication", s: {}, u: 0 };
+        srend();
+      }
+      function srend() {
+        const need = SM[SG.m][0];
+        const keep = SG.v ? SG.v.rn.domElement : null;
+        $("#v").innerHTML =
+          `<div class="row"><h2 style="margin:0;flex:1">Satellite Lab</h2><button id="bk">Back to academy</button></div><p class="mu">Step 1: pick a mission. Step 2: tap parts to add them. Step 3: launch!</p><div class="bg2" style="grid-template-columns:minmax(0,1fr) 320px"><section><div id="sw"></div><canvas id="sc2" class="m" width="600" height="360"></canvas><div class="pn" id="sm" style="margin-top:8px">Choose parts the satellite needs for its job.</div></section><aside><div class="pn"><h3>Mission</h3>${Object.keys(
+            SM,
+          )
+            .map(
+              (m) =>
+                `<button class="li ${SG.m === m ? "sel" : ""}" data-m="${m}">${m}</button>`,
+            )
+            .join(
+              "",
+            )}</div><div class="pn" style="margin-top:8px"><h3>Parts ($ educational)</h3>${Object.keys(
+            SP,
+          )
+            .map(
+              (k) =>
+                `<button class="li ${SG.s[k] ? "ok" : ""}" data-p="${k}"><span>${SG.s[k] ? "✓ " : ""}${SP[k][0]}</span></button><div class="mu" style="font-size:.82rem;margin:-2px 0 6px">${SP[k][1]}</div>`,
+            )
+            .join(
+              "",
+            )}<button class="p" id="sl" style="width:100%">Launch satellite</button></div></aside></div>`;
+        $("#bk").onclick = () => go("home");
+        document.querySelectorAll("[data-m]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              SG.m = b.dataset.m;
+              srend();
+            }),
+        );
+        document.querySelectorAll("[data-p]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              SG.s[b.dataset.p] = !SG.s[b.dataset.p];
+              srend();
+              if (SG.s[b.dataset.p]) satDlg(b.dataset.p);
+            }),
+        );
+        $("#sl").onclick = () => {
+          const miss = need.filter((k) => !SG.s[k]);
+          if (miss.length) {
+            return ($("#sm").innerHTML =
+              '<b class="wr">Not ready!</b> A ' +
+              SG.m.toLowerCase() +
+              " satellite is missing: " +
+              miss.map((k) => SP[k][0] + " (" + SP[k][1] + ")").join("; ") +
+              ".");
+          }
+          const extra = Object.keys(SG.s).filter(
+            (k) => SG.s[k] && !need.includes(k),
+          );
+          const steps = [
+            "1. Rocket launch: the rocket carries the satellite up.",
+            "2. Fairing separation: the cover falls away.",
+            "3. Satellite deployment: it is released into orbit.",
+            "4. Solar panels unfold to make power.",
+            "5. Communication switched on.",
+            "6. Connected to ground control! " +
+              SM[SG.m][1] +
+              (extra.length
+                ? " (Extra parts add weight and cost, so engineers only carry what they need.)"
+                : ""),
+          ];
+          let i = 0;
+          SG.u = 0;
+          $("#sl").disabled = true;
+          CD = setInterval(() => {
+            $("#sm").innerHTML = '<b class="ok">' + steps[i] + "</b>";
+            if (i >= 3) SG.u = 1;
+            sdr();
+            if (++i >= steps.length) {
+              clearInterval(CD);
+              S.gm.sat = 1;
+              save();
+              award("sat");
+              win(
+                "SATELLITE DEPLOYED!",
+                "Your " +
+                  SG.m.toLowerCase() +
+                  " satellite is working in orbit. " +
+                  SM[SG.m][1],
+                3,
+                gSat,
+              );
+            }
+          }, 1500);
+        };
+        if (window.THREE && !SG.no) {
+          try {
+            if (keep) $("#sw").append(keep);
+            else SG.v = mkSatV($("#sw"));
+          } catch (e) {
+            SG.no = 1;
+            SG.v = null;
+            SG.P = null;
+            $("#sw").innerHTML = "";
+          }
+        }
+        sdr();
+      }
+      function sdr() {
+        if (SG.P) {
+          $("#sc2").style.display = "none";
+          return ssync();
+        }
+        const c = $("#sc2").getContext("2d");
+        c.fillStyle = "#020610";
+        c.fillRect(0, 0, 600, 360);
+        stars(c, 600, 360);
+        const s = SG.s,
+          u = SG.u,
+          x = 300,
+          y = 180;
+        if (s.solar) {
+          c.fillStyle = "#2e6fd6";
+          const w = 60 + 90 * u;
+          c.fillRect(x - 30 - w, y - 25, w, 50);
+          c.fillRect(x + 30, y - 25, w, 50);
+        }
+        c.fillStyle = "#d9b24a";
+        c.fillRect(x - 30, y - 40, 60, 80);
+        if (s.thermal) {
+          c.strokeStyle = "#ffd24a";
+          c.lineWidth = 4;
+          c.strokeRect(x - 32, y - 42, 64, 84);
+        }
+        if (s.antenna) {
+          c.fillStyle = "#ddd";
+          c.beginPath();
+          c.arc(x, y - 48, 22, Math.PI, 0);
+          c.fill();
+        }
+        if (s.camera) {
+          c.fillStyle = "#111";
+          c.beginPath();
+          c.arc(x, y + 55, 12, 0, 7);
+          c.fill();
+          c.strokeStyle = "#35d0ff";
+          c.stroke();
+        }
+        c.fillStyle = "#222";
+        c.font = "12px sans-serif";
+        if (s.computer) c.fillText("CPU", x - 12, y - 5);
+        if (s.battery) c.fillText("Battery", x - 20, y + 18);
+      }
+
+      let DK;
+      const KM = {
+        ArrowUp: "u",
+        w: "u",
+        W: "u",
+        ArrowDown: "d",
+        s: "d",
+        S: "d",
+        ArrowLeft: "l",
+        a: "l",
+        A: "l",
+        ArrowRight: "r",
+        d: "r",
+        D: "r",
+      };
+      function gDock() {
+        DK = {
+          st: "ready",
+          x: -270,
+          y: 120,
+          vx: 0,
+          vy: 0,
+          f: 100,
+          t: 0,
+          k: {},
+          par: [],
+          ex: [],
+          l: 0,
+          sn: 0,
+          msg: "",
+        };
+        $("#v").innerHTML =
+          `<div class="row"><h2 style="margin:0;flex:1">Docking Challenge</h2><button id="bk">Back to academy</button></div>${bar()}<div class="bg2" style="grid-template-columns:minmax(0,1fr) 280px"><section><canvas id="dc" class="m" width="720" height="430"></canvas></section><aside><div class="pn"><h3>Your mission</h3><p>Fly into the green docking port. Line up straight with it, then arrive <b>slowly</b> (under 0.8 m/s).</p><p class="mu">Hold arrow keys or W A S D to fire thrusters. Nothing stops by itself in space: to slow down, push the other way! Space = pause.</p><div class="pad"><div class="row" style="justify-content:center"><button id="tu">▲</button></div><div class="row" style="justify-content:center"><button id="tl">◀</button><button id="td">▼</button><button id="tr">▶</button></div></div></div></aside></div>`;
+        $("#bk").onclick = () => go("home");
+        $("#gR").onclick = gDock;
+        $("#gS").onclick = () => {
+          if (DK.st !== "ready") return;
+          cd3(() => {
+            if (!$("#dc")) return;
+            DK.st = "play";
+            setS("play");
+            DK.l = 0;
+          });
+        };
+        $("#gP").onclick = dpause;
+        [
+          ["tu", "u"],
+          ["td", "d"],
+          ["tl", "l"],
+          ["tr", "r"],
+        ].forEach(([i, k]) => {
+          const b = $("#" + i);
+          b.onpointerdown = (e) => {
+            e.preventDefault();
+            DK.k[k] = 1;
+          };
+          b.onpointerup = b.onpointerleave = () => (DK.k[k] = 0);
+        });
+        document.onkeydown = (e) => {
+          if (KM[e.key]) {
+            e.preventDefault();
+            DK.k[KM[e.key]] = 1;
+          }
+          if (e.key === " " || e.key === "p") {
+            e.preventDefault();
+            dpause();
+          }
+        };
+        document.onkeyup = (e) => {
+          if (KM[e.key]) DK.k[KM[e.key]] = 0;
+        };
+        setS("ready");
+        dlg({
+          t: "DOCKING MISSION",
+          wh: "Your mission",
+          w: "Fly your spacecraft to the space station and connect to its green port. Line up straight, then arrive slowly. Fast arrivals damage both spacecraft!",
+          f: "The International Space Station circles Earth at about 28,000 km/h, but docking spacecraft match its speed so it looks like they barely move.",
+          nt: "Got it!",
+        });
+        requestAnimationFrame(ddr);
+      }
+      function dpause() {
+        if (DK.st === "play") {
+          DK.st = "pause";
+          setS("pause");
+        } else if (DK.st === "pause") {
+          DK.st = "play";
+          DK.l = 0;
+          setS("play");
+        }
+      }
+      function ddr(now) {
+        const cv = $("#dc");
+        if (!cv || !DK) return;
+        const d = DK,
+          dt = Math.min(0.05, (now - d.l) / 1000 || 0);
+        d.l = now;
+        if (d.st === "play") {
+          const ac = 1.3;
+          let th = 0,
+            ax = 0,
+            ay = 0;
+          if (d.f > 0) {
+            ax = ((d.k.r ? 1 : 0) - (d.k.l ? 1 : 0)) * ac;
+            ay = ((d.k.d ? 1 : 0) - (d.k.u ? 1 : 0)) * ac;
+            d.vx += ax * dt;
+            d.vy += ay * dt;
+            th = Math.abs(ax) + Math.abs(ay);
+            d.f = Math.max(0, d.f - th * dt * 3);
+            if (th)
+              for (let i = 0; i < 2; i++)
+                d.par.push({
+                  x: d.x,
+                  y: d.y,
+                  vx: -Math.sign(ax) * 40 + (Math.random() - 0.5) * 20,
+                  vy: -Math.sign(ay) * 40 + (Math.random() - 0.5) * 20,
+                  l: 1,
+                });
+          }
+          d.x += d.vx * dt * 5;
+          d.y += d.vy * dt * 5;
+          d.t += dt;
+          const dist = Math.hypot(d.x, d.y),
+            sp = Math.hypot(d.vx, d.vy),
+            al = d.x < 0 ? Math.atan2(Math.abs(d.y), -d.x) * 57.3 : 180;
+          if (dist < 14) {
+            if (sp < 0.8 && al < 12) {
+              d.st = "snap";
+              d.sn = 0;
+            } else {
+              d.st = "boom";
+              d.sn = 0;
+              d.ex = [...Array(50)].map(() => ({
+                x: d.x,
+                y: d.y,
+                vx: (Math.random() - 0.5) * 160,
+                vy: (Math.random() - 0.5) * 160,
+                l: 1,
+              }));
+              d.msg =
+                sp >= 0.8
+                  ? `You arrived too fast (${sp.toFixed(1)} m/s). Docking needs under 0.8 m/s.`
+                  : "You were not lined up with the port. Approach straight in from the left.";
+            }
+          } else if (Math.abs(d.x) > 560 || Math.abs(d.y) > 380) {
+            d.st = "boom";
+            d.sn = 0;
+            d.ex = [];
+            d.msg =
+              "You drifted away. In space you keep moving until you push back!";
+          } else if (d.f <= 0 && sp < 0.05) {
+            d.st = "boom";
+            d.sn = 0;
+            d.ex = [];
+            d.msg = "Out of fuel! Plan your thruster pushes carefully.";
+          }
+        }
+        if (d.st === "snap") {
+          d.sn += dt;
+          d.x *= 0.9;
+          d.y *= 0.9;
+          if (d.sn > 1.2) {
+            d.st = "won";
+            setS("won");
+            S.gm.dock = 1;
+            save();
+            award("dock");
+            win(
+              "DOCKING SUCCESSFUL!",
+              "Slow and straight wins in space. Real crews dock the same way.",
+              d.f > 50 ? 3 : d.f > 20 ? 2 : 1,
+              gDock,
+            );
+          }
+        }
+        if (d.st === "boom") {
+          d.sn += dt;
+          d.ex.forEach((p) => {
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.l -= dt;
+          });
+          if (d.sn > 1.4) {
+            d.st = "lost";
+            setS("lost");
+            dlg(
+              { t: "💥 DOCKING FAILED", bad: 1, w: d.msg, nt: "Try again" },
+              gDock,
+            );
+          }
+        }
+        d.par.forEach((p) => {
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.l -= dt * 1.5;
+        });
+        d.par = d.par.filter((p) => p.l > 0);
+        const c = cv.getContext("2d"),
+          X = 470,
+          Y = 215,
+          dist = Math.hypot(d.x, d.y),
+          sp = Math.hypot(d.vx, d.vy),
+          al = d.x < 0 ? Math.atan2(Math.abs(d.y), -d.x) * 57.3 : 180,
+          t = now / 1000;
+        const g = c.createLinearGradient(0, 0, 0, 430);
+        g.addColorStop(0, "#020611");
+        g.addColorStop(1, "#10205a");
+        c.fillStyle = g;
+        c.fillRect(0, 0, 720, 430);
+        for (let i = 0; i < 80; i++) {
+          c.globalAlpha = 0.4 + 0.5 * Math.sin(t * 2 + i);
+          c.fillStyle = "#fff";
+          c.fillRect(
+            (((i * 97 - d.x * 0.06 * (1 + (i % 3))) % 720) + 720) % 720,
+            (((i * 53 - d.y * 0.06 * (1 + (i % 3))) % 430) + 430) % 430,
+            1.5,
+            1.5,
+          );
+        }
+        c.globalAlpha = 1;
+        const eg = c.createRadialGradient(200, 640, 200, 200, 640, 340);
+        eg.addColorStop(0, "#1d6fd6");
+        eg.addColorStop(0.9, "#0a3a7a");
+        eg.addColorStop(1, "#5ac8ff");
+        c.fillStyle = eg;
+        c.beginPath();
+        c.arc(200, 660, 330, 0, 7);
+        c.fill();
+        c.fillStyle = "#3d4a63";
+        c.fillRect(X, Y - 48, 5, 96);
+        c.fillRect(X + 150, 40, 6, 350);
+        c.fillStyle = "#b8c4d8";
+        c.fillRect(X, Y - 20, 120, 40);
+        c.fillRect(X + 80, Y - 40, 70, 80);
+        c.fillStyle = "#8896ad";
+        c.fillRect(X + 120, Y - 12, 36, 24);
+        c.fillStyle = "#2e6fd6";
+        [
+          [40, 90],
+          [300, 90],
+        ].forEach((a) => {
+          c.fillRect(X + 110, a[0], 92, a[1] - 40 + 40 > 0 ? 60 : 60);
+          c.fillRect(
+            X + 110,
+            a[0] + (a[0] > 100 ? -0 : 0) + (a[0] > 100 ? 30 : 0),
+            92,
+            60,
+          );
+        });
+        c.strokeStyle = "#1d3a66";
+        for (let i = 0; i < 5; i++) {
+          c.beginPath();
+          c.moveTo(X + 110 + i * 23, 40);
+          c.lineTo(X + 110 + i * 23, 100);
+          c.moveTo(X + 110 + i * 23, 300);
+          c.lineTo(X + 110 + i * 23, 360);
+          c.stroke();
+        }
+        const ok = sp < 0.8 && al < 12,
+          pc = ok ? "#3ddc84" : "#ff5252";
+        c.setLineDash([6, 6]);
+        c.strokeStyle = "rgba(61,220,132,.45)";
+        c.beginPath();
+        c.moveTo(X, Y);
+        c.lineTo(X - 300, Y - 52);
+        c.moveTo(X, Y);
+        c.lineTo(X - 300, Y + 52);
+        c.stroke();
+        c.setLineDash([]);
+        c.lineWidth = 3;
+        c.strokeStyle = pc;
+        c.beginPath();
+        c.arc(X, Y, 12 + 2 * Math.sin(t * 5), 0, 7);
+        c.stroke();
+        c.lineWidth = 1;
+        d.par.forEach((p) => {
+          c.globalAlpha = p.l;
+          c.fillStyle = "#ffb13d";
+          c.beginPath();
+          c.arc(X + p.x, Y + p.y, 3 * p.l + 1, 0, 7);
+          c.fill();
+        });
+        c.globalAlpha = 1;
+        if (d.st !== "boom" && d.st !== "lost") {
+          const sx = X + d.x,
+            sy = Y + d.y;
+          c.fillStyle = "#e8eef8";
+          c.fillRect(sx - 16, sy - 8, 26, 16);
+          c.beginPath();
+          c.moveTo(sx + 10, sy - 8);
+          c.lineTo(sx + 20, sy);
+          c.lineTo(sx + 10, sy + 8);
+          c.fill();
+          c.fillStyle = "#35d0ff";
+          c.fillRect(sx + 2, sy - 4, 6, 8);
+          c.fillStyle = "#ff9a2e";
+          c.fillRect(sx - 20, sy - 5, 4, 10);
+        }
+        d.ex.forEach((p) => {
+          c.globalAlpha = Math.max(0, p.l);
+          c.fillStyle = p.l > 0.5 ? "#ffd24a" : "#ff5252";
+          c.beginPath();
+          c.arc(X + p.x, Y + p.y, 5 * p.l + 1, 0, 7);
+          c.fill();
+        });
+        c.globalAlpha = 1;
+        c.fillStyle = "#0008";
+        c.fillRect(8, 8, 210, 92);
+        c.font = "14px sans-serif";
+        c.fillStyle = "#fff";
+        c.fillText("Distance: " + Math.round(dist) + " m", 18, 28);
+        c.fillStyle = sp < 0.8 ? "#3ddc84" : "#ff7a7a";
+        c.fillText("Speed: " + sp.toFixed(2) + " m/s (need <0.8)", 18, 48);
+        c.fillStyle = al < 12 ? "#3ddc84" : "#ff7a7a";
+        c.fillText("Alignment: " + Math.round(al) + "° (need <12°)", 18, 68);
+        c.fillStyle = "#fff";
+        c.fillText("Fuel", 18, 88);
+        c.fillStyle = "#06101f";
+        c.fillRect(54, 78, 150, 10);
+        c.fillStyle = d.f > 30 ? "#35d0ff" : "#ff5252";
+        c.fillRect(54, 78, 1.5 * d.f, 10);
+        c.font = "bold 34px sans-serif";
+        c.textAlign = "center";
+        c.fillStyle = "#ffd24a";
+        if (d.st === "ready") c.fillText("Press ▶ Start", 360, 70);
+        if (d.st === "pause") c.fillText("PAUSED", 360, 70);
+        if (d.st === "play" && dist < 90 && sp > 1.5) {
+          c.fillStyle = "#ff5252";
+          c.fillText("SLOW DOWN!", 360, 70);
+        }
+        c.textAlign = "left";
+        const tm = $("#gtm");
+        if (tm) tm.textContent = "Time " + Math.round(d.t) + "s";
+        requestAnimationFrame(ddr);
+      }
+      const EN = {
+        Moon: [
+          "#9a9aa2",
+          "#6b6b74",
+          1,
+          1.3,
+          "Moon: gravity is 1/6 of Earth. Signal delay: 1.3 seconds.",
+          "Grey lunar soil (regolith) with sharp glassy grains, made by billions of years of space impacts.",
+        ],
+        Mars: [
+          "#b35a34",
+          "#823a20",
+          0.9,
+          4,
+          "Mars: gravity is about 1/3 of Earth. Real signal delay: 3 to 22 minutes.",
+          "Iron-rich rock. It is red because of rust! Water once helped make minerals like this.",
+        ],
+        Asteroid: [
+          "#5e564a",
+          "#3a342b",
+          0.7,
+          2.5,
+          "Asteroid: gravity is tiny, so you could almost float away.",
+          "Dark carbon-rich rock: leftover building material from the early Solar System.",
+        ],
+      };
+      let RV;
+      function gRover(e) {
+        RV = {
+          e: e || "Moon",
+          x: 200,
+          y: 200,
+          a: 0,
+          v: 0,
+          st: "ready",
+          k: {},
+          got: 0,
+          photo: 0,
+          scan: 0,
+          sp: 0,
+          bat: 100,
+          t: 0,
+          dust: [],
+          cr: [],
+          ro: [],
+          pts: [],
+          arm: 0,
+          tg: null,
+          flash: 0,
+          ring: 0,
+          msg: "Drive with the arrow keys. Follow the arrow to a glowing sample.",
+          l: 0,
+        };
+        for (let i = 0; i < 36; i++)
+          RV.cr.push({
+            x: Math.random() * 1400,
+            y: Math.random() * 900,
+            r: 10 + Math.random() * 35,
+          });
+        for (let i = 0; i < 40; i++)
+          RV.ro.push({
+            x: Math.random() * 1400,
+            y: Math.random() * 900,
+            r: 2 + Math.random() * 5,
+          });
+        while (RV.pts.length < 3) {
+          const p = {
+            x: 350 + Math.random() * 950,
+            y: 80 + Math.random() * 740,
+            ok: 0,
+          };
+          if (RV.pts.every((q) => Math.hypot(q.x - p.x, q.y - p.y) > 300))
+            RV.pts.push(p);
+        }
+        const E = EN[RV.e];
+        $("#v").innerHTML =
+          `<div class="row"><h2 style="margin:0;flex:1">Planetary Rover Explorer</h2><button id="bk">Back to academy</button></div>${bar()}<div class="bg2" style="grid-template-columns:minmax(0,1fr) 300px"><section><canvas id="rv" class="m" width="720" height="430"></canvas><div class="pn" id="rm2" style="margin-top:8px"></div></section><aside><div class="pn"><h3>World</h3><div class="row">${Object.keys(
+            EN,
+          )
+            .map(
+              (k) =>
+                `<button data-e="${k}" class="${RV.e === k ? "on" : ""}">${k}</button>`,
+            )
+            .join(
+              "",
+            )}</div><p class="mu">${E[4]}</p></div><div class="pn ob" id="ob" style="margin-top:8px"></div><div class="pn" style="margin-top:8px"><div class="pad"><div class="row" style="justify-content:center"><button id="tu">▲</button></div><div class="row" style="justify-content:center"><button id="tl">◀</button><button id="td">▼</button><button id="tr">▶</button></div></div><div class="row" style="margin-top:8px"><button id="co">🦾 Collect (C)</button><button id="sc3">📡 Scan (X)</button><button id="ph">📷 Photo (F)</button><button id="sd" class="p">🛰 Send data</button></div></div></aside></div>`;
+        $("#bk").onclick = () => go("home");
+        $("#gR").onclick = () => gRover(RV.e);
+        $("#gP").onclick = rpause;
+        $("#gS").onclick = () => {
+          if (RV.st !== "ready") return;
+          cd3(() => {
+            if (!$("#rv")) return;
+            RV.st = "play";
+            setS("play");
+            RV.l = 0;
+          });
+        };
+        document
+          .querySelectorAll("[data-e]")
+          .forEach((b) => (b.onclick = () => gRover(b.dataset.e)));
+        [
+          ["tu", "u"],
+          ["td", "d"],
+          ["tl", "l"],
+          ["tr", "r"],
+        ].forEach(([i, k]) => {
+          const b = $("#" + i);
+          b.onpointerdown = (e) => {
+            e.preventDefault();
+            RV.k[k] = 1;
+          };
+          b.onpointerup = b.onpointerleave = () => (RV.k[k] = 0);
+        });
+        const act = (k) => ({ c: rcol, x: rscan, f: rphoto, Enter: rsend })[k];
+        document.onkeydown = (e) => {
+          if (KM[e.key]) {
+            e.preventDefault();
+            RV.k[KM[e.key]] = 1;
+          }
+          const a = act(e.key);
+          if (a) a();
+          if (e.key === " " || e.key === "p") {
+            e.preventDefault();
+            rpause();
+          }
+        };
+        document.onkeyup = (e) => {
+          if (KM[e.key]) RV.k[KM[e.key]] = 0;
+        };
+        $("#co").onclick = rcol;
+        $("#sc3").onclick = rscan;
+        $("#ph").onclick = rphoto;
+        $("#sd").onclick = rsend;
+        setS("ready");
+        rob();
+        dlg({
+          t: "ROVER MISSION: " + RV.e.toUpperCase(),
+          wh: "Your mission",
+          w: "Drive the rover, collect 3 rock samples, scan a rock with the spectrometer, take a photo, then send your data to Earth. Watch your battery!",
+          f: E[4],
+          nt: "Let’s explore!",
+        });
+        requestAnimationFrame(rvl);
+      }
+      function rpause() {
+        if (RV.st === "play") {
+          RV.st = "pause";
+          setS("pause");
+        } else if (RV.st === "pause") {
+          RV.st = "play";
+          RV.l = 0;
+          setS("play");
+        }
+      }
+      function rob() {
+        const r = RV,
+          o = $("#ob");
+        if (o)
+          o.innerHTML = `<h3>Mission jobs</h3><p>${r.got >= 3 ? "✅" : "⬜"} Collect 3 samples (${r.got}/3)</p><p>${r.scan ? "✅" : "⬜"} Scan a rock</p><p>${r.photo ? "✅" : "⬜"} Take a photo</p><p>${r.sp ? "✅" : "⬜"} Send data to Earth</p>`;
+        const m = $("#rm2");
+        if (m) m.innerHTML = r.msg;
+      }
+      const rn = () =>
+        RV.pts
+          .filter((p) => !p.ok)
+          .sort(
+            (a, b) =>
+              Math.hypot(a.x - RV.x, a.y - RV.y) -
+              Math.hypot(b.x - RV.x, b.y - RV.y),
+          )[0];
+      function rcol() {
+        if (RV.st !== "play" || RV.arm) return;
+        const p = rn();
+        if (p && Math.hypot(p.x - RV.x, p.y - RV.y) < 75) {
+          RV.arm = 0.01;
+          RV.tg = p;
+          RV.msg = "Robotic arm reaching out...";
+        } else
+          RV.msg =
+            '<b class="wr">Too far.</b> Drive closer to a glowing sample (follow the arrow).';
+        rob();
+      }
+      function rscan() {
+        if (RV.st !== "play") return;
+        RV.ring = 0.01;
+        const p = rn() || RV.pts[0];
+        RV.msg =
+          Math.hypot(p.x - RV.x, p.y - RV.y) < 130
+            ? '<b class="ok">Spectrometer result:</b> ' + EN[RV.e][5]
+            : "Nothing special here. Scan close to a glowing sample.";
+        if (RV.msg.includes("result")) RV.scan = 1;
+        rob();
+      }
+      function rphoto() {
+        if (RV.st !== "play") return;
+        RV.flash = 1;
+        RV.photo = 1;
+        RV.msg =
+          '<b class="ok">Photo saved!</b> Cameras let scientists study rocks and landscapes from far away (remote sensing).';
+        rob();
+      }
+      function rsend() {
+        if (RV.st !== "play") return;
+        if (RV.got < 3 || !RV.scan || !RV.photo) {
+          RV.msg =
+            '<b class="wr">Finish the other jobs first:</b> 3 samples, a scan and a photo.';
+          return rob();
+        }
+        RV.st = "send";
+        RV.sendP = 0;
+        RV.msg = "Sending... " + EN[RV.e][4];
+        rob();
+      }
+      function rvl(now) {
+        const cv = $("#rv");
+        if (!cv || !RV) return;
+        const r = RV,
+          E = EN[r.e],
+          dt = Math.min(0.05, (now - r.l) / 1000 || 0);
+        r.l = now;
+        if (r.st === "play" || r.st === "send") {
+          r.t += dt;
+          if (r.st === "play") {
+            const f = E[2];
+            r.v += ((r.k.u ? 1 : 0) - (r.k.d ? 1 : 0)) * 140 * dt * f;
+            r.v *= Math.pow(0.25, dt);
+            r.v = Math.max(-70 * f, Math.min(110 * f, r.v));
+            r.a +=
+              ((r.k.r ? 1 : 0) - (r.k.l ? 1 : 0)) *
+              2.2 *
+              dt *
+              Math.min(1, Math.abs(r.v) / 25 + 0.25) *
+              (r.v < 0 ? -1 : 1);
+            r.x = Math.max(20, Math.min(1380, r.x + Math.cos(r.a) * r.v * dt));
+            r.y = Math.max(20, Math.min(880, r.y + Math.sin(r.a) * r.v * dt));
+            r.bat = Math.min(
+              100,
+              r.bat + (Math.abs(r.v) > 8 ? -2.2 : 0.8) * dt,
+            );
+            if (Math.abs(r.v) > 20 && Math.random() < 0.6)
+              r.dust.push({
+                x: r.x - Math.cos(r.a) * 18,
+                y: r.y - Math.sin(r.a) * 18,
+                l: 1,
+              });
+            if (r.bat <= 0) {
+              r.st = "lost";
+              setS("lost");
+              dlg(
+                {
+                  t: "🔋 BATTERY EMPTY",
+                  bad: 1,
+                  w: "The rover ran out of power. Real rovers rest in sunlight to recharge. Plan a shorter route and stop to recharge!",
+                  nt: "Try again",
+                },
+                () => gRover(r.e),
+              );
+            }
+          }
+          if (r.arm) {
+            r.arm += dt * 1.4;
+            if (r.arm >= 1.6 && r.tg) {
+              r.tg.ok = 1;
+              r.got++;
+              r.arm = 0;
+              r.msg =
+                '<b class="ok">Sample collected!</b> Scientists study rock and soil to learn how a world formed.';
+              r.tg = null;
+              rob();
+            }
+          }
+          if (r.st === "send") {
+            r.sendP += dt / E[3];
+            if (r.sendP >= 1) {
+              r.st = "won";
+              r.sp = 1;
+              rob();
+              setS("won");
+              S.gm.rover = 1;
+              save();
+              award("rover");
+              win(
+                "DATA RECEIVED ON EARTH!",
+                E[4] + " Mission time: " + Math.round(r.t) + " s.",
+                r.t < 110 ? 3 : r.t < 180 ? 2 : 1,
+                () => gRover(r.e),
+              );
+            }
+          }
+        }
+        r.dust.forEach((p) => (p.l -= dt * 1.2));
+        r.dust = r.dust.filter((p) => p.l > 0);
+        if (r.ring) r.ring += dt * 1.2;
+        if (r.ring > 1) r.ring = 0;
+        if (r.flash > 0) r.flash -= dt * 2;
+        const c = cv.getContext("2d"),
+          cx = Math.max(0, Math.min(680, r.x - 360)),
+          cy = Math.max(0, Math.min(470, r.y - 215)),
+          t = now / 1000;
+        c.fillStyle = E[0];
+        c.fillRect(0, 0, 720, 430);
+        c.save();
+        c.translate(-cx, -cy);
+        r.cr.forEach((q) => {
+          c.fillStyle = E[1];
+          c.beginPath();
+          c.ellipse(q.x, q.y, q.r, q.r * 0.7, 0, 0, 7);
+          c.fill();
+          c.strokeStyle = "#ffffff30";
+          c.lineWidth = 2;
+          c.stroke();
+        });
+        r.ro.forEach((q) => {
+          c.fillStyle = E[1];
+          c.beginPath();
+          c.arc(q.x, q.y, q.r, 0, 7);
+          c.fill();
+        });
+        r.pts.forEach((p) => {
+          if (!p.ok) {
+            const g = c.createRadialGradient(
+              p.x,
+              p.y,
+              2,
+              p.x,
+              p.y,
+              26 + 4 * Math.sin(t * 4),
+            );
+            g.addColorStop(0, "#bff4ff");
+            g.addColorStop(1, "transparent");
+            c.fillStyle = g;
+            c.fillRect(p.x - 30, p.y - 30, 60, 60);
+            c.fillStyle = "#35d0ff";
+            c.beginPath();
+            c.arc(p.x, p.y, 6, 0, 7);
+            c.fill();
+          }
+        });
+        r.dust.forEach((p) => {
+          c.globalAlpha = p.l * 0.5;
+          c.fillStyle = "#e8d9c0";
+          c.beginPath();
+          c.arc(p.x, p.y, 6 * (2 - p.l), 0, 7);
+          c.fill();
+        });
+        c.globalAlpha = 1;
+        c.save();
+        c.translate(r.x, r.y);
+        c.rotate(r.a);
+        c.fillStyle = "#222";
+        [-14, 0, 14].forEach((w) => {
+          c.fillRect(w - 5, -17, 10, 6);
+          c.fillRect(w - 5, 11, 10, 6);
+        });
+        c.fillStyle = "#e8eef8";
+        c.fillRect(-20, -10, 40, 20);
+        c.fillStyle = "#2e6fd6";
+        c.fillRect(-16, -8, 22, 16);
+        c.fillStyle = "#ff9a2e";
+        c.fillRect(14, -4, 6, 8);
+        if (r.arm) {
+          const L =
+            Math.min(1, r.arm) *
+            (r.tg ? Math.min(70, Math.hypot(r.tg.x - r.x, r.tg.y - r.y)) : 40);
+          c.strokeStyle = "#ffd24a";
+          c.lineWidth = 4;
+          c.beginPath();
+          c.moveTo(20, 0);
+          c.lineTo(20 + L, 0);
+          c.stroke();
+        }
+        c.restore();
+        if (r.ring) {
+          c.strokeStyle = "rgba(61,220,132," + (1 - r.ring) + ")";
+          c.lineWidth = 3;
+          c.beginPath();
+          c.arc(r.x, r.y, r.ring * 130, 0, 7);
+          c.stroke();
+        }
+        if (r.st === "send") {
+          c.strokeStyle = "#35d0ff";
+          c.setLineDash([8, 6]);
+          c.beginPath();
+          c.moveTo(r.x, r.y);
+          c.lineTo(r.x, r.y - 300 * r.sendP);
+          c.stroke();
+          c.setLineDash([]);
+        }
+        c.restore();
+        const p = rn();
+        if (p && r.st === "play") {
+          const a = Math.atan2(p.y - r.y, p.x - r.x),
+            sx = r.x - cx,
+            sy = r.y - cy;
+          c.save();
+          c.translate(sx + Math.cos(a) * 60, sy + Math.sin(a) * 60);
+          c.rotate(a);
+          c.fillStyle = "#35d0ff";
+          c.beginPath();
+          c.moveTo(12, 0);
+          c.lineTo(-6, -8);
+          c.lineTo(-6, 8);
+          c.fill();
+          c.restore();
+        }
+        if (r.flash > 0) {
+          c.fillStyle = "rgba(255,255,255," + r.flash + ")";
+          c.fillRect(0, 0, 720, 430);
+        }
+        c.fillStyle = "#0008";
+        c.fillRect(8, 8, 200, 56);
+        c.font = "14px sans-serif";
+        c.fillStyle = "#fff";
+        c.fillText("Battery", 18, 28);
+        c.fillStyle = "#06101f";
+        c.fillRect(74, 18, 124, 12);
+        c.fillStyle = r.bat > 30 ? "#3ddc84" : "#ff5252";
+        c.fillRect(74, 18, 1.24 * r.bat, 12);
+        c.fillStyle = "#fff";
+        c.fillText(
+          "Samples " + r.got + "/3   Time " + Math.round(r.t) + "s",
+          18,
+          50,
+        );
+        if (r.st === "send") {
+          c.fillStyle = "#06101f";
+          c.fillRect(220, 380, 280, 14);
+          c.fillStyle = "#35d0ff";
+          c.fillRect(220, 380, 280 * r.sendP, 14);
+          c.fillStyle = "#fff";
+          c.fillText("Sending data to Earth...", 280, 372);
+        }
+        c.font = "bold 34px sans-serif";
+        c.textAlign = "center";
+        c.fillStyle = "#ffd24a";
+        if (r.st === "ready") c.fillText("Press ▶ Start", 360, 70);
+        if (r.st === "pause") c.fillText("PAUSED", 360, 70);
+        c.textAlign = "left";
+        const tm = $("#gtm");
+        if (tm) tm.textContent = "Time " + Math.round(r.t) + "s";
+        requestAnimationFrame(rvl);
+      }
+      /* ---------- 3D (Three.js) ---------- */
+      let R3 = null;
+      const OFF = [1.55, 0.9, 0.33, -0.22, -0.9],
+        w3 = (l) => (450 - l) / 45,
+        COL = {
+          nose: 0xf4f8ff,
+          fairing: 0xdfe9f7,
+          payload: 0xe8b93c,
+          body: 0xdfe6f2,
+          fuel: 0xff9a2e,
+          oxidizer: 0x4aa8ff,
+          engine: 0x7b879b,
+          nozzle: 0x4a5568,
+          stagesep: 0xff5252,
+          guidance: 0x3d7bff,
+          nav: 0x35d0ff,
+          fins: 0xaab6cc,
+          electrical: 0xffd24a,
+          recovery: 0xff9a2e,
+        };
+      function V3(host, w, h, o) {
+        const sc = new THREE.Scene();
+        sc.background = new THREE.Color(0x030914);
+        const cam = new THREE.PerspectiveCamera(40, w / h, 0.1, 5000),
+          rn = new THREE.WebGLRenderer({ antialias: true });
+        rn.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+        rn.setSize(w, h);
+        const d = rn.domElement;
+        d.style.cssText =
+          "width:100%;height:auto;border-radius:10px;border:1px solid #1d3a66;touch-action:none;display:block;cursor:grab";
+        host.append(d);
+        sc.add(new THREE.HemisphereLight(0xcfe3ff, 0x20304f, 1.2));
+        const dl = new THREE.DirectionalLight(0xffffff, 1.4);
+        dl.position.set(5, 8, 6);
+        sc.add(dl);
+        const bl = new THREE.DirectionalLight(0x35d0ff, 0.7);
+        bl.position.set(-6, 2, -5);
+        sc.add(bl);
+        const pa = [];
+        for (let i = 0; i < 400; i++) {
+          const a = Math.random() * 6.28,
+            b = Math.acos(Math.random() * 2 - 1);
+          pa.push(
+            60 * Math.sin(b) * Math.cos(a),
+            60 * Math.cos(b),
+            60 * Math.sin(b) * Math.sin(a),
+          );
+        }
+        const sg = new THREE.BufferGeometry();
+        sg.setAttribute("position", new THREE.Float32BufferAttribute(pa, 3));
+        sc.add(
+          new THREE.Points(
+            sg,
+            new THREE.PointsMaterial({ color: 0xffffff, size: 0.25 }),
+          ),
+        );
+        const v = {
+            sc,
+            cam,
+            rn,
+            th: 0.6,
+            ph: 1.4,
+            r: o.r,
+            auto: 1,
+            down: null,
+            mv: 0,
+          },
+          rc = new THREE.Raycaster(),
+          ty = o.ty || 0;
+        const nd = (e) => {
+          const b = d.getBoundingClientRect();
+          return new THREE.Vector2(
+            ((e.clientX - b.left) / b.width) * 2 - 1,
+            -((e.clientY - b.top) / b.height) * 2 + 1,
+          );
+        };
+        v.pick = (e) => {
+          rc.setFromCamera(nd(e), cam);
+          const L = [];
+          sc.traverse((m) => {
+            if (m.isMesh && m.visible && m.userData.id) L.push(m);
+          });
+          const h = rc.intersectObjects(L)[0];
+          return h ? h.object.userData.id : null;
+        };
+        v.rayY = (e) => {
+          rc.setFromCamera(nd(e), cam);
+          const n = new THREE.Vector3();
+          cam.getWorldDirection(n);
+          const p = new THREE.Vector3();
+          return rc.ray.intersectPlane(new THREE.Plane(n, -n.y * ty), p)
+            ? p.y
+            : 0;
+        };
+        d.onpointerdown = (e) => {
+          v.down = { x: e.clientX, y: e.clientY };
+          v.mv = 0;
+          v.auto = 0;
+          d.setPointerCapture(e.pointerId);
+          d.style.cursor = "grabbing";
+        };
+        d.onpointermove = (e) => {
+          if (!v.down) return;
+          const dx = e.clientX - v.down.x,
+            dy = e.clientY - v.down.y;
+          v.mv += Math.abs(dx) + Math.abs(dy);
+          v.th -= dx * 0.008;
+          v.ph = Math.max(0.3, Math.min(2.8, v.ph - dy * 0.006));
+          v.down = { x: e.clientX, y: e.clientY };
+        };
+        d.onpointerup = (e) => {
+          d.style.cursor = "grab";
+          if (v.down && v.mv < 6 && v.onpick) v.onpick(v.pick(e));
+          v.down = null;
+        };
+        d.onwheel = (e) => {
+          e.preventDefault();
+          v.r = Math.max(o.r * 0.4, Math.min(o.r * 1.6, v.r + e.deltaY * 0.01));
+        };
+        (function lp() {
+          if (!d.isConnected) {
+            rn.dispose();
+            rn.forceContextLoss && rn.forceContextLoss();
+            return;
+          }
+          if (v.auto) v.th += 0.004;
+          try {
+            o.tick && o.tick();
+          } catch (e) {}
+          if (o.cam) o.cam(cam, v);
+          else {
+            cam.position.set(
+              v.r * Math.sin(v.ph) * Math.sin(v.th),
+              ty + v.r * Math.cos(v.ph),
+              v.r * Math.sin(v.ph) * Math.cos(v.th),
+            );
+            cam.lookAt(0, ty, 0);
+          }
+          rn.render(sc, cam);
+          requestAnimationFrame(lp);
+        })();
+        return v;
+      }
+      function mkRocket(sc) {
+        const P = [],
+          RM = {},
+          GM = {},
+          T = THREE,
+          CY = T.CylinderGeometry,
+          BX = T.BoxGeometry;
+        C.forEach((c) => {
+          const id = c[0];
+          RM[id] = new T.MeshStandardMaterial({
+            color: COL[id],
+            metalness: 0.55,
+            roughness: 0.35,
+            side: T.DoubleSide,
+          });
+          GM[id] = new T.MeshBasicMaterial({
+            color: 0x35d0ff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.5,
+          });
+        });
+        const add = (id, z, g, x, y, zz, rx) => {
+          const m = new T.Mesh(g, RM[id]);
+          m.position.set(x, y, zz);
+          if (rx) m.rotation.x = rx;
+          m.userData = { id, z, base: y };
+          sc.add(m);
+          P.push(m);
+          return m;
+        };
+        const pr = [];
+        for (let i = 0; i <= 16; i++) {
+          const t = i / 16;
+          pr.push(
+            new T.Vector2(0.62 * Math.sin((t * Math.PI) / 2), 1.78 * (1 - t)),
+          );
+        }
+        add("nose", 0, new T.LatheGeometry(pr, 32), 0, w3(80), 0);
+        add("fairing", 1, new CY(0.66, 0.66, 2.44, 32, 1, true), 0, w3(135), 0);
+        add("payload", 1, new BX(0.6, 0.8, 0.6), 0, 7, 0);
+        add("payload", 1, new BX(0.9, 0.04, 0.5), 0.75, 7, 0);
+        add("payload", 1, new BX(0.9, 0.04, 0.5), -0.75, 7, 0);
+        add("body", 1, new CY(0.62, 0.62, 2.44, 32), 0, 7, 0);
+        add("body", 2, new CY(0.62, 0.62, 1.33, 32), 0, 5.11, 0);
+        add("body", 3, new CY(0.62, 0.62, 2.89, 32), 0, 3, 0);
+        add(
+          "stagesep",
+          2,
+          new T.TorusGeometry(0.64, 0.05, 8, 40),
+          0,
+          4.56,
+          0,
+          Math.PI / 2,
+        );
+        add("guidance", 2, new BX(0.3, 0.3, 0.3), -0.25, 5.4, 0);
+        add("nav", 2, new BX(0.3, 0.3, 0.3), 0.25, 5.4, 0);
+        add("electrical", 2, new BX(0.7, 0.2, 0.3), 0, 5, 0);
+        add("recovery", 2, new CY(0.25, 0.25, 0.3, 16), 0, 4.75, 0);
+        add("fuel", 3, new CY(0.5, 0.5, 1.2, 32), 0, 3.8, 0);
+        add("oxidizer", 3, new CY(0.5, 0.5, 1.2, 32), 0, 2.4, 0);
+        add("engine", 4, new CY(0.32, 0.32, 0.5, 24), 0, 1.3, 0);
+        add("nozzle", 4, new CY(0.3, 0.62, 1, 32, 1, true), 0, 0.7, 0);
+        for (let k = 0; k < 4; k++) {
+          const sh = new T.Shape();
+          sh.moveTo(0, 1.4);
+          sh.lineTo(0, 0);
+          sh.lineTo(0.8, -0.1);
+          sh.closePath();
+          const g = new T.ExtrudeGeometry(sh, {
+            depth: 0.06,
+            bevelEnabled: false,
+          });
+          g.translate(0.6, 0, -0.03);
+          add("fins", 4, g, 0, 0.2, 0).rotation.y = (k * Math.PI) / 2;
+        }
+        const hl = new T.Mesh(
+          new CY(0.85, 0.85, 1, 32, 1, true),
+          new T.MeshBasicMaterial({
+            color: 0xff9a2e,
+            transparent: true,
+            opacity: 0.18,
+            side: T.DoubleSide,
+            depthWrite: false,
+          }),
+        );
+        sc.add(hl);
+        return { P, RM, GM, hl, cur: 0 };
+      }
+      function t3() {
+        const R = R3;
+        if (!R) return;
+        R.cur += (B.ex - R.cur) * 0.12;
+        R.P.forEach(
+          (m) => (m.position.y = m.userData.base + R.cur * OFF[m.userData.z]),
+        );
+        if (B.z != null) {
+          const a = Z[B.z];
+          R.hl.visible = true;
+          R.hl.scale.y = (a.b - a.a) / 45;
+          R.hl.position.y = (w3(a.a) + w3(a.b)) / 2 + R.cur * OFF[B.z];
+        } else R.hl.visible = false;
+      }
+      function init3() {
+        const cv = $("#rc");
+        cv.style.display = "none";
+        const host = cv.parentNode,
+          v = V3(host, 460, 540, { r: 15, ty: 5, tick: t3 });
+        R3 = mkRocket(v.sc);
+        R3.v = v;
+        const d = v.rn.domElement;
+        d.ondragover = (e) => e.preventDefault();
+        d.ondrop = (e) => {
+          e.preventDefault();
+          const id = e.dataTransfer.getData("text/plain");
+          if (!CI.hasOwnProperty(id)) return;
+          place(id, zoneAt(450 - v.rayY(e) * 45));
+        };
+        v.onpick = (id) => {
+          if (!id) return;
+          B.sel = id;
+          B.z = C[CI[id]][2];
+          rd();
+          partDlg(id);
+        };
+        const zs = document.createElement("div");
+        zs.style.cssText =
+          "position:absolute;left:10px;top:10px;font-size:.85rem;pointer-events:none";
+        host.append(zs);
+        R3.zs = zs;
+        const hn = document.createElement("div");
+        hn.style.cssText =
+          "position:absolute;left:10px;right:10px;bottom:10px;font-size:.85rem;color:#93aacb;pointer-events:none";
+        hn.textContent =
+          "Drag to spin · scroll to zoom · click a part to learn about it";
+        host.append(hn);
+      }
+      function r3sync() {
+        const R = R3,
+          ext = B.mode === "ext",
+          I = B.I,
+          EX = [
+            "nose",
+            "fairing",
+            "body",
+            "engine",
+            "nozzle",
+            "fins",
+            "stagesep",
+          ];
+        R.RM.body.transparent = !ext;
+        R.RM.body.opacity = ext ? 1 : 0.2;
+        R.RM.body.depthWrite = ext;
+        R.RM.body.needsUpdate = true;
+        R.RM.fairing.transparent = true;
+        R.RM.fairing.opacity = ext ? 0.7 : 0.25;
+        R.P.forEach((m) => {
+          const id = m.userData.id;
+          m.visible = !(
+            ext &&
+            !EX.includes(id) &&
+            !(id === "payload" && !I.fairing)
+          );
+          m.material = I[id] ? R.RM[id] : R.GM[id];
+        });
+        for (const id in R.RM) {
+          R.RM[id].emissive.setHex(id === B.sel ? 0x7a4200 : 0);
+          R.GM[id].color.setHex(id === B.sel ? 0xff9a2e : 0x35d0ff);
+        }
+        R.zs.innerHTML = Z.map((z, i) => {
+          const k = C.filter((x) => x[2] === i),
+            n = k.filter((x) => I[x[0]]).length;
+          return `<span style="color:${n === k.length ? "#3ddc84" : "#93aacb"}">${z.n}: ${n}/${k.length}</span>`;
+        }).join("<br>");
+      }
+      function partDlg(id, done) {
+        const c = C[CI[id]],
+          ok = B.I[id] || B.wrong[id] || done;
+        dlg({
+          t: (done ? "✅ " : "") + c[1],
+          wh: done ? "Great job! What it does" : "What is it?",
+          w: c[6],
+          s: c[7],
+          yh: "Where does it go?",
+          y: ok
+            ? c[9]
+            : "Try to work it out from what it does, then drag it onto the rocket!",
+          f: c[8],
+          nt: "Got it!",
+        });
+      }
+      const SX = {
+        solar:
+          "Satellites cannot plug in! Solar panels turn sunlight into electricity. They fold up for launch and open in space.",
+        antenna:
+          "The antenna is the satellite’s ears and mouth. It sends pictures and data to Earth and listens for commands.",
+        camera:
+          "The camera takes pictures of clouds, land and oceans from far above.",
+        battery:
+          "When the satellite is in Earth’s shadow there is no sunlight, so the battery keeps everything running.",
+        computer:
+          "The onboard computer is the brain. It controls everything and decides what to do next.",
+        thermal:
+          "In space it is scorching in sunlight and freezing in shadow. Thermal protection keeps the parts at a safe temperature.",
+      };
+      function satDlg(id) {
+        dlg({
+          t: SP[id][0],
+          wh: "What is it?",
+          w: SX[id],
+          yh: "Do I need it?",
+          y: "Only if your mission needs it. Extra parts add weight and cost.",
+          f: "Satellites in low orbit circle the Earth about every 90 minutes.",
+          nt: "Got it!",
+        });
+      }
+      function mkSatV(host) {
+        const T = THREE,
+          v = V3(host, 600, 360, {
+            r: 6.5,
+            tick: () => {
+              if (!SG.pn) return;
+              const g = SG.u ? 1 : 0.15;
+              SG.pn.forEach((m) => (m.scale.x += (g - m.scale.x) * 0.06));
+            },
+          }),
+          P = {};
+        SG.P = P;
+        SG.pn = [];
+        const mat = (c, m = 0.6, r = 0.4) =>
+            new T.MeshStandardMaterial({
+              color: c,
+              metalness: m,
+              roughness: r,
+            }),
+          add = (id, g, mt, x, y, z) => {
+            const m = new T.Mesh(g, mt);
+            m.position.set(x, y, z);
+            m.userData = { id };
+            v.sc.add(m);
+            if (id) (P[id] = P[id] || []).push(m);
+            return m;
+          };
+        const body = add(
+          null,
+          new T.BoxGeometry(1.2, 1.2, 1.2),
+          mat(0xd9b24a, 0.8, 0.3),
+          0,
+          0,
+          0,
+        );
+        [-1, 1].forEach((sd) => {
+          const g = new T.BoxGeometry(1.8, 0.04, 1);
+          g.translate(sd * 0.9, 0, 0);
+          const m = add("solar", g, mat(0x2e6fd6, 0.3, 0.3), sd * 0.6, 0, 0);
+          m.scale.x = 0.15;
+          SG.pn.push(m);
+        });
+        add(
+          "antenna",
+          new T.CylinderGeometry(0.03, 0.03, 0.5, 8),
+          mat(0xcccccc),
+          0,
+          0.85,
+          0,
+        );
+        add(
+          "antenna",
+          new T.SphereGeometry(0.5, 24, 12, 0, 6.283, 0, 1.57),
+          mat(0xeeeeee, 0.7, 0.3),
+          0,
+          1.2,
+          0,
+        );
+        add(
+          "camera",
+          new T.CylinderGeometry(0.2, 0.25, 0.45, 20),
+          mat(0x111111),
+          0,
+          -0.15,
+          0.8,
+        ).rotation.x = Math.PI / 2;
+        add(
+          "battery",
+          new T.BoxGeometry(0.4, 0.3, 0.12),
+          mat(0x3ddc84),
+          -0.3,
+          -0.45,
+          0.64,
+        );
+        add(
+          "computer",
+          new T.BoxGeometry(0.4, 0.3, 0.12),
+          mat(0x35d0ff),
+          0.3,
+          0.35,
+          0.64,
+        );
+        add(
+          "thermal",
+          new T.BoxGeometry(1.32, 1.32, 1.32),
+          new T.MeshStandardMaterial({
+            color: 0xffd24a,
+            transparent: true,
+            opacity: 0.35,
+            metalness: 0.9,
+            roughness: 0.2,
+          }),
+          0,
+          0,
+          0,
+        );
+        v.onpick = (id) => {
+          if (id) satDlg(id);
+        };
+        return v;
+      }
+      function ssync() {
+        if (!SG.P) return;
+        for (const id in SG.P)
+          SG.P[id].forEach((m) => (m.visible = !!SG.s[id]));
+      }
+
+      /* ---------- 3D launch ---------- */
+      let L3 = null;
+      function init3L() {
+        const T = THREE,
+          cv = $("#fc");
+        cv.style.display = "none";
+        const host = cv.parentNode,
+          v = V3(host, 720, 460, { r: 10, tick: l3, cam: lcam }),
+          sc = v.sc;
+        sc.children.filter((c) => c.isPoints).forEach((c) => sc.remove(c));
+        const rk = new T.Group();
+        sc.add(rk);
+        const R = mkRocket(rk);
+        R.hl.visible = false;
+        R.RM.fairing.transparent = true;
+        R.RM.fairing.opacity = 0.85;
+        const eM = (r, c, o) => {
+          const m = new T.Mesh(new T.SphereGeometry(r, 64, 48), c);
+          m.position.y = -600;
+          sc.add(m);
+          return m;
+        };
+        eM(600, new T.MeshStandardMaterial({ color: 0x2f5d3a, roughness: 1 }));
+        eM(
+          612,
+          new T.MeshBasicMaterial({
+            color: 0x5aa7e8,
+            transparent: true,
+            opacity: 0.22,
+            side: T.BackSide,
+          }),
+        );
+        const pad = new T.Mesh(
+          new T.CylinderGeometry(4, 4.5, 0.4, 32),
+          new T.MeshStandardMaterial({ color: 0x555d6b }),
+        );
+        pad.position.y = 0.2;
+        sc.add(pad);
+        const tm = new T.MeshStandardMaterial({
+          color: 0x8a96ab,
+          metalness: 0.4,
+        });
+        [
+          [0.5, 11, 0.5, -2.2, 5.5],
+          [1.6, 0.2, 0.3, -1.4, 3],
+          [1.6, 0.2, 0.3, -1.4, 6],
+          [1.6, 0.2, 0.3, -1.4, 9],
+        ].forEach((a) => {
+          const m = new T.Mesh(new T.BoxGeometry(a[0], a[1], a[2]), tm);
+          m.position.set(a[3], a[4], 0);
+          sc.add(m);
+        });
+        const fl = new T.Mesh(
+          new T.ConeGeometry(0.45, 3, 16),
+          new T.MeshBasicMaterial({
+            color: 0xffa63a,
+            transparent: true,
+            opacity: 0.85,
+          }),
+        );
+        fl.rotation.x = Math.PI;
+        rk.add(fl);
+        const gl = new T.Mesh(
+          new T.SphereGeometry(0.7, 24, 16),
+          new T.MeshBasicMaterial({
+            color: 0xffb347,
+            transparent: true,
+            opacity: 0.3,
+            depthWrite: false,
+            blending: T.AdditiveBlending,
+          }),
+        );
+        gl.position.y = 0.1;
+        rk.add(gl);
+        const sp = [];
+        for (let i = 0; i < 500; i++) {
+          const a = Math.random() * 6.28,
+            b = Math.acos(Math.random() * 2 - 1);
+          sp.push(
+            2500 * Math.sin(b) * Math.cos(a),
+            2500 * Math.cos(b),
+            2500 * Math.sin(b) * Math.sin(a),
+          );
+        }
+        const sg = new T.BufferGeometry();
+        sg.setAttribute("position", new T.Float32BufferAttribute(sp, 3));
+        const stm = new T.PointsMaterial({
+          color: 0xffffff,
+          size: 2.5,
+          sizeAttenuation: false,
+          transparent: true,
+          opacity: 0,
+        });
+        sc.add(new T.Points(sg, stm));
+        const sm = [...Array(22)].map(() => {
+          const m = new T.Mesh(
+            new T.SphereGeometry(0.8, 10, 8),
+            new T.MeshBasicMaterial({
+              color: 0xdddddd,
+              transparent: true,
+              opacity: 0.3,
+            }),
+          );
+          m.visible = false;
+          sc.add(m);
+          return m;
+        });
+        const ck = document.createElement("div");
+        ck.style.cssText =
+          "position:absolute;inset:0;pointer-events:none;display:none;border-radius:10px;box-shadow:inset 0 0 0 36px #050b18,inset 0 0 70px 40px #000;color:#93aacb;font-size:.85rem;padding:42px";
+        ck.textContent =
+          "Cockpit view: watch Earth’s curve appear as you climb";
+        host.append(ck);
+        const hn = document.createElement("div");
+        hn.style.cssText =
+          "position:absolute;left:12px;bottom:10px;font-size:.85rem;color:#cfe3ff;pointer-events:none";
+        hn.textContent = "Use the camera buttons below to change view";
+        host.append(hn);
+        L3 = { v, rk, R, fl, gl, sm, stm, ck, deb: [], fa: 0, sat: null, sc };
+      }
+      function l3() {
+        const L = L3;
+        if (!L || !F) return;
+        const p = F.p,
+          alt = 400 * Math.pow(p, 1.3),
+          k = Math.min(1, alt / 110),
+          y = Math.min(alt * 1.5, 650) + 0.4;
+        L.rk.position.y = y;
+        L.rk.visible = F.view !== "cock";
+        L.ck.style.display = F.view === "cock" ? "block" : "none";
+        L.v.sc.background.setRGB(
+          0.35 * (1 - k),
+          0.65 * (1 - k) + 0.01 * k,
+          0.9 * (1 - k) + 0.05 * k,
+        );
+        L.stm.opacity = k;
+        const on = F.ign && !F.done,
+          s = F.fl * (0.9 + Math.random() * 0.3);
+        L.fl.visible = on;
+        L.gl.visible = on;
+        const gs = 0.7 + s * 0.6;
+        L.gl.scale.set(gs * 1.1, gs, gs * 1.1);
+        L.gl.material.opacity = 0.12 + 0.22 * s;
+        if (F.parts.s1) {
+          L.fl.scale.set(1, s, 1);
+          L.fl.position.y = 0.2 - 1.5 * s;
+        } else {
+          L.fl.scale.set(0.55, s * 0.6, 0.55);
+          L.fl.position.y = 4.4 - 1.5 * s * 0.6;
+        }
+        if (F.ign && alt < 12 && !F.done)
+          L.sm.forEach((m, i) => {
+            const t = (F.t * 0.6 + i * 0.1) % 1;
+            m.visible = true;
+            m.position.set(
+              Math.cos(i * 2.4) * t * 6,
+              0.5 + t,
+              Math.sin(i * 2.4) * t * 6,
+            );
+            m.scale.setScalar(1 + t * 4);
+            m.material.opacity = 0.35 * (1 - t);
+          });
+        else L.sm.forEach((m) => (m.visible = false));
+        if (L.fa > 0) {
+          L.fa += 0.012;
+          L.R.P.filter((m) => m.userData.id === "fairing").forEach((m) => {
+            m.scale.set(1 + L.fa * 1.5, 1, 1 + L.fa * 1.5);
+            m.position.x = L.fa * 3;
+            m.visible = L.fa < 1.2;
+          });
+          L.R.RM.fairing.opacity = Math.max(0, 0.85 - L.fa * 0.7);
+        }
+        L.deb.forEach((d) => {
+          d.g.position.y += d.vy;
+          d.vy -= 0.012;
+          d.g.rotation.z += 0.01;
+          d.g.position.x += 0.03;
+        });
+        if (L.sat) {
+          L.sat.position.x += 0.03;
+          L.sat.position.y += 0.02;
+          L.sat.rotation.y += 0.01;
+        }
+      }
+      function lcam(cam, v) {
+        const L = L3;
+        if (!L || !F) return;
+        const y = L.rk.position.y,
+          V = F.view;
+        let p, t;
+        if (V === "pad") {
+          const a = v.th * 0.6;
+          p = [
+            Math.sin(a) * 17,
+            5 + (F.live ? Math.min(y * 0.25, 12) : 0),
+            Math.cos(a) * 17,
+          ];
+          t = [0, y + 5, 0];
+        } else if (V === "side") {
+          p = [0, y * 0.9 + 8, 32];
+          t = [0, y + 5, 0];
+        } else if (V === "eng") {
+          p = [4, y + 1, 4.5];
+          t = [0, y + 0.8, 0];
+        } else if (V === "trk") {
+          p = [Math.sin(v.th) * 14, y + 6, Math.cos(v.th) * 14];
+          t = [0, y + 5, 0];
+        } else {
+          p = [0, y + 9.6, -0.2];
+          t = [0, y + 9, -60];
+        }
+        const alt = 400 * Math.pow(F.p, 1.3),
+          sh =
+            F.live && alt < 25
+              ? F.fl * 0.12 * (1 - alt / 25)
+              : F.ign && !F.live
+                ? 0.06
+                : 0;
+        cam.position.set(
+          p[0] + (Math.random() - 0.5) * sh,
+          p[1] + (Math.random() - 0.5) * sh,
+          p[2],
+        );
+        cam.lookAt(t[0], t[1], t[2]);
+      }
+      function l3sep() {
+        const L = L3,
+          g = new THREE.Group();
+        g.position.copy(L.rk.position);
+        L.sc.add(g);
+        L.R.P.filter((m) => m.userData.z >= 3).forEach((m) => {
+          L.rk.remove(m);
+          g.add(m);
+        });
+        L.deb.push({ g, vy: 0.2 });
+      }
+      function l3fair() {
+        L3.fa = 0.01;
+      }
+      function l3dep() {
+        const L = L3,
+          g = new THREE.Group();
+        g.position.copy(L.rk.position);
+        L.sc.add(g);
+        L.R.P.filter((m) => m.userData.id === "payload").forEach((m) => {
+          L.rk.remove(m);
+          g.add(m);
+        });
+        L.sat = g;
+      }
+
+      /* ---------- galaxy background, game shell, effects, thumbnails ---------- */
+      (function () {
+        const cv = document.createElement("canvas");
+        cv.style.cssText =
+          "position:fixed;inset:0;width:100%;height:100%;z-index:-1";
+        document.body.prepend(cv);
+        const c = cv.getContext("2d");
+        let W, H;
+        const rs = () => {
+          W = cv.width = innerWidth;
+          H = cv.height = innerHeight;
+        };
+        rs();
+        addEventListener("resize", rs);
+        const L = [
+            [90, 0.15, 1],
+            [60, 0.4, 1.6],
+            [35, 0.9, 2.2],
+          ].map((l) =>
+            [...Array(l[0])].map(() => ({
+              x: Math.random(),
+              y: Math.random(),
+              s: l[1],
+              r: l[2],
+              p: Math.random() * 6,
+            })),
+          ),
+          N = [
+            [0.2, 0.3, "#5b2bd6"],
+            [0.78, 0.25, "#0fa3d6"],
+            [0.55, 0.82, "#d62b8f"],
+            [0.08, 0.85, "#1f6fe0"],
+          ];
+        let sh = null,
+          nx = 0;
+        (function lp(t) {
+          c.fillStyle = "#030814";
+          c.fillRect(0, 0, W, H);
+          N.forEach((n, i) => {
+            const x = n[0] * W + Math.sin(t / 9000 + i * 2) * 90,
+              y = n[1] * H + Math.cos(t / 11000 + i) * 70,
+              g = c.createRadialGradient(x, y, 0, x, y, Math.max(W, H) * 0.5);
+            g.addColorStop(0, n[2] + "60");
+            g.addColorStop(1, n[2] + "00");
+            c.fillStyle = g;
+            c.fillRect(0, 0, W, H);
+          });
+          L.forEach((l) =>
+            l.forEach((s) => {
+              s.x = (s.x + s.s * 0.00018) % 1;
+              s.y = (s.y + s.s * 0.00006) % 1;
+              c.globalAlpha = 0.45 + 0.5 * Math.sin(t / 500 + s.p);
+              c.fillStyle = "#fff";
+              c.fillRect(s.x * W, s.y * H, s.r, s.r);
+            }),
+          );
+          c.globalAlpha = 1;
+          if (!sh && t > nx) {
+            sh = { x: Math.random() * W, y: 0, l: 0 };
+            nx = t + 4000 + Math.random() * 5000;
+          }
+          if (sh) {
+            sh.l += 0.03;
+            const x = sh.x - sh.l * 400,
+              y = sh.y + sh.l * 220,
+              g = c.createLinearGradient(x, y, x + 70, y - 38);
+            g.addColorStop(0, "#fff");
+            g.addColorStop(1, "#fff0");
+            c.strokeStyle = g;
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(x, y);
+            c.lineTo(x + 70, y - 38);
+            c.stroke();
+            if (sh.l > 1.2) sh = null;
+          }
+          requestAnimationFrame(lp);
+        })(0);
+      })();
+      function bar() {
+        return `<div class="pn row" style="margin-bottom:8px"><span id="gst" class="stt">READY</span><span id="gtm" class="mu"></span><span style="flex:1"></span><button id="gS" class="p">▶ Start</button><button id="gP">⏸ Pause</button><button id="gR">↻ Restart</button></div>`;
+      }
+      function setS(st) {
+        const m = {
+            ready: ["READY", "#35d0ff"],
+            play: ["PLAYING", "#3ddc84"],
+            pause: ["PAUSED", "#ff9a2e"],
+            won: ["MISSION COMPLETE", "#ffd24a"],
+            lost: ["FAILED", "#ff5252"],
+          }[st],
+          e = $("#gst");
+        if (e) {
+          e.textContent = m[0];
+          e.style.background = m[1];
+        }
+      }
+      function cd3(cb) {
+        const o = document.createElement("div");
+        o.className = "ov";
+        o.style.zIndex = 25;
+        document.body.append(o);
+        let n = 3;
+        const sh = () => {
+          o.innerHTML = `<div class="cdn">${n > 0 ? n : "GO!"}</div>`;
+          snd("b");
+        };
+        sh();
+        const t = setInterval(() => {
+          n--;
+          if (n < 0) {
+            clearInterval(t);
+            o.remove();
+            cb();
+          } else sh();
+        }, 700);
+      }
+      function fx(ms) {
+        ms = ms || 5000;
+        const cv = document.createElement("canvas");
+        cv.style.cssText =
+          "position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none";
+        cv.width = innerWidth;
+        cv.height = innerHeight;
+        document.body.append(cv);
+        const c = cv.getContext("2d"),
+          P = [],
+          col = [
+            "#35d0ff",
+            "#ffd24a",
+            "#ff9a2e",
+            "#3ddc84",
+            "#ff5fa2",
+            "#b388ff",
+          ],
+          t0 = performance.now();
+        let nb = 0;
+        (function lp(now) {
+          const e = now - t0;
+          if (e > ms) {
+            cv.remove();
+            return;
+          }
+          c.clearRect(0, 0, cv.width, cv.height);
+          if (e > nb * 450 && e < ms - 1500) {
+            nb++;
+            const x = Math.random() * cv.width,
+              y = cv.height * (0.15 + Math.random() * 0.4);
+            for (let i = 0; i < 60; i++) {
+              const a = (6.283 * i) / 60,
+                v = 2 + Math.random() * 4;
+              P.push({
+                x,
+                y,
+                vx: Math.cos(a) * v,
+                vy: Math.sin(a) * v,
+                l: 1,
+                c: col[nb % 6],
+                g: 0.06,
+                s: 3,
+                f: 1,
+              });
+            }
+          }
+          if (Math.random() < 0.5)
+            P.push({
+              x: Math.random() * cv.width,
+              y: -10,
+              vx: Math.random() * 2 - 1,
+              vy: 2 + Math.random() * 3,
+              l: 1,
+              c: col[Math.floor(Math.random() * 6)],
+              g: 0.02,
+              s: 7,
+              f: 0,
+            });
+          for (const p of P) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += p.g;
+            p.l -= p.f ? 0.012 : 0.004;
+            c.globalAlpha = Math.max(0, p.l);
+            c.fillStyle = p.c;
+            c.fillRect(p.x, p.y, p.s, p.s * (p.f ? 1 : 0.6));
+          }
+          c.globalAlpha = 1;
+          for (let i = P.length - 1; i >= 0; i--)
+            if (P[i].l <= 0 || P[i].y > cv.height + 20) P.splice(i, 1);
+          requestAnimationFrame(lp);
+        })(t0);
+      }
+      function win(t, sub, st, again, next) {
+        fx(6500);
+        snd("b");
+        const o = document.createElement("div");
+        o.className = "ov";
+        o.style.zIndex = 30;
+        o.innerHTML = `<div class="dl wn" style="text-align:center"><div style="font-size:4rem" class="rk">🚀</div><h2 style="color:var(--ye);font-size:2.2rem">${t}</h2><div class="stars">${"★".repeat(st)}${"☆".repeat(3 - st)}</div><p>${sub}</p><div class="row" style="justify-content:center">${next ? '<button class="p" id="w3">Next level ▶</button>' : ""}<button class="${next ? "" : "p"}" id="w1">Play again</button><button id="w2">Academy home</button></div></div>`;
+        document.body.append(o);
+        $("#w1").onclick = () => {
+          o.remove();
+          again();
+        };
+        $("#w2").onclick = () => {
+          o.remove();
+          go("home");
+        };
+        if (next)
+          $("#w3").onclick = () => {
+            o.remove();
+            next();
+          };
+      }
+      const sky = (c, a, b, t) => {
+        const g = c.createLinearGradient(0, 0, 0, 150);
+        g.addColorStop(0, a);
+        g.addColorStop(1, b);
+        c.fillStyle = g;
+        c.fillRect(0, 0, 300, 150);
+        c.fillStyle = "#fff";
+        for (let i = 0; i < 40; i++) {
+          c.globalAlpha = 0.3 + 0.6 * Math.abs(Math.sin(t * 1.5 + i));
+          c.fillRect(
+            (i * 53 + t * 4 * (1 + (i % 3))) % 300,
+            (i * 29) % 110,
+            1.4,
+            1.4,
+          );
+        }
+        c.globalAlpha = 1;
+      };
+      const earth = (c, x, y, r) => {
+        const g = c.createRadialGradient(
+          x - r * 0.3,
+          y - r * 0.3,
+          r * 0.1,
+          x,
+          y,
+          r,
+        );
+        g.addColorStop(0, "#5cc0ff");
+        g.addColorStop(0.7, "#1d5fc0");
+        g.addColorStop(1, "#0a2a66");
+        c.fillStyle = g;
+        c.beginPath();
+        c.arc(x, y, r, 0, 7);
+        c.fill();
+        c.fillStyle = "#3a9a52";
+        c.beginPath();
+        c.ellipse(x - r * 0.25, y - r * 0.1, r * 0.3, r * 0.2, 0.5, 0, 7);
+        c.fill();
+        c.beginPath();
+        c.ellipse(x + r * 0.3, y + r * 0.3, r * 0.2, r * 0.12, 0, 0, 7);
+        c.fill();
+        c.strokeStyle = "#8fd6ff";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(x, y, r + 1, 0, 7);
+        c.stroke();
+      };
+      const TH = {
+        rocket: (c, t) => {
+          sky(c, "#071634", "#c4521c", t);
+          c.fillStyle = "#15110f";
+          c.fillRect(0, 132, 300, 18);
+          for (let i = 0; i < 7; i++) {
+            c.fillStyle = "rgba(255,255,255," + (0.25 - 0.03 * i) + ")";
+            c.beginPath();
+            c.arc(
+              150 + Math.sin(i * 2 + t * 2) * (14 + i * 6),
+              132 - ((t * 30 + i * 9) % 22),
+              10 + i * 2,
+              0,
+              7,
+            );
+            c.fill();
+          }
+          drawR(c, 150, 6 + Math.sin(t * 4), 0.27, {
+            inst: ALL,
+            mode: "ext",
+            flame: 0.9,
+          });
+        },
+        orbit: (c, t) => {
+          sky(c, "#14052e", "#4a1280", t);
+          earth(c, 150, 92, 46);
+          c.setLineDash([5, 5]);
+          c.strokeStyle = "#ffd24a";
+          c.lineWidth = 1.5;
+          c.beginPath();
+          c.ellipse(150, 92, 118, 62, -0.3, 0, 7);
+          c.stroke();
+          c.setLineDash([]);
+          const a = t * 1.3,
+            x =
+              150 +
+              118 * Math.cos(a) * Math.cos(-0.3) -
+              62 * Math.sin(a) * Math.sin(-0.3),
+            y =
+              92 +
+              118 * Math.cos(a) * Math.sin(-0.3) +
+              62 * Math.sin(a) * Math.cos(-0.3);
+          c.fillStyle = "#fff";
+          c.fillRect(x - 4, y - 3, 8, 6);
+          c.fillStyle = "#35d0ff";
+          c.fillRect(x - 10, y - 1, 6, 2);
+          c.fillRect(x + 4, y - 1, 6, 2);
+          c.fillStyle = "#ff9a2e";
+          c.fillRect(150 - 4, 45, 8, 3);
+        },
+        sat: (c, t) => {
+          sky(c, "#032a33", "#0d7a8a", t);
+          earth(c, 150, 260, 150);
+          const w = 14 + 34 * Math.abs(Math.sin(t * 0.8)),
+            x = 150,
+            y = 62;
+          c.fillStyle = "#2e6fd6";
+          c.fillRect(x - 18 - w, y - 10, w, 20);
+          c.fillRect(x + 18, y - 10, w, 20);
+          c.strokeStyle = "#1d3a66";
+          for (let i = 1; i < 4; i++) {
+            c.beginPath();
+            c.moveTo(x + 18 + (w * i) / 4, y - 10);
+            c.lineTo(x + 18 + (w * i) / 4, y + 10);
+            c.moveTo(x - 18 - (w * i) / 4, y - 10);
+            c.lineTo(x - 18 - (w * i) / 4, y + 10);
+            c.stroke();
+          }
+          c.fillStyle = "#d9b24a";
+          c.fillRect(x - 18, y - 22, 36, 44);
+          c.fillStyle = "#eee";
+          c.beginPath();
+          c.arc(x, y - 24, 12, Math.PI, 0);
+          c.fill();
+          c.fillStyle = Math.sin(t * 6) > 0 ? "#ff5252" : "#552";
+          c.fillRect(x - 2, y + 10, 4, 4);
+          c.strokeStyle = "#35d0ff";
+          for (let i = 0; i < 3; i++) {
+            const k = (t * 0.8 + i / 3) % 1;
+            c.globalAlpha = 1 - k;
+            c.beginPath();
+            c.arc(x, y + 22, 10 + k * 50, 0.3, 2.8);
+            c.stroke();
+          }
+          c.globalAlpha = 1;
+        },
+        dock: (c, t) => {
+          sky(c, "#0b1038", "#2b2f8a", t);
+          earth(c, 60, 190, 110);
+          c.fillStyle = "#b8c4d8";
+          c.fillRect(190, 68, 70, 18);
+          c.fillRect(230, 58, 40, 38);
+          c.fillStyle = "#2e6fd6";
+          c.fillRect(244, 12, 44, 36);
+          c.fillRect(244, 106, 44, 32);
+          c.fillStyle = "#3d4a63";
+          c.fillRect(264, 10, 3, 130);
+          const k = (t * 0.35) % 1,
+            x = 20 + k * 148,
+            y = 77 + Math.sin(t) * 3;
+          c.fillStyle = "#e8eef8";
+          c.fillRect(x - 12, y - 6, 20, 12);
+          c.beginPath();
+          c.moveTo(x + 8, y - 6);
+          c.lineTo(x + 15, y);
+          c.lineTo(x + 8, y + 6);
+          c.fill();
+          c.fillStyle = "#ffb13d";
+          c.fillRect(x - 17 - k * 4, y - 3, 5, 6);
+          c.strokeStyle = k > 0.8 ? "#3ddc84" : "#35d0ff";
+          c.lineWidth = 2;
+          c.beginPath();
+          c.arc(190, 77, 8 + 2 * Math.sin(t * 5), 0, 7);
+          c.stroke();
+        },
+        rover: (c, t) => {
+          const g = c.createLinearGradient(0, 0, 0, 150);
+          g.addColorStop(0, "#2a0a0a");
+          g.addColorStop(0.6, "#e0703a");
+          g.addColorStop(1, "#f3a064");
+          c.fillStyle = g;
+          c.fillRect(0, 0, 300, 150);
+          c.fillStyle = "#ffe2b0";
+          c.beginPath();
+          c.arc(230, 50, 16, 0, 7);
+          c.fill();
+          c.fillStyle = "#7a2e18";
+          c.beginPath();
+          c.moveTo(0, 110);
+          c.lineTo(60, 60);
+          c.lineTo(110, 105);
+          c.lineTo(170, 70);
+          c.lineTo(240, 108);
+          c.lineTo(300, 80);
+          c.lineTo(300, 150);
+          c.lineTo(0, 150);
+          c.fill();
+          c.fillStyle = "#a64a2a";
+          c.fillRect(0, 112, 300, 38);
+          const x = ((t * 35) % 360) - 30;
+          for (let i = 0; i < 5; i++) {
+            c.fillStyle = "rgba(240,200,160," + (0.5 - i * 0.1) + ")";
+            c.beginPath();
+            c.arc(x - 16 - i * 9, 128 - i * 2, 5 + i * 2, 0, 7);
+            c.fill();
+          }
+          c.fillStyle = "#e8eef8";
+          c.fillRect(x - 14, 106, 30, 14);
+          c.fillStyle = "#2e6fd6";
+          c.fillRect(x - 10, 108, 16, 10);
+          c.fillRect(x + 4, 96, 2, 10);
+          c.fillStyle = "#eee";
+          c.fillRect(x + 1, 94, 8, 3);
+          [-9, 0, 9].forEach((w) => {
+            c.fillStyle = "#222";
+            c.beginPath();
+            c.arc(x + w, 124, 5, 0, 7);
+            c.fill();
+            c.strokeStyle = "#888";
+            c.beginPath();
+            c.moveTo(x + w, 124);
+            c.lineTo(x + w + Math.cos(t * 8) * 5, 124 + Math.sin(t * 8) * 5);
+            c.stroke();
+          });
+        },
+      };
+      function thumbs() {
+        const L = [...document.querySelectorAll("canvas[data-p]")];
+        if (!L.length) return;
+        (function lp(now) {
+          if (!document.body.contains(L[0])) return;
+          L.forEach(
+            (cv) =>
+              TH[cv.dataset.p] &&
+              TH[cv.dataset.p](cv.getContext("2d"), now / 1000),
+          );
+          requestAnimationFrame(lp);
+        })(performance.now());
+      }
+      document.addEventListener("pointerdown", bgmStart, { once: true });
+      if (S.entered && !S.micAsk)
+        document.addEventListener("pointerdown", () => askMicOnce(), {
+          once: true,
+        });
+      home0();
+      function home0() {
+        go(S.entered ? "home" : "welcome");
+      }
+    </script>
+  </body>
+</html>
