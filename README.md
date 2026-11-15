@@ -176,7 +176,7 @@ By the end of the experience, learners should be able to:
 
 <img width="1842" height="876" alt="Screenshot 2026-11-15 161554" src="https://github.com/user-attachments/assets/04ebd889-cebb-42ef-a8e8-571f11fcd120" />
 
-<img width="1726" height="872" alt="Screenshot 2026-11-15 161733" src="https://github.com/user-attachments/assets/e2b00cb6-d18e-4a6c-be6f-b6733563d004" />
+<img width="1616" height="867" alt="image" src="https://github.com/user-attachments/assets/acdbeac2-f511-4ac2-97ea-45fb74782e59" />
 
 
 
