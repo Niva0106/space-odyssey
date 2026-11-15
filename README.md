@@ -170,6 +170,16 @@ By the end of the experience, learners should be able to:
 
 ---
 
+## Images 
+<img width="1726" height="872" alt="Screenshot 2026-11-15 161733" src="https://github.com/user-attachments/assets/e2b00cb6-d18e-4a6c-be6f-b6733563d004" />
+<img width="1842" height="876" alt="Screenshot 2026-11-15 161554" src="https://github.com/user-attachments/assets/04ebd889-cebb-42ef-a8e8-571f11fcd120" />
+<img width="1867" height="822" alt="Screenshot 2026-11-15 161522" src="https://github.com/user-attachments/assets/98088e1a-7ca2-4cb0-9227-997d09c8c943" />
+
+
+
+
+
+
 ## Acknowledgements
 
 - NASA for the publicly available mission information for Artemis I, PACE and Mars 2020 Perseverance.
