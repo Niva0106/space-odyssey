@@ -9,6 +9,7 @@ name=index.html
       href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
     <style>
       :root {
         --bg: #040a12;
@@ -826,8 +827,9 @@ name=index.html
     </style>
   </head>
   <body class="intro-open">
-    <!-- Background music player embedded from YouTube starting at 0:10 -->
-    <iframe width="0" height="0" src="https://www.youtube.com/embed/qxfVtcYilDY?start=10&autoplay=1&loop=1&playlist=qxfVtcYilDY" title="Space Odyssey Background Music" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" style="display:none;"></iframe>
+    <!-- Small toggle button for background music (starts from 0:10) -->
+    <button id="musicToggleBtn" onclick="toggleMusic()" style="position: fixed; top: 20px; right: 20px; z-index: 2000; background: rgba(6, 21, 35, 0.85); border: 1px solid var(--cyan); color: var(--cyan); padding: 6px 12px; font-size: 11px; font-family: Orbitron, sans-serif; letter-spacing: 0.1em; cursor: pointer; border-radius: 4px; box-shadow: 0 0 10px #5ff3ff20; transition: 0.2s;">🎵 MUSIC: OFF</button>
+    <div id="youtubePlayerBox" style="display:none;"></div>
 
     <div id="introRoot">
       <canvas id="introGL"></canvas>
@@ -878,6 +880,25 @@ name=index.html
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+      let isMusicOn = false;
+      function toggleMusic() {
+        const box = document.getElementById('youtubePlayerBox');
+        const btn = document.getElementById('musicToggleBtn');
+        if (!isMusicOn) {
+          box.innerHTML = '<iframe width="1" height="1" src="https://www.youtube.com/embed/qxfVtcYilDY?start=10&autoplay=1&loop=1&playlist=qxfVtcYilDY" frameborder="0" allow="autoplay"></iframe>';
+          isMusicOn = true;
+          btn.textContent = '🎵 MUSIC: ON';
+          btn.style.borderColor = 'var(--green)';
+          btn.style.color = 'var(--green)';
+        } else {
+          box.innerHTML = '';
+          isMusicOn = false;
+          btn.textContent = '🎵 MUSIC: OFF';
+          btn.style.borderColor = 'var(--cyan)';
+          btn.style.color = 'var(--cyan)';
+        }
+      }
+
       /* Welcome-page mission animation (3D space scene) */
       (function () {
         if (!window.THREE) return;
