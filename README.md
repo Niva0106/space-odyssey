@@ -90,84 +90,44 @@ No build step, server or installation is needed.
    - `odyssey_advanced.html` for the advanced simulator
 3. Allow microphone access if you want to use voice features, or camera access for hand-gesture control in the advanced simulator.
 
-**Requirements**
+## Requirements
+- Modern browser (Chrome or Edge recommended).
+- Internet connection required on first load for external libraries and fonts.
+- For camera/microphone permission issues, run locally using `python -m http.server 8000` and open `http://localhost:8000/odyssey_beginner.html`.
 
-- A modern browser. **Google Chrome or Microsoft Edge is recommended**, because the voice and gesture features rely on browser APIs that are best supported there.
-- An internet connection on first load, because the files load Three.js, MediaPipe and Google Fonts from public CDNs.
+## How to Play
+**Beginner Academy**
+1. Open `odyssey_beginner.html` and enter a nickname.
+2. Click **Enter Academy**.
+3. Select a mission and click **Start Game**.
 
-**Optional: serve locally**
+**Advanced Mission Operations**
+1. Open `odyssey_advanced.html`.
+2. Click **I'm Ready** and select a mission.
+3. Complete all six mission phases.
+4. Review your final debrief.
 
-If you see a microphone or camera permission error when opening the file directly from your computer, serve the folder with a local web server instead:
-
-```bash
-# Python 3
-python -m http.server 8000
-# then open http://localhost:8000/odyssey_beginner.html
-```
-
----
-
-## How to Use
-
-**Beginner Space Academy**
-
-1. Open `odyssey_beginner.html` and enter a nickname (optional).
-2. Press **Enter Academy** to reach the academy home.
-3. Choose a mission card and press **Start Game**.
-4. Use the **← Back** button in the header to return to the previous page at any time.
-
-**ODESSEYY Advanced Mission Operations**
-
-1. Open `odyssey_advanced.html` and read the mission instructions.
-2. Press **I'm Ready**, then choose a mission objective and accept the briefing.
-3. Work through the six phases, making decisions about orbit, vehicle, payload and operations.
-4. Review your results in the debrief.
-
----
-
-## Technology
-
-| Area | Tools |
-|------|-------|
-| Structure and styling | HTML5, CSS3 (single file per experience) |
-| Interactivity | Vanilla JavaScript |
-| 3D graphics | Three.js r128 |
-| Hand tracking | MediaPipe Hands and Camera Utils |
-| Voice | Web Speech API (speech synthesis and recognition) |
-| Typography | Google Fonts (Rajdhani, Orbitron, Exo 2) |
-| Progress storage | Browser local storage (beginner academy) |
-
----
+## Technology Stack
+HTML5, CSS3, Vanilla JavaScript, Three.js, MediaPipe Hands, Web Speech API, Google Fonts and Local Storage.
 
 ## Learning Outcomes
+- Understand rocket staging, thrust and mass.
+- Explore orbital mechanics and gravity.
+- Learn spacecraft design trade-offs.
+- Understand satellite power, communication and thermal systems.
 
-By the end of the experience, learners should be able to:
+## Privacy & Accessibility
+- No installation, account or sign-in required.
+- Progress is stored locally in the browser.
+- Camera and microphone permissions are optional.
+- Educational values are clearly labelled.
 
-- Explain how staging, thrust and mass affect a rocket's launch.
-- Describe how gravity and velocity determine whether an object enters orbit or falls back.
-- Identify the trade-offs between mass, power, budget and science value in spacecraft design.
-- Recognise the roles of communication, power and thermal systems in a satellite.
-
----
-
-## Accessibility and Privacy
-
-- **Single-file design:** no installation, accounts or sign-in are required.
-- **Data stays on the device:** the beginner academy stores progress in the browser's local storage. No personal data is sent to a server by our code.
-- **Permissions are optional:** microphone and camera access are requested only for voice and gesture features, and the main experience works without them.
-- **Clear labelling:** simplified gameplay values are marked as educational, so learners are not misled into treating them as real mission data.
-
----
-
-
-## Roadmap
-
-- Add more missions to the advanced simulator (the Mars 2020 Perseverance mission is already listed as "coming soon").
-- Add teacher tools, such as a class progress view and printable certificates.
-- Add more languages for younger learners.
-- Improve offline use by bundling external libraries with the files.
-- Add accessibility options such as larger text and keyboard-only navigation.
-
+## Future Scope
+- More advanced missions.
+- Teacher dashboard and certificates.
+- Multilingual support.
+- Improved offline functionality.
+- Enhanced accessibility options.
 ---
 
 ## Images 
