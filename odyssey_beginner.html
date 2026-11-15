@@ -1405,26 +1405,8 @@
         $("#v").innerHTML =
           `<section class="hero"><div><h1>WELCOME, YOUNG EXPLORER!</h1><p class="mu" style="font-size:1.1rem">Your journey into the universe starts here. Build rockets, explore planets, launch satellites and discover the science behind space exploration.</p>
 <div class="pn"><label>Student nickname (optional) <input id="nk" maxlength="16" value="${S.nick.replace(/"/g, "")}"></label>
-<h3>Learning level</h3><div class="row">${AGES.map((a, i) => `<button class="ag ${S.age === i ? "on" : ""}" data-i="${i}">${a}</button>`).join("")}</div>
-<h3>Preferred difficulty</h3><div class="row">${DIFF.map((a, i) => `<button class="df ${S.diff === i ? "on" : ""}" data-i="${i}">${a}</button>`).join("")}</div>
 <p class="mu">Missions completed: <b>${missions()}</b> · Learning progress: <b>${totalP()}%</b> · Achievements: <b>${Object.keys(S.b).length}</b></p><button class="p big" id="en">Enter Academy</button></div></div>
 <canvas id="hc" class="m" width="420" height="520"></canvas></section>`;
-        document.querySelectorAll(".ag").forEach(
-          (b) =>
-            (b.onclick = () => {
-              S.age = +b.dataset.i;
-              save();
-              welcome();
-            }),
-        );
-        document.querySelectorAll(".df").forEach(
-          (b) =>
-            (b.onclick = () => {
-              S.diff = +b.dataset.i;
-              save();
-              welcome();
-            }),
-        );
         $("#en").onclick = () => {
           S.nick = $("#nk").value.trim();
           S.entered = 1;
@@ -4769,8 +4751,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
         host.append(ck);
         const hn = document.createElement("div");
         hn.style.cssText =
-          "position:absolute;left:12px;bottom:10px;font-size:.85rem;color:#cfe3ff;pointer-events:none";
-        hn.textContent = "Use the camera buttons below to change view";
+          "position:absolute;left:12px;bottom:10px;font-size:.85rem;color:#cfe3ff;pointer-events:none";;
         host.append(hn);
         L3 = { v, rk, R, fl, gl, sm, stm, ck, deb: [], fa: 0, sat: null, sc };
       }

@@ -4162,12 +4162,12 @@
             `<div class="th"><h2>LIVE TELEMETRY</h2><span class="ch" style="color:#34d399">NOMINAL</span></div>` +
             row("MET", `00:${hh}:${mm}:${ss}`) +
             row("VELOCITY", sp.toFixed(1) + " m/s") +
-            row("DUTCANCE FLOWN", (dist0 / 1000).toFixed(2) + " km") +
+            row("DISTANCE FLOWN", (dist0 / 1000).toFixed(2) + " km") +
             row("STAGE SEP 1–4", "CONFIRMED", "#34d399") +
             row("SOLAR ARRAY", val("solar") + " kW", "#38bdf8") +
             row("CABIN PRESSURE", "101.3 kPa") +
             row("DOWNLINK", "-78 dBm · LOCK", "#34d399") +
-            `<button id="navCloseBtn" onclick="closeLiveStatus()">← RETURN TO MISSION DEBRIEF</button>`;
+            `<button id="navCloseBtn" onclick="closeLiveStatus()">PRESS ESC TO RETURN TO MISSION DEBRIEF</button>`;
 
           // Waypoint reticle projection
           const projPt = tgt.clone().project(cam);
