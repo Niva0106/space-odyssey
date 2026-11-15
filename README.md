@@ -3,7 +3,7 @@
 > Space Odyssey is an interactive learning platform that teaches space science through hands-on play. Students build rockets, launch satellites, and plan real space missions, learning how each decision affects the outcome.
 
 **Team:** ODESSEYY
-**Live demo:** [link, if hosted] · **Demo video:** [link]
+**Demo video:** https://youtu.be/5cPAPZkLiV8?si=k8pkvu2rGMDcORAf
 
 ---
 
@@ -24,14 +24,10 @@
 ## The Problem
 
 **Challenge: Space Mission Design Game**
+## Problem Statement
 
-Designing a space mission requires careful consideration of competing demands, including mission objectives, spacecraft design, scientific instruments, launch vehicles, budgets, power, mass, communications, and orbital constraints. For students who rarely get to experiment with an entire mission from concept to operation, these trade-offs often remain abstract.
+Space mission design involves complex engineering decisions and trade-offs between mission objectives, spacecraft components, launch vehicles, budgets, mass, power, communication, and orbital constraints. Students often lack opportunities to explore these real-world challenges practically. There is a need for an interactive, engaging platform where students can design, simulate, and manage space missions while learning engineering concepts through experimentation and teamwork.
 
-Our challenge is to create an interactive Space Mission Design Game that allows participants to experience the process of designing and managing a complete space mission. Participants can play individually or collaborate in a team of up to four people, working together to make strategic decisions and achieve the highest possible mission performance.
-
-The game allows participants to define a mission objective, establish mission requirements, design a spacecraft, select scientific instruments, choose a launch vehicle and orbit, and manage key constraints such as budget, mass, power, communications, data, and mission lifetime. Players see how their decisions affect other parts of the mission, and they build an understanding of the trade-offs involved in real-world space mission design.
-
-A strong solution includes a functional interactive game or simulation with a clear user interface, a mission configuration system, resource management mechanisms, collaboration or multiplayer functionality for up to four participants, and a mission simulation and evaluation system. The game provides feedback on mission performance and rewards effective engineering decisions, efficient resource management, successful collaboration, and achievement of mission objectives.
 ## Our Solution
 
 Space Odyssey is a learning platform that turns space engineering into hands-on play:
@@ -151,7 +147,6 @@ By the end of the experience, learners should be able to:
 - Describe how gravity and velocity determine whether an object enters orbit or falls back.
 - Identify the trade-offs between mass, power, budget and science value in spacecraft design.
 - Recognise the roles of communication, power and thermal systems in a satellite.
-- Relate real NASA missions (Artemis I, PACE and Mars 2020 Perseverance) to the engineering choices behind them.
 
 ---
 
