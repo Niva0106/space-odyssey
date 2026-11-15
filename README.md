@@ -45,3 +45,8 @@ Space Odyssey consists of two modules:
 ## Future Scope
 
 Team play for up to four participants, additional missions, a teacher dashboard, and offline support.
+
+## Synthetic Intelligence (SI) Disclosure
+
+SI tools were used during development for selected code generation, debugging, and design assistance.
+The team reviewed and validated the SI-assisted components before integrating them into the project.
