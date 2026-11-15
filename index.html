@@ -1133,6 +1133,8 @@
           screen.classList.toggle("active", screen.dataset.intro === name);
         });
       }
+      /* open straight on the levels page when arriving via index.html#levels */
+      if (location.hash === "#levels") introShow("levels");
     </script>
   </body>
 </html>

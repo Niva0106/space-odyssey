@@ -432,6 +432,8 @@
   <body>
     <header>
       <b>SPACE ODYSSEY · BEGINNER ACADEMY</b
+      ><button id="hL" onclick="window.location.href='index.html#levels'">
+        ← Levels</button
       ><button id="hH">Academy home</button
       ><button id="hA">Ask the Scientist</button
       ><button id="hS">Sound: on</button>
@@ -1376,7 +1378,7 @@
         })[v]();
         window.scrollTo(0, 0);
       }
-      $("#hH").onclick = () => go(S.entered ? "home" : "welcome");
+      $("#hH").onclick = () => go("welcome");
       $("#hA").onclick = ask;
       $("#hS").onclick = () => {
         S.mute = !S.mute;
@@ -1958,6 +1960,9 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           vcRec = null,
           vcAccepted = false,
           vcStarted = false,
+          vcMode = null,
+          autoTestTimer = null,
+          autoStepTimeout = null,
           vcStepTimer = null,
           vcTickTimer = null,
           vcFinalTranscript = "",
@@ -1981,11 +1986,9 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           const matched = meaningful.filter((x) =>
             h.some((y) => y === x || y.includes(x) || x.includes(y)),
           );
-          // Require either at least half the key words or a complete spoken phrase (>= 3 words with at least 1 match)
-          return (
-            matched.length >= Math.max(2, Math.ceil(meaningful.length * 0.45)) ||
-            (h.length >= 3 && matched.length >= 1)
-          );
+          // Require a meaningful portion of the requested sentence.
+          // Speech recognition can omit small words, so exact matching is not required.
+          return matched.length >= Math.max(3, Math.ceil(meaningful.length * 0.55));
         }
         function clearVoiceTimers() {
           clearTimeout(vcStepTimer);
@@ -1993,7 +1996,44 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           vcStepTimer = null;
           vcTickTimer = null;
         }
+        function resetSystemChecks(nextMode) {
+          clearVoiceTimers();
+          clearInterval(autoTestTimer);
+          clearTimeout(autoStepTimeout);
+          autoTestTimer = null;
+          autoStepTimeout = null;
+          vcBusy = false;
+          vcDone = false;
+          vcStarted = false;
+          vcAccepted = false;
+          vcIndex = 0;
+          vcMode = nextMode;
+          vcFinalTranscript = "";
+          vcInterimTranscript = "";
+          try {
+            vcRec && vcRec.stop();
+          } catch (_) {}
+          try {
+            speechSynthesis.cancel();
+          } catch (_) {}
+          document.querySelectorAll("#pc p").forEach((p, i) => {
+            p.className = "mu";
+            p.textContent = ok[i];
+          });
+          $("#st").disabled = true;
+          $("#sc").disabled = false;
+          $("#autoTest").disabled = false;
+          $("#sc").textContent = "Start voice system checks";
+          $("#vphrase").textContent = "Ready for system check";
+          $("#vprompt").textContent =
+            nextMode === "voice"
+              ? "VOICE CONFIRMATION — speak each full sentence when prompted."
+              : "AUTOMATIC TESTING — no microphone or spoken confirmation required.";
+          $("#vstatus").textContent =
+            "Checks reset. You can switch methods at any time.";
+        }
         function finishVoiceCheck() {
+          if (vcMode !== "voice") return;
           clearVoiceTimers();
           vcBusy = false;
           const ps = document.querySelectorAll("#pc p");
@@ -2013,7 +2053,8 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             $("#vstatus").textContent =
               "All five checks passed. Cleared for countdown.";
             $("#sc").textContent = "System checks completed";
-            $("#sc").disabled = true;
+            $("#sc").disabled = false;
+            $("#autoTest").disabled = false;
             $("#st").disabled = false;
             if (vcStream) {
               vcStream.getTracks().forEach((t) => t.stop());
@@ -2024,14 +2065,14 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           setTimeout(runVoiceStep, 450);
         }
         function runVoiceStep() {
-          if (vcDone || vcIndex >= voiceChecks.length) return;
+          if (vcMode !== "voice" || vcDone || vcIndex >= voiceChecks.length) return;
           clearVoiceTimers();
           vcBusy = true;
           vcAccepted = false;
           vcFinalTranscript = "";
           vcInterimTranscript = "";
           const item = voiceChecks[vcIndex];
-          let secsLeft = 5;
+          let secsLeft = 10;
           $("#vprompt").textContent =
             "TEST " +
             (vcIndex + 1) +
@@ -2042,7 +2083,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           $("#vstatus").textContent =
             "Listening… complete your sentence (" + secsLeft + "s left)";
 
-          // Give a full 5 seconds per sentence so the user is never cut off mid-sentence
+          // Give 10 seconds per sentence so slower speech is not cut off.
           vcTickTimer = setInterval(() => {
             if (!vcBusy || vcAccepted || vcDone) return;
             secsLeft--;
@@ -2077,13 +2118,13 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
               $("#vstatus").textContent = fullSpoken
                 ? 'Heard "' +
                   fullSpoken +
-                  '" — please say the full sentence again (5s).'
-                : "No speech detected — please read the sentence aloud (5s).";
+                  '" — please say the full sentence again (10s).'
+                : "No speech detected — please read the sentence aloud (10s).";
               try {
                 vcRec && vcRec.stop();
               } catch (_) {}
               setTimeout(() => {
-                if (!vcDone && !vcAccepted) runVoiceStep();
+                if (vcMode === "voice" && !vcDone && !vcAccepted) runVoiceStep();
               }, 700);
             }
           }, 5000);
@@ -2107,12 +2148,12 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           }
           if (!vcRec) {
             vcRec = new SR();
-            vcRec.lang = navigator.language || "en-IN";
+            vcRec.lang = "en-IN";
             vcRec.continuous = true;
             vcRec.interimResults = true;
             vcRec.maxAlternatives = 3;
             vcRec.onresult = (e) => {
-              if (vcAccepted || !vcBusy) return;
+              if (vcMode !== "voice" || vcAccepted || !vcBusy) return;
               let finals = "",
                 interims = "";
               for (let i = 0; i < e.results.length; i++) {
@@ -2183,16 +2224,18 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           }
         }
         async function beginVoiceChecks() {
-          if (vcStarted || vcBusy) return;
+          if (vcMode === "voice" && vcBusy) return;
+          if (vcMode !== "voice" || vcDone) resetSystemChecks("voice");
           if (!SR) {
             $("#vstatus").textContent =
               "Voice recognition is not supported. Open this game in Chrome or Edge.";
             return;
           }
-          $("#sc").disabled = true;
+          $("#sc").disabled = false;
           if (!S.micOk) {
             $("#vstatus").textContent = "Checking microphone access…";
             const ok = await micCheck();
+            if (vcMode !== "voice") return;
             if (!ok) {
               const refused = /NotAllowed|Security/.test(window.MICERR || "");
               if (refused) {
@@ -2210,29 +2253,30 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             }
           }
           vcStarted = true;
-          $("#sc").textContent = "Voice checks in progress (5s per phrase)";
+          $("#sc").textContent = "Voice checks in progress (10s per phrase)";
+          $("#autoTest").disabled = false;
           runVoiceStep();
         }
         $("#sc").onclick = beginVoiceChecks;
 
-        // Alternative path: run the same pre-launch checks automatically,
-        // without requesting microphone access or requiring spoken confirmation.
-        let autoTestTimer = null;
+        // Alternative path: automatic checks. The mode buttons remain available,
+        // so the player can switch methods and restart the checks at any time.
         function beginAutoChecks() {
-          if (vcStarted || vcBusy || vcDone) return;
-          clearVoiceTimers();
-          clearInterval(autoTestTimer);
+          if (vcMode === "auto" && vcBusy) return;
+          resetSystemChecks("auto");
           vcBusy = true;
-          $("#sc").disabled = true;
-          $("#autoTest").disabled = true;
           $("#vprompt").textContent =
             "AUTOMATIC TESTING — Mission control is checking each system.";
           $("#vstatus").textContent = "Automatic checks starting…";
           $("#vphrase").textContent = "Preparing system diagnostics";
           let autoIndex = 0;
+
           const runAutoStep = () => {
+            if (vcMode !== "auto" || !vcBusy) return;
+
             if (autoIndex >= voiceChecks.length) {
-              clearInterval(autoTestTimer);
+              autoTestTimer = null;
+              autoStepTimeout = null;
               vcBusy = false;
               vcDone = true;
               $("#vphrase").textContent = "ALL SYSTEMS GO!";
@@ -2240,35 +2284,48 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
                 "Automatic testing completed. All five systems passed.";
               $("#vstatus").textContent =
                 "All checks passed automatically. Cleared for countdown.";
-              $("#sc").textContent = "Voice confirmation skipped";
               $("#st").disabled = false;
-              snd("b");
               return;
             }
-            const item = voiceChecks[autoIndex];
+
+            const currentIndex = autoIndex;
+            const item = voiceChecks[currentIndex];
             const ps = document.querySelectorAll("#pc p");
+            const spokenLine = item[0] + ". " + item[1];
+
             $("#vprompt").textContent =
-              "AUTOMATIC TEST " + (autoIndex + 1) + " OF " + voiceChecks.length;
+              "AUTOMATIC TEST " + (currentIndex + 1) + " OF " + voiceChecks.length;
             $("#vphrase").textContent = item[0] + ": " + item[1];
             $("#vstatus").textContent = "Checking " + item[0].toLowerCase() + "…";
-            if (!S.mute && window.speechSynthesis) {
-              const u = new SpeechSynthesisUtterance(item[0] + ". " + item[1]);
-              u.rate = 1;
-              speechSynthesis.cancel();
-              speechSynthesis.speak(u);
-            }
-            setTimeout(() => {
-              if (ps[autoIndex]) {
-                ps[autoIndex].innerHTML =
-                  '<span class="ok">✓ ' + ok[autoIndex] +
+
+            const completeStep = () => {
+              if (vcMode !== "auto" || !vcBusy || currentIndex !== autoIndex) return;
+              if (ps[currentIndex]) {
+                ps[currentIndex].innerHTML =
+                  '<span class="ok">✓ ' + ok[currentIndex] +
                   " — automatic check passed</span>";
               }
               snd("b");
               autoIndex++;
-            }, 700);
+              autoStepTimeout = setTimeout(runAutoStep, 350);
+            };
+
+            if (!S.mute && window.speechSynthesis && window.SpeechSynthesisUtterance) {
+              const u = new SpeechSynthesisUtterance(spokenLine);
+              u.rate = 0.9;
+              u.onend = completeStep;
+              u.onerror = completeStep;
+              speechSynthesis.cancel();
+              speechSynthesis.speak(u);
+              // Safety fallback in case the browser never fires onend.
+              autoStepTimeout = setTimeout(completeStep, 12000);
+            } else {
+              // Keep each automated check visible long enough to read.
+              autoStepTimeout = setTimeout(completeStep, 2200);
+            }
           };
+
           runAutoStep();
-          autoTestTimer = setInterval(runAutoStep, 1200);
         }
         $("#autoTest").onclick = beginAutoChecks;
 
@@ -5320,7 +5377,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
         });
       home0();
       function home0() {
-        go(S.entered ? "home" : "welcome");
+        go("welcome");
       }
     </script>
   </body>

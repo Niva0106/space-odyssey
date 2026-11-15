@@ -2128,6 +2128,7 @@
             <button class="btn gold" onclick="openLiveStatus()">CHECK LIVE STATUS</button>
             <button class="btn" onclick="restartCampaign()">PLAY AGAIN</button>
             <button class="btn secondary" onclick="window.print()">PRINT MISSION REPORT</button>
+            <button class="btn secondary" onclick="window.location.href='index.html#levels'">← LEVELS</button>
           </div>
         </div>
 
@@ -2437,6 +2438,7 @@
           $("reviewMission").textContent = missionData[state.mission].name;
           $("reviewRocket").textContent = rocketData[state.rocket].name;
           $("reviewMass").textContent = mass().toLocaleString() + " kg";
+          if (window.applyShip) window.applyShip(state.rocket);
           resizeCanvas();
         }
       }
@@ -2887,117 +2889,203 @@
       pick("cockpit");
 
       (function () {
-        const buildShip = (c) => {
-          const wg = [];
-          [-1, 1].forEach((s) => {
-            const A = [c.w.xf, 0, c.w.zi * s],
-              B = [c.w.xb, 0, c.w.zi * s],
-              C = [c.w.xb, 0, c.w.zo * s],
-              D = [c.w.xt, 0, c.w.zt * s];
-            wg.push([A, B], [B, C], [C, D], [D, A]);
-            [0.25, 0.5, 0.75].forEach((q) =>
-              wg.push([lerp(A, B, q), lerp(D, C, q)]),
-            );
+        /* Vehicle-specific hologram models (nose points to +x, engines to -x) */
+        const cyl = (pts, n = 8, oy = 0, oz = 0) =>
+          tube(pts.map(([x, r]) => ring(x, r, n, oy, oz)));
+        const panel = (A, B, C, D) => {
+          const s = [[A, B], [B, C], [C, D], [D, A]];
+          [0.33, 0.66].forEach((q) => {
+            s.push([lerp(A, B, q), lerp(D, C, q)]);
+            s.push([lerp(A, D, q), lerp(B, C, q)]);
           });
-          const dish = [];
+          return s;
+        };
+        const dishAt = (x, y, r) => {
+          const d = [[[x, 0.7, 0], [x, y, 0]]];
           for (let i = 0; i < 14; i++) {
             const a = (i / 14) * Math.PI * 2,
               b = ((i + 1) / 14) * Math.PI * 2;
-            dish.push(
-              [
-                [c.d.x + Math.cos(a) * c.d.r, c.d.y, Math.sin(a) * c.d.r],
-                [c.d.x + Math.cos(b) * c.d.r, c.d.y, Math.sin(b) * c.d.r],
-              ],
-              [
-                [c.d.x, c.d.y, 0],
-                [c.d.x + Math.cos(a) * c.d.r, c.d.y, Math.sin(a) * c.d.r],
-              ],
+            d.push(
+              [[x + Math.cos(a) * r, y, Math.sin(a) * r], [x + Math.cos(b) * r, y, Math.sin(b) * r]],
+              [[x, y, 0], [x + Math.cos(a) * r, y, Math.sin(a) * r]],
             );
           }
-          let eng = [];
-          c.e.pos.forEach(([oy, oz]) => {
-            eng = eng.concat(
-              tube(c.e.rings.map(([x, r]) => ring(x, r, 8, oy, oz))),
+          return d;
+        };
+        const solar = () => val("solar") + " kW",
+          fill = () => val("fuel") + "%",
+          pay = () => val("payload") + " kg";
+
+        /* ---------- NASA SLS: core stage + 2 solid boosters + Orion + abort tower ---------- */
+        const slsPanels = [];
+        [-1, 1].forEach((s) => {
+          slsPanels.push(
+            ...panel([5.15, 0, 0.75 * s], [4.65, 0, 0.75 * s], [4.65, 0, 3.0 * s], [5.15, 0, 3.0 * s]),
+            ...panel([5.15, 0.75 * s, 0], [4.65, 0.75 * s, 0], [4.65, 3.0 * s, 0], [5.15, 3.0 * s, 0]),
+          );
+        });
+        let slsBoosters = [];
+        [-1.55, 1.55].forEach((oz) => {
+          slsBoosters = slsBoosters.concat(
+            cyl([[-5, 0.52], [-2, 0.52], [1, 0.52], [2.7, 0.52], [3.5, 0.3], [4.0, 0.08]], 8, 0, oz),
+          );
+        });
+        let slsEngines = [];
+        [[0.4, 0.4], [0.4, -0.4], [-0.4, 0.4], [-0.4, -0.4]].forEach(([oy, oz]) => {
+          slsEngines = slsEngines.concat(
+            cyl([[-5, 0.22], [-5.9, 0.3], [-6.3, 0.2]], 8, oy, oz),
+          );
+        });
+        const SLS = {
+          cockpit: {
+            name: "Orion Capsule",
+            desc: "Crew module and service module that carry astronauts beyond low Earth orbit.",
+            segs: cyl([[4.6, 0.7], [5.2, 0.7], [5.9, 0.62], [6.5, 0.38], [6.9, 0.15]]),
+            anchor: [5.9, 0.8, 0],
+            specs: { Crew: "4", Endurance: "21 days", Payload: pay },
+            gl: "Cabin oxygen (%)", base: 21, amp: 0.4,
+          },
+          hull: {
+            name: "Core Stage",
+            desc: "Tallest rocket stage ever built; holds the liquid hydrogen and liquid oxygen tanks.",
+            segs: cyl([[-5, 0.95], [-2.5, 0.95], [0, 0.95], [2.5, 0.95], [3.9, 0.95], [4.3, 0.6], [4.6, 0.6]]),
+            anchor: [0.5, 1.05, 0],
+            specs: { Height: "65 m", Diameter: "8.4 m", Propellant: "LH2 / LOX" },
+            gl: "Hull stress (MPa)", base: 140, amp: 18,
+          },
+          fuel: {
+            name: "Solid Rocket Boosters",
+            desc: "Two five-segment boosters provide most of the thrust during the first two minutes.",
+            segs: slsBoosters,
+            anchor: [-2, 0.35, 2.15],
+            specs: { Thrust: "≈ 16,000 kN each", Burn: "126 s", Fill: fill },
+            gl: "Chamber pressure (bar)", base: 62, amp: 3,
+          },
+          engines: {
+            name: "RS-25 Engines",
+            desc: "Four engines first flown on the Space Shuttle burn for about eight minutes.",
+            segs: slsEngines,
+            anchor: [-6.3, 0, 0],
+            specs: { Thrust: "4 × 2,279 kN", Isp: "452 s (vac)", Burn: "≈ 500 s" },
+            gl: "Thrust output (kN)", base: 9116, amp: 250,
+          },
+          wings: {
+            name: "Orion Solar Arrays",
+            desc: "Four wings on the service module generate power on the journey around the Moon.",
+            segs: slsPanels,
+            anchor: [4.9, 0, 2.6],
+            specs: { Output: solar, Wings: "4 arrays", Span: "≈ 19 m" },
+            gl: "Power generation (kW)", base: 18, amp: 2.5,
+          },
+          dish: {
+            name: "Launch Abort System",
+            desc: "Escape tower that can pull the crew capsule away if the rocket fails during ascent.",
+            segs: cyl([[6.9, 0.12], [7.5, 0.1], [8.0, 0.04]], 6),
+            anchor: [7.5, 0.4, 0],
+            specs: { "Abort motor": "≈ 1,800 kN", Response: "< 0.1 s", Jettison: "≈ T+3 min" },
+            gl: "Abort readiness (%)", base: 100, amp: 0.5,
+          },
+        };
+
+        /* ---------- FALCON HEAVY: three cores, fairing, 27 engines, landing legs ---------- */
+        let fhBoosters = [];
+        [-1.5, 1.5].forEach((oz) => {
+          fhBoosters = fhBoosters.concat(
+            cyl([[-5, 0.7], [-2, 0.7], [1, 0.7], [2.4, 0.7], [3.3, 0.45], [3.9, 0.12]], 8, 0, oz),
+          );
+        });
+        let fhEngines = [];
+        [-1.5, 0, 1.5].forEach((oz) => {
+          const pos = [[0, oz]];
+          for (let i = 0; i < 8; i++) {
+            const a = (i / 8) * Math.PI * 2;
+            pos.push([Math.cos(a) * 0.42, oz + Math.sin(a) * 0.42]);
+          }
+          pos.forEach(([oy, z]) => {
+            fhEngines = fhEngines.concat(
+              cyl([[-5, 0.1], [-5.5, 0.14], [-5.7, 0.09]], 5, oy, z),
             );
           });
-          return {
-            cockpit: {
-              segs: tube(c.nose.map(([x, r]) => ring(x, r, 8))),
-              anchor: c.a.cockpit,
-            },
-            hull: {
-              segs: tube(c.hull.map(([x, r]) => ring(x, r, 8))),
-              anchor: c.a.hull,
-            },
-            fuel: {
-              segs: tube(c.tank.map(([x, r]) => ring(x, r, 10))),
-              anchor: c.a.fuel,
-            },
-            engines: { segs: eng, anchor: c.a.engines },
-            wings: { segs: wg, anchor: c.a.wings },
-            dish: { segs: dish, anchor: c.a.dish },
-          };
+        });
+        const fhLegs = [];
+        [-1.5, 1.5].forEach((oz) => {
+          [45, 135, 225, 315].forEach((deg) => {
+            const t = (deg * Math.PI) / 180,
+              c = Math.cos(t),
+              s = Math.sin(t),
+              a = [-3.8, 0.7 * c, oz + 0.7 * s],
+              b = [-6.0, 1.9 * c, oz + 1.9 * s];
+            fhLegs.push([a, b], [[-4.6, 0.7 * c, oz + 0.7 * s], lerp(a, b, 0.65)]);
+          });
+        });
+        const FH = {
+          cockpit: {
+            name: "Payload Fairing",
+            desc: "Protects the satellite or spacecraft through the atmosphere, then splits open and falls away.",
+            segs: cyl([[4.8, 0.7], [5.2, 0.95], [6.0, 0.95], [6.8, 0.6], [7.4, 0.15]]),
+            anchor: [6.0, 1.05, 0],
+            specs: { Diameter: "5.2 m", Payload: pay, Jettison: "≈ T+3.5 min" },
+            gl: "Fairing temperature (°C)", base: 60, amp: 8,
+          },
+          hull: {
+            name: "Center Core & Stage 2",
+            desc: "The middle booster flies on after the side cores separate; the upper stage finishes the climb to orbit.",
+            segs: cyl([[-5, 0.7], [-2, 0.7], [1, 0.7], [2.4, 0.7], [3.2, 0.7], [4.8, 0.7]]),
+            anchor: [0.5, 0.95, 0],
+            specs: { Height: "70 m", Stages: "2", "Upper stage": "1 × Merlin Vacuum" },
+            gl: "Hull stress (MPa)", base: 120, amp: 14,
+          },
+          fuel: {
+            name: "Side Boosters",
+            desc: "Two Falcon 9 first stages strapped to the sides add lift for the first two and a half minutes.",
+            segs: fhBoosters,
+            anchor: [-1.5, 0.95, 1.5],
+            specs: { Propellant: "RP-1 / LOX", Fill: fill, Separation: "≈ T+2.5 min" },
+            gl: "Tank pressure (bar)", base: 3.4, amp: 0.3,
+          },
+          engines: {
+            name: "Merlin Engine Clusters",
+            desc: "Nine engines on each of the three cores give the vehicle 27 in total.",
+            segs: fhEngines,
+            anchor: [-5.7, 0, 0],
+            specs: { Engines: "27 × Merlin 1D", Thrust: "22,819 kN", Isp: "282 s (sea level)" },
+            gl: "Thrust output (kN)", base: 22819, amp: 600,
+          },
+          wings: {
+            name: "Landing Legs",
+            desc: "Each side booster unfolds four legs to land upright so it can be reused.",
+            segs: fhLegs,
+            anchor: [-5.2, 0.9, 2.4],
+            specs: { Legs: "4 per booster", Reuse: "Side boosters", Landing: "Return to launch site" },
+            gl: "Leg load (kN)", base: 400, amp: 40,
+          },
+          dish: {
+            name: "Telemetry Antenna",
+            desc: "Sends flight data to ground stations during ascent.",
+            segs: dishAt(3.6, 1.5, 0.5),
+            anchor: [3.6, 1.5, 0],
+            specs: { Band: "S-band", Role: "Telemetry & tracking", Link: "Ground stations" },
+            gl: "Signal strength (dBm)", base: -82, amp: 3,
+          },
         };
 
-        const SHIPS = {};
-        SHIPS.medium = {};
-        PARTS.forEach((q) => {
-          SHIPS.medium[q.id] = {
-            segs: q.segs,
-            anchor: q.anchor,
-            specs: q.specs,
-            base: q.base,
-          };
-        });
-
-        const heavy = buildShip({
-          nose: [[3.5, 1.5], [5.2, 1.0], [6.8, 0.2]],
-          hull: [[-5, 1.5], [-1.5, 1.5], [3.5, 1.5]],
-          tank: [[-4, 1.9], [-2, 2.1], [0, 1.9]],
-          e: {
-            pos: [[0.9, 0.9], [0.9, -0.9], [-0.9, 0.9], [-0.9, -0.9]],
-            rings: [[-5, 0.5], [-6.5, 0.62], [-7.2, 0.4]],
-          },
-          w: { xf: 2, xb: -4.5, xt: -2, zi: 1.5, zo: 6.5, zt: 5 },
-          d: { x: -1, y: 2.6, r: 1.2 },
-          a: {
-            cockpit: [5.4, 0.7, 0],
-            hull: [1.5, 1.6, 0],
-            fuel: [-2, -2.1, 0],
-            engines: [-6.5, 0, 0],
-            wings: [-2.8, 0, 5.2],
-            dish: [-1, 2.6, 0],
-          },
-        });
-
-        const solar = () => val("solar") + " kW",
-          fill = () => val("fuel") + "%";
-        const extra = {
-          heavy: {
-            cockpit: { Crew: "6", Pressure: "101 kPa", Endurance: "60 days" },
-            hull: { Material: "Ti-Al alloy", Mass: "21.8 t", Length: "15 m" },
-            fuel: { Capacity: "14,500 kg", Type: "LOX / CH4", Fill: fill },
-            engines: { Thrust: "4 × 420 kN", Isp: "358 s", Burn: "540 s" },
-            wings: { Output: solar, Area: "96 m²", Efficiency: "29%" },
-            dish: { Band: "X / Ka", Rate: "240 Mbps", Range: "384,000 km" },
-            base: { engines: 1680 },
-          },
-        };
-        SHIPS.heavy = {};
-        PARTS.forEach((q) => {
-          SHIPS.heavy[q.id] = {
-            segs: heavy[q.id].segs,
-            anchor: heavy[q.id].anchor,
-            specs: extra.heavy[q.id],
-            base: extra.heavy.base[q.id] ?? q.base,
-          };
-        });
-
+        const SHIPS = { medium: SLS, heavy: FH };
+        const TITLES = { medium: "NASA SLS", heavy: "FALCON HEAVY" };
         function applyShip(key) {
-          const S = SHIPS[key] || SHIPS.medium;
+          const k = SHIPS[key] ? key : "medium",
+            S = SHIPS[k];
           PARTS.forEach((q) => Object.assign(q, S[q.id]));
+          document
+            .querySelectorAll("#partChips button")
+            .forEach((b) => {
+              const p = PARTS.find((q) => q.id === b.dataset.id);
+              if (p) b.textContent = p.name;
+            });
+          const h = document.querySelector("#holoTop h2");
+          if (h) h.textContent = TITLES[k] + " · VESSEL HOLOGRAM";
           if (sel) pick(sel.id);
         }
+        window.applyShip = applyShip;
         document
           .querySelectorAll("[data-rocket]")
           .forEach((c) =>
