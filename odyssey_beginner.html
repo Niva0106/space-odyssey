@@ -485,10 +485,10 @@
         orbit: ["Orbit Master", "Finish all 4 orbit challenges"],
         astro: ["Young Astronomer", "Ask the Scientist 3 questions"],
         sat: ["Satellite Scientist", "Build and deploy a satellite"],
-        dock: ["Space Docking Expert", "Dock safely with the station"],
+        dock: ["Asteroid Defender", "Clear the asteroid field and protect Earth"],
         rover: [
-          "Planetary Explorer",
-          "Collect 3 samples and send data to Earth",
+          "Jet-Pack Rescue Commander",
+          "Rescue stranded astronauts & touch down safely on the landing pad",
         ],
       };
       function award(k) {
@@ -725,7 +725,11 @@
         } catch (e) {}
         try {
           MICSTREAM = await navigator.mediaDevices.getUserMedia({
-            audio: true,
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true,
+            },
           });
           S.micOk = 1;
           save();
@@ -745,7 +749,13 @@
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
           return (MICP = Promise.resolve(false));
         return (MICP = navigator.mediaDevices
-          .getUserMedia({ audio: true })
+          .getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true,
+            },
+          })
           .then((s) => {
             MICSTREAM = s;
             S.micOk = 1;
@@ -1469,18 +1479,18 @@
           ],
           [
             "dock",
-            "Spacecraft Docking Challenge",
-            "Fly a spacecraft to a space station and dock safely.",
-            "Relative velocity · inertia · navigation",
+            "Asteroid Belt Defender",
+            "Pilot a planetary defense interceptor, dodge space rocks, and blast incoming asteroids before they hit Earth.",
+            "Planetary defense · momentum · laser targeting",
             "Beginner",
             "10 min",
             "dock",
           ],
           [
             "rover",
-            "Planetary Rover Explorer",
-            "Drive a rover on the Moon, Mars and an asteroid.",
-            "Planetary geology · robotics · signal delay",
+            "Jet-Pack Rescue & Exoplanet Lander",
+            "Fly an astronaut jet-pack across a low-gravity canyon, dodge solar storms, rescue 3 stranded crewmates and land softly on the beacon pad.",
+            "Thruster physics · low gravity · fuel management · soft landing",
             "Beginner",
             "10 min",
             "rover",
@@ -1506,7 +1516,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
               wh: "Awarded to",
               w:
                 (S.nick || "Young Explorer") +
-                " for completing all five Beginner Academy missions: building a rocket, reaching orbit, deploying a satellite, docking with a station and exploring planets.",
+                " for completing all five Beginner Academy missions: building a rocket, reaching orbit, deploying a satellite, defending Earth from asteroids and flying a jet-pack rescue on an exoplanet.",
               f: "Take a screenshot to keep it!",
               nt: "Close",
             });
@@ -1681,12 +1691,10 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
         }
       }
       function autoFitRocket() {
-        // Start with every component at Economy grade, which guarantees a budget-safe baseline.
         C.forEach((c) => {
           B.I[c[0]] = 1;
           B.G[c[0]] = 0;
         });
-        // Upgrade the most reliability-critical systems first whenever the budget permits.
         const priority = [
           "engine",
           "guidance",
@@ -1917,7 +1925,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
         ];
         $("#v").innerHTML =
           `<div class="row"><h2 style="margin:0;flex:1">Launch Facility</h2><button id="bk">Back to assembly</button></div><div class="bg2" style="grid-template-columns:minmax(0,1fr) 300px"><section><div id="fw" style="position:relative"><canvas id="fc" class="m" width="720" height="460"></canvas></div><div class="big-t" id="cd"></div><div class="row"><button data-v="pad" class="on">Launchpad</button><button data-v="side">Side</button><button data-v="eng">Engine close-up</button><button data-v="trk">Tracking</button><button data-v="cock">Cockpit</button></div><div class="tel" id="tel"></div></section>
-<aside><div class="pn"><h3>Mission control</h3><p>Destination: Low Earth Orbit (~400 km)<br>Weather: ${B.wl}<br>Launch risk: <b>${Math.round(risk() * 100)}%</b></p><div id="pc">${ok.map((x) => `<p class="mu" style="margin:2px 0">○ ${x}</p>`).join("")}</div><div id="voicecheck" class="pn" style="margin-top:10px"><b>VOICE CONFIRMATION</b><p id="vprompt" class="mu">Mission control will call each test. Respond aloud when prompted.</p><div id="vphrase" style="font-size:1.05rem;font-weight:800;color:var(--cy);margin:8px 0">Ready for system check</div><button id="sc" class="p" style="width:100%;margin:8px 0">Start voice system checks</button><div id="vstatus" class="mu" aria-live="polite">Microphone has not started.</div></div><button class="p" id="st" style="width:100%;margin-top:10px" disabled>Start countdown</button><button id="ps" style="width:100%;margin-top:8px" disabled>Pause</button></div><p class="mu" style="font-size:.78rem">Simplified simulation: speeds, heights and timings are illustrative and compressed to about 40 seconds.</p></aside></div>`;
+<aside><div class="pn"><h3>Mission control</h3><p>Destination: Low Earth Orbit (~400 km)<br>Weather: ${B.wl}<br>Launch risk: <b>${Math.round(risk() * 100)}%</b></p><div id="pc">${ok.map((x) => `<p class="mu" style="margin:2px 0">○ ${x}</p>`).join("")}</div><div id="voicecheck" class="pn" style="margin-top:10px"><b>VOICE CONFIRMATION</b><p id="vprompt" class="mu">Mission control will call each test. Speak the full sentence aloud within 5 seconds.</p><div id="vphrase" style="font-size:1.05rem;font-weight:800;color:var(--cy);margin:8px 0">Ready for system check</div><button id="sc" class="p" style="width:100%;margin:8px 0">Start voice system checks</button><button id="autoTest" style="width:100%;margin:4px 0 8px">Auto test (no microphone)</button><div id="vstatus" class="mu" aria-live="polite">Choose voice confirmation or automatic testing.</div></div><button class="p" id="st" style="width:100%;margin-top:10px" disabled>Start countdown</button><button id="ps" style="width:100%;margin-top:8px" disabled>Pause</button></div><p class="mu" style="font-size:.78rem">Simplified simulation: speeds, heights and timings are illustrative and compressed to about 40 seconds.</p></aside></div>`;
         $("#bk").onclick = () => go("build");
         F = {
           p: 0,
@@ -1968,7 +1976,10 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           vcRec = null,
           vcAccepted = false,
           vcStarted = false,
-          vcIdle = null;
+          vcStepTimer = null,
+          vcTickTimer = null,
+          vcFinalTranscript = "",
+          vcInterimTranscript = "";
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
         function normSpeech(t) {
           return t
@@ -1981,19 +1992,27 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
         }
         function closeEnough(heard, expected) {
           const h = normSpeech(heard),
-                e = normSpeech(expected);
+            e = normSpeech(expected);
           if (h.length === 0) return false;
-          
-          const stop = new Set(["is", "a", "the", "and", "all", "to", "go"]);
-          const meaningful = e.filter(x => !stop.has(x));
-          const matched = meaningful.filter(x => 
-            h.some(y => y === x || y.includes(x) || x.includes(y))
+          const stop = new Set(["is", "a", "the", "and", "to"]);
+          const meaningful = e.filter((x) => !stop.has(x));
+          const matched = meaningful.filter((x) =>
+            h.some((y) => y === x || y.includes(x) || x.includes(y)),
           );
-          
-          // Accept if at least 1 meaningful word matches or transcript is non-empty
-          return matched.length >= 1 || h.length >= 1;
+          // Require either at least half the key words or a complete spoken phrase (>= 3 words with at least 1 match)
+          return (
+            matched.length >= Math.max(2, Math.ceil(meaningful.length * 0.45)) ||
+            (h.length >= 3 && matched.length >= 1)
+          );
+        }
+        function clearVoiceTimers() {
+          clearTimeout(vcStepTimer);
+          clearInterval(vcTickTimer);
+          vcStepTimer = null;
+          vcTickTimer = null;
         }
         function finishVoiceCheck() {
+          clearVoiceTimers();
           vcBusy = false;
           const ps = document.querySelectorAll("#pc p");
           if (ps[vcIndex])
@@ -2003,6 +2022,9 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           vcIndex++;
           if (vcIndex >= voiceChecks.length) {
             vcDone = true;
+            try {
+              vcRec && vcRec.stop();
+            } catch (_) {}
             $("#vphrase").textContent = "ALL SYSTEMS GO!";
             $("#vprompt").textContent =
               "Excellent work, Commander! Every system has been checked.";
@@ -2017,42 +2039,82 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             }
             return;
           }
-          setTimeout(runVoiceStep, 150);
+          setTimeout(runVoiceStep, 450);
         }
         function runVoiceStep() {
           if (vcDone || vcIndex >= voiceChecks.length) return;
+          clearVoiceTimers();
           vcBusy = true;
           vcAccepted = false;
+          vcFinalTranscript = "";
+          vcInterimTranscript = "";
           const item = voiceChecks[vcIndex];
+          let secsLeft = 5;
           $("#vprompt").textContent =
             "TEST " +
             (vcIndex + 1) +
             " OF " +
             voiceChecks.length +
-            " — say the full statement aloud";
+            " — Say the full sentence:";
           $("#vphrase").textContent = item[1];
-          $("#vstatus").textContent = "Mission control is calling the system…";
-          let begun = 0;
-          const begin = () => {
-            if (begun) return;
-            begun = 1;
-            if (!vcDone && !vcAccepted && vcBusy) startListening();
-          };
-          if (!window.speechSynthesis) {
-            begin();
-            return;
+          $("#vstatus").textContent =
+            "Listening… complete your sentence (" + secsLeft + "s left)";
+
+          // Give a full 5 seconds per sentence so the user is never cut off mid-sentence
+          vcTickTimer = setInterval(() => {
+            if (!vcBusy || vcAccepted || vcDone) return;
+            secsLeft--;
+            if (secsLeft > 0) {
+              const heardPreview = (
+                vcFinalTranscript +
+                " " +
+                vcInterimTranscript
+              ).trim();
+              $("#vstatus").textContent = heardPreview
+                ? 'Heard: "' + heardPreview + '" (' + secsLeft + "s left)"
+                : "Listening… complete your sentence (" + secsLeft + "s left)";
+            }
+          }, 1000);
+
+          vcStepTimer = setTimeout(() => {
+            if (!vcBusy || vcAccepted || vcDone) return;
+            const fullSpoken = (
+              vcFinalTranscript +
+              " " +
+              vcInterimTranscript
+            ).trim();
+            if (fullSpoken.length > 0 && closeEnough(fullSpoken, item[1])) {
+              vcAccepted = true;
+              try {
+                vcRec && vcRec.stop();
+              } catch (_) {}
+              $("#vstatus").textContent = 'Confirmed: "' + fullSpoken + '"';
+              setTimeout(finishVoiceCheck, 350);
+            } else {
+              // Restart the 5s window if the user didn't finish or nothing matched
+              $("#vstatus").textContent = fullSpoken
+                ? 'Heard "' +
+                  fullSpoken +
+                  '" — please say the full sentence again (5s).'
+                : "No speech detected — please read the sentence aloud (5s).";
+              try {
+                vcRec && vcRec.stop();
+              } catch (_) {}
+              setTimeout(() => {
+                if (!vcDone && !vcAccepted) runVoiceStep();
+              }, 700);
+            }
+          }, 5000);
+
+          startListening();
+          if (window.speechSynthesis) {
+            const u = new SpeechSynthesisUtterance(item[0]);
+            u.rate = 1.15;
+            u.volume = 0.85;
+            u.pitch = 1.05;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(u);
           }
-          const u = new SpeechSynthesisUtterance(item[0]);
-          u.rate = 1;
-          u.volume = 1;
-          u.pitch = 1.05;
-          u.onend = () => {
-            setTimeout(begin, 600); // Wait 600ms for audio echo to clear before listening
-          };
-          u.onerror = begin;
-          speechSynthesis.cancel();
-          speechSynthesis.speak(u);
-          setTimeout(begin, 12000);
         }
         function startListening() {
           if (!SR) {
@@ -2061,17 +2123,6 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             vcBusy = false;
             return;
           }
-          $("#vstatus").textContent =
-            "Listening… read the whole statement aloud.";
-          const acceptNow = () => {
-            if (vcAccepted || vcDone) return;
-            vcAccepted = true;
-            clearTimeout(vcIdle);
-            try {
-              vcRec.stop();
-            } catch (_) {}
-            finishVoiceCheck();
-          };
           if (!vcRec) {
             vcRec = new SR();
             vcRec.lang = navigator.language || "en-IN";
@@ -2080,17 +2131,36 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             vcRec.maxAlternatives = 3;
             vcRec.onresult = (e) => {
               if (vcAccepted || !vcBusy) return;
-              let heard = "",
-                fin = false;
+              let finals = "",
+                interims = "";
               for (let i = 0; i < e.results.length; i++) {
-                if (e.results[i].isFinal) fin = true;
-                for (let a = 0; a < e.results[i].length; a++)
-                  heard += " " + e.results[i][a].transcript;
+                const tr = e.results[i][0].transcript;
+                if (e.results[i].isFinal) finals += " " + tr;
+                else interims += " " + tr;
               }
-              if (closeEnough(heard, voiceChecks[vcIndex][1])) {
-                clearTimeout(vcIdle);
-                if (fin) acceptNow();
-                else vcIdle = setTimeout(acceptNow, 900);
+              vcFinalTranscript = finals.trim();
+              vcInterimTranscript = interims.trim();
+              const combined = (
+                vcFinalTranscript +
+                " " +
+                vcInterimTranscript
+              ).trim();
+              if (combined) {
+                $("#vstatus").textContent = 'Hearing: "' + combined + '"…';
+              }
+              // Wait until a FINAL result arrives (meaning the user finished speaking their sentence)
+              if (
+                vcFinalTranscript.length > 0 &&
+                closeEnough(vcFinalTranscript, voiceChecks[vcIndex][1])
+              ) {
+                vcAccepted = true;
+                clearVoiceTimers();
+                try {
+                  vcRec.stop();
+                } catch (_) {}
+                $("#vstatus").textContent =
+                  'Sentence confirmed: "' + vcFinalTranscript + '"';
+                setTimeout(finishVoiceCheck, 350);
               }
             };
             vcRec.onerror = (e) => {
@@ -2098,24 +2168,26 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
                 e.error === "not-allowed" ||
                 e.error === "service-not-allowed"
               ) {
+                clearVoiceTimers();
                 $("#vstatus").textContent =
                   "Microphone access was blocked. Allow it in browser site settings, then reload.";
                 vcBusy = false;
-              } else if (!vcAccepted && !vcDone) {
+              } else if (!vcAccepted && !vcDone && vcBusy) {
                 setTimeout(() => {
                   try {
                     vcRec.start();
                   } catch (_) {}
-                }, 350);
+                }, 300);
               }
             };
             vcRec.onend = () => {
-              if (!vcAccepted && !vcDone && vcBusy)
+              if (!vcAccepted && !vcDone && vcBusy) {
                 setTimeout(() => {
                   try {
                     vcRec.start();
                   } catch (_) {}
                 }, 200);
+              }
             };
           }
           try {
@@ -2125,7 +2197,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
               try {
                 vcRec.start();
               } catch (_) {}
-            }, 300);
+            }, 250);
           }
         }
         async function beginVoiceChecks() {
@@ -2156,10 +2228,68 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             }
           }
           vcStarted = true;
-          $("#sc").textContent = "Voice checks in progress";
+          $("#sc").textContent = "Voice checks in progress (5s per phrase)";
           runVoiceStep();
         }
         $("#sc").onclick = beginVoiceChecks;
+
+        // Alternative path: run the same pre-launch checks automatically,
+        // without requesting microphone access or requiring spoken confirmation.
+        let autoTestTimer = null;
+        function beginAutoChecks() {
+          if (vcStarted || vcBusy || vcDone) return;
+          clearVoiceTimers();
+          clearInterval(autoTestTimer);
+          vcBusy = true;
+          $("#sc").disabled = true;
+          $("#autoTest").disabled = true;
+          $("#vprompt").textContent =
+            "AUTOMATIC TESTING — Mission control is checking each system.";
+          $("#vstatus").textContent = "Automatic checks starting…";
+          $("#vphrase").textContent = "Preparing system diagnostics";
+          let autoIndex = 0;
+          const runAutoStep = () => {
+            if (autoIndex >= voiceChecks.length) {
+              clearInterval(autoTestTimer);
+              vcBusy = false;
+              vcDone = true;
+              $("#vphrase").textContent = "ALL SYSTEMS GO!";
+              $("#vprompt").textContent =
+                "Automatic testing completed. All five systems passed.";
+              $("#vstatus").textContent =
+                "All checks passed automatically. Cleared for countdown.";
+              $("#sc").textContent = "Voice confirmation skipped";
+              $("#st").disabled = false;
+              snd("b");
+              return;
+            }
+            const item = voiceChecks[autoIndex];
+            const ps = document.querySelectorAll("#pc p");
+            $("#vprompt").textContent =
+              "AUTOMATIC TEST " + (autoIndex + 1) + " OF " + voiceChecks.length;
+            $("#vphrase").textContent = item[0] + ": " + item[1];
+            $("#vstatus").textContent = "Checking " + item[0].toLowerCase() + "…";
+            if (!S.mute && window.speechSynthesis) {
+              const u = new SpeechSynthesisUtterance(item[0] + ". " + item[1]);
+              u.rate = 1;
+              speechSynthesis.cancel();
+              speechSynthesis.speak(u);
+            }
+            setTimeout(() => {
+              if (ps[autoIndex]) {
+                ps[autoIndex].innerHTML =
+                  '<span class="ok">✓ ' + ok[autoIndex] +
+                  " — automatic check passed</span>";
+              }
+              snd("b");
+              autoIndex++;
+            }, 700);
+          };
+          runAutoStep();
+          autoTestTimer = setInterval(runAutoStep, 1200);
+        }
+        $("#autoTest").onclick = beginAutoChecks;
+
         $("#ps").onclick = () => {
           F.pause = !F.pause;
           $("#ps").textContent = F.pause ? "Resume" : "Pause";
@@ -2922,7 +3052,6 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           sy = Y(s.p),
           r = Math.hypot(...s.p),
           ux = -s.p[0] / r,
-          uy = (s.p[1] / -r) * -1,
           vm = Math.hypot(...s.v);
         c.fillStyle = "#fff";
         c.fillRect(sx - 4, sy - 4, 8, 8);
@@ -2947,7 +3076,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
         );
       }
 
-      /* ---------- Simple games: Satellite, Docking, Rover ---------- */
+      /* ---------- Simple games: Satellite, Asteroid Defender, Jet-Pack Rescue ---------- */
       const SP = {
         solar: ["Solar panels", "make electricity from sunlight"],
         antenna: ["Antenna", "talks to Earth"],
@@ -3144,21 +3273,26 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
       function gDock() {
         DK = {
           st: "ready",
-          x: -270,
-          y: 120,
-          vx: 0,
+          x: 110,
+          y: 215,
           vy: 0,
-          f: 100,
+          vx: 0,
+          shield: 100,
+          score: 0,
+          target: 15,
           t: 0,
+          cool: 0,
           k: {},
+          lasers: [],
+          rocks: [],
           par: [],
           ex: [],
           l: 0,
-          sn: 0,
+          spawnT: 0,
           msg: "",
         };
         $("#v").innerHTML =
-          `<div class="row"><h2 style="margin:0;flex:1">Docking Challenge</h2><button id="bk">Back to academy</button></div>${bar()}<div class="bg2" style="grid-template-columns:minmax(0,1fr) 280px"><section><canvas id="dc" class="m" width="720" height="430"></canvas></section><aside><div class="pn"><h3>Your mission</h3><p>Fly into the green docking port. Line up straight with it, then arrive <b>slowly</b> (under 0.8 m/s).</p><p class="mu">Hold arrow keys or W A S D to fire thrusters. Nothing stops by itself in space: to slow down, push the other way! Space = pause.</p><div class="pad"><div class="row" style="justify-content:center"><button id="tu">▲</button></div><div class="row" style="justify-content:center"><button id="tl">◀</button><button id="td">▼</button><button id="tr">▶</button></div></div></div></aside></div>`;
+          `<div class="row"><h2 style="margin:0;flex:1">Asteroid Belt Defender</h2><button id="bk">Back to academy</button></div>${bar()}<div class="bg2" style="grid-template-columns:minmax(0,1fr) 280px"><section><canvas id="dc" class="m" width="720" height="430"></canvas></section><aside><div class="pn"><h3>Your mission</h3><p>Destroy <b>15 incoming asteroids</b> before they reach Earth's atmosphere! Dodge rocks so your deflector shield stays intact.</p><p class="mu">Move with Arrow keys or W A S D. Press <b>Space</b> (or <b>🔥 Fire Laser</b>) to shoot plasma bolts. Press <b>P</b> to pause.</p><div class="pad"><div class="row" style="justify-content:center"><button id="tu">▲</button></div><div class="row" style="justify-content:center"><button id="tl">◀</button><button id="td">▼</button><button id="tr">▶</button></div><div class="row" style="justify-content:center;margin-top:8px"><button id="tf" class="p" style="width:100%">🔥 Fire Laser</button></div></div></div></aside></div>`;
         $("#bk").onclick = () => go("home");
         $("#gR").onclick = gDock;
         $("#gS").onclick = () => {
@@ -3184,26 +3318,36 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           };
           b.onpointerup = b.onpointerleave = () => (DK.k[k] = 0);
         });
+        $("#tf").onpointerdown = (e) => {
+          e.preventDefault();
+          DK.k.fire = 1;
+        };
+        $("#tf").onpointerup = $("#tf").onpointerleave = () => (DK.k.fire = 0);
         document.onkeydown = (e) => {
           if (KM[e.key]) {
             e.preventDefault();
             DK.k[KM[e.key]] = 1;
           }
-          if (e.key === " " || e.key === "p") {
+          if (e.key === " ") {
+            e.preventDefault();
+            DK.k.fire = 1;
+          }
+          if (e.key === "p" || e.key === "P") {
             e.preventDefault();
             dpause();
           }
         };
         document.onkeyup = (e) => {
           if (KM[e.key]) DK.k[KM[e.key]] = 0;
+          if (e.key === " ") DK.k.fire = 0;
         };
         setS("ready");
         dlg({
-          t: "DOCKING MISSION",
+          t: "PLANETARY DEFENSE MISSION",
           wh: "Your mission",
-          w: "Fly your spacecraft to the space station and connect to its green port. Line up straight, then arrive slowly. Fast arrivals damage both spacecraft!",
-          f: "The International Space Station circles Earth at about 28,000 km/h, but docking spacecraft match its speed so it looks like they barely move.",
-          nt: "Got it!",
+          w: "A swarm of asteroids is heading toward Earth! Pilot your defense ship, dodge incoming rocks, and blast 15 asteroids into harmless dust.",
+          f: "NASA's DART mission proved that spacecraft can deflect asteroids in space to protect Earth!",
+          nt: "Launch Interceptor!",
         });
         requestAnimationFrame(ddr);
       }
@@ -3217,6 +3361,29 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           setS("play");
         }
       }
+      function spawnRock(d) {
+        const big = Math.random() < 0.35;
+        const r = big ? 24 + Math.random() * 8 : 13 + Math.random() * 6;
+        const spd = (big ? 95 : 145) + d.score * 4 + Math.random() * 45;
+        const pts = [];
+        const sides = 9;
+        for (let i = 0; i < sides; i++) {
+          const ang = (i / sides) * Math.PI * 2;
+          const rad = r * (0.78 + Math.random() * 0.35);
+          pts.push([Math.cos(ang) * rad, Math.sin(ang) * rad]);
+        }
+        d.rocks.push({
+          x: 750,
+          y: 36 + Math.random() * 358,
+          vx: -spd,
+          vy: (Math.random() - 0.5) * 45,
+          r,
+          hp: big ? 2 : 1,
+          rot: Math.random() * 6.28,
+          vrot: (Math.random() - 0.5) * 2.5,
+          pts,
+        });
+      }
       function ddr(now) {
         const cv = $("#dc");
         if (!cv || !DK) return;
@@ -3224,339 +3391,358 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           dt = Math.min(0.05, (now - d.l) / 1000 || 0);
         d.l = now;
         if (d.st === "play") {
-          const ac = 1.3;
-          let th = 0,
-            ax = 0,
-            ay = 0;
-          if (d.f > 0) {
-            ax = ((d.k.r ? 1 : 0) - (d.k.l ? 1 : 0)) * ac;
-            ay = ((d.k.d ? 1 : 0) - (d.k.u ? 1 : 0)) * ac;
-            d.vx += ax * dt;
-            d.vy += ay * dt;
-            th = Math.abs(ax) + Math.abs(ay);
-            d.f = Math.max(0, d.f - th * dt * 3);
-            if (th)
-              for (let i = 0; i < 2; i++)
-                d.par.push({
+          d.t += dt;
+          d.cool = Math.max(0, d.cool - dt);
+          const spd = 290;
+          const dx = (d.k.r ? 1 : 0) - (d.k.l ? 1 : 0);
+          const dy = (d.k.d ? 1 : 0) - (d.k.u ? 1 : 0);
+          d.x = Math.max(45, Math.min(340, d.x + dx * spd * dt));
+          d.y = Math.max(28, Math.min(402, d.y + dy * spd * dt));
+          if (Math.random() < 0.7) {
+            d.par.push({
+              x: d.x - 20,
+              y: d.y + (Math.random() - 0.5) * 6,
+              vx: -120 - Math.random() * 60,
+              vy: (Math.random() - 0.5) * 20,
+              l: 0.45,
+              c: "#35d0ff",
+            });
+          }
+          if (d.k.fire && d.cool <= 0) {
+            d.cool = 0.22;
+            d.lasers.push({ x: d.x + 24, y: d.y, vx: 580 });
+            snd("b");
+          }
+          d.spawnT -= dt;
+          if (d.spawnT <= 0) {
+            spawnRock(d);
+            d.spawnT = Math.max(0.55, 1.35 - d.score * 0.04);
+          }
+          d.lasers.forEach((l) => (l.x += l.vx * dt));
+          d.lasers = d.lasers.filter((l) => l.x < 740);
+          for (let i = d.rocks.length - 1; i >= 0; i--) {
+            const rk = d.rocks[i];
+            rk.x += rk.vx * dt;
+            rk.y += rk.vy * dt;
+            rk.rot += rk.vrot * dt;
+            if (rk.y < rk.r + 10 || rk.y > 420 - rk.r) rk.vy *= -1;
+            let hit = false;
+            for (let j = d.lasers.length - 1; j >= 0; j--) {
+              const lz = d.lasers[j];
+              if (Math.hypot(lz.x - rk.x, lz.y - rk.y) < rk.r + 8) {
+                d.lasers.splice(j, 1);
+                rk.hp--;
+                for (let p = 0; p < 8; p++) {
+                  d.ex.push({
+                    x: lz.x,
+                    y: lz.y,
+                    vx: (Math.random() - 0.5) * 180,
+                    vy: (Math.random() - 0.5) * 180,
+                    l: 0.5,
+                    c: "#ffd24a",
+                  });
+                }
+                if (rk.hp <= 0) {
+                  hit = true;
+                  d.score++;
+                  for (let p = 0; p < 22; p++) {
+                    d.ex.push({
+                      x: rk.x,
+                      y: rk.y,
+                      vx: (Math.random() - 0.5) * 240,
+                      vy: (Math.random() - 0.5) * 240,
+                      l: 0.85,
+                      c: p % 2 ? "#ff9a2e" : "#ffd24a",
+                    });
+                  }
+                }
+                break;
+              }
+            }
+            if (hit) {
+              d.rocks.splice(i, 1);
+              if (d.score >= d.target) {
+                d.st = "won";
+                setS("won");
+                S.gm.dock = 1;
+                save();
+                award("dock");
+                win(
+                  "EARTH PROTECTED!",
+                  "You cleared the asteroid wave in " + Math.round(d.t) + "s! Planetary defense mission complete.",
+                  d.shield >= 80 ? 3 : d.shield >= 40 ? 2 : 1,
+                  gDock,
+                );
+              }
+              continue;
+            }
+            if (Math.hypot(rk.x - d.x, rk.y - d.y) < rk.r + 16) {
+              d.rocks.splice(i, 1);
+              d.shield = Math.max(0, d.shield - 25);
+              for (let p = 0; p < 20; p++) {
+                d.ex.push({
                   x: d.x,
                   y: d.y,
-                  vx: -Math.sign(ax) * 40 + (Math.random() - 0.5) * 20,
-                  vy: -Math.sign(ay) * 40 + (Math.random() - 0.5) * 20,
-                  l: 1,
+                  vx: (Math.random() - 0.5) * 220,
+                  vy: (Math.random() - 0.5) * 220,
+                  l: 0.75,
+                  c: "#ff5252",
                 });
-          }
-          d.x += d.vx * dt * 5;
-          d.y += d.vy * dt * 5;
-          d.t += dt;
-          const dist = Math.hypot(d.x, d.y),
-            sp = Math.hypot(d.vx, d.vy),
-            al = d.x < 0 ? Math.atan2(Math.abs(d.y), -d.x) * 57.3 : 180;
-          if (dist < 14) {
-            if (sp < 0.8 && al < 12) {
-              d.st = "snap";
-              d.sn = 0;
-            } else {
-              d.st = "boom";
-              d.sn = 0;
-              d.ex = [...Array(50)].map(() => ({
-                x: d.x,
-                y: d.y,
-                vx: (Math.random() - 0.5) * 160,
-                vy: (Math.random() - 0.5) * 160,
-                l: 1,
-              }));
-              d.msg =
-                sp >= 0.8
-                  ? `You arrived too fast (${sp.toFixed(1)} m/s). Docking needs under 0.8 m/s.`
-                  : "You were not lined up with the port. Approach straight in from the left.";
+              }
+              if (d.shield <= 0) {
+                d.st = "lost";
+                setS("lost");
+                dlg(
+                  {
+                    t: "💥 SHIELDS DEPLETED",
+                    bad: 1,
+                    w: "Too many asteroid impacts overloaded your deflector shield. Dodge incoming rocks and keep firing!",
+                    nt: "Try again",
+                  },
+                  gDock,
+                );
+              }
+              continue;
             }
-          } else if (Math.abs(d.x) > 560 || Math.abs(d.y) > 380) {
-            d.st = "boom";
-            d.sn = 0;
-            d.ex = [];
-            d.msg =
-              "You drifted away. In space you keep moving until you push back!";
-          } else if (d.f <= 0 && sp < 0.05) {
-            d.st = "boom";
-            d.sn = 0;
-            d.ex = [];
-            d.msg = "Out of fuel! Plan your thruster pushes carefully.";
-          }
-        }
-        if (d.st === "snap") {
-          d.sn += dt;
-          d.x *= 0.9;
-          d.y *= 0.9;
-          if (d.sn > 1.2) {
-            d.st = "won";
-            setS("won");
-            S.gm.dock = 1;
-            save();
-            award("dock");
-            win(
-              "DOCKING SUCCESSFUL!",
-              "Slow and straight wins in space. Real crews dock the same way.",
-              d.f > 50 ? 3 : d.f > 20 ? 2 : 1,
-              gDock,
-            );
-          }
-        }
-        if (d.st === "boom") {
-          d.sn += dt;
-          d.ex.forEach((p) => {
-            p.x += p.vx * dt;
-            p.y += p.vy * dt;
-            p.l -= dt;
-          });
-          if (d.sn > 1.4) {
-            d.st = "lost";
-            setS("lost");
-            dlg(
-              { t: "💥 DOCKING FAILED", bad: 1, w: d.msg, nt: "Try again" },
-              gDock,
-            );
+            if (rk.x < 22) {
+              d.rocks.splice(i, 1);
+              d.shield = Math.max(0, d.shield - 15);
+              if (d.shield <= 0) {
+                d.st = "lost";
+                setS("lost");
+                dlg(
+                  {
+                    t: "🌍 ATMOSPHERE BREACHED",
+                    bad: 1,
+                    w: "Asteroids slipped past your defense line into Earth's atmosphere!",
+                    nt: "Try again",
+                  },
+                  gDock,
+                );
+              }
+            }
           }
         }
         d.par.forEach((p) => {
           p.x += p.vx * dt;
           p.y += p.vy * dt;
-          p.l -= dt * 1.5;
+          p.l -= dt;
         });
         d.par = d.par.filter((p) => p.l > 0);
+        d.ex.forEach((p) => {
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.l -= dt;
+        });
+        d.ex = d.ex.filter((p) => p.l > 0);
         const c = cv.getContext("2d"),
-          X = 470,
-          Y = 215,
-          dist = Math.hypot(d.x, d.y),
-          sp = Math.hypot(d.vx, d.vy),
-          al = d.x < 0 ? Math.atan2(Math.abs(d.y), -d.x) * 57.3 : 180,
           t = now / 1000;
-        const g = c.createLinearGradient(0, 0, 0, 430);
-        g.addColorStop(0, "#020611");
-        g.addColorStop(1, "#10205a");
+        const g = c.createLinearGradient(0, 0, 720, 430);
+        g.addColorStop(0, "#030a1c");
+        g.addColorStop(1, "#0b193d");
         c.fillStyle = g;
         c.fillRect(0, 0, 720, 430);
-        for (let i = 0; i < 80; i++) {
-          c.globalAlpha = 0.4 + 0.5 * Math.sin(t * 2 + i);
+        for (let i = 0; i < 85; i++) {
+          c.globalAlpha = 0.35 + 0.5 * Math.sin(t * 2 + i);
           c.fillStyle = "#fff";
           c.fillRect(
-            (((i * 97 - d.x * 0.06 * (1 + (i % 3))) % 720) + 720) % 720,
-            (((i * 53 - d.y * 0.06 * (1 + (i % 3))) % 430) + 430) % 430,
-            1.5,
-            1.5,
+            (((i * 97 - t * (35 + (i % 4) * 20)) % 720) + 720) % 720,
+            (i * 53) % 430,
+            1.6,
+            1.6,
           );
         }
         c.globalAlpha = 1;
-        const eg = c.createRadialGradient(200, 640, 200, 200, 640, 340);
+        const eg = c.createRadialGradient(-180, 215, 160, -180, 215, 225);
         eg.addColorStop(0, "#1d6fd6");
-        eg.addColorStop(0.9, "#0a3a7a");
+        eg.addColorStop(0.88, "#0a3a7a");
         eg.addColorStop(1, "#5ac8ff");
         c.fillStyle = eg;
         c.beginPath();
-        c.arc(200, 660, 330, 0, 7);
+        c.arc(-180, 215, 220, 0, 7);
         c.fill();
-        c.fillStyle = "#3d4a63";
-        c.fillRect(X, Y - 48, 5, 96);
-        c.fillRect(X + 150, 40, 6, 350);
-        c.fillStyle = "#b8c4d8";
-        c.fillRect(X, Y - 20, 120, 40);
-        c.fillRect(X + 80, Y - 40, 70, 80);
-        c.fillStyle = "#8896ad";
-        c.fillRect(X + 120, Y - 12, 36, 24);
-        c.fillStyle = "#2e6fd6";
-        [
-          [40, 90],
-          [300, 90],
-        ].forEach((a) => {
-          c.fillRect(X + 110, a[0], 92, a[1] - 40 + 40 > 0 ? 60 : 60);
-          c.fillRect(
-            X + 110,
-            a[0] + (a[0] > 100 ? -0 : 0) + (a[0] > 100 ? 30 : 0),
-            92,
-            60,
-          );
+        d.lasers.forEach((l) => {
+          c.fillStyle = "#3ddc84";
+          c.fillRect(l.x - 10, l.y - 2.5, 22, 5);
+          c.fillStyle = "#fff";
+          c.fillRect(l.x - 6, l.y - 1, 14, 2);
         });
-        c.strokeStyle = "#1d3a66";
-        for (let i = 0; i < 5; i++) {
+        d.rocks.forEach((rk) => {
+          c.save();
+          c.translate(rk.x, rk.y);
+          c.rotate(rk.rot);
+          c.fillStyle = rk.hp > 1 ? "#8c6d53" : "#6e655f";
+          c.strokeStyle = rk.hp > 1 ? "#ffb13d" : "#a3988e";
+          c.lineWidth = 2;
           c.beginPath();
-          c.moveTo(X + 110 + i * 23, 40);
-          c.lineTo(X + 110 + i * 23, 100);
-          c.moveTo(X + 110 + i * 23, 300);
-          c.lineTo(X + 110 + i * 23, 360);
+          rk.pts.forEach((pt, idx) =>
+            idx ? c.lineTo(pt[0], pt[1]) : c.moveTo(pt[0], pt[1]),
+          );
+          c.closePath();
+          c.fill();
           c.stroke();
-        }
-        const ok = sp < 0.8 && al < 12,
-          pc = ok ? "#3ddc84" : "#ff5252";
-        c.setLineDash([6, 6]);
-        c.strokeStyle = "rgba(61,220,132,.45)";
-        c.beginPath();
-        c.moveTo(X, Y);
-        c.lineTo(X - 300, Y - 52);
-        c.moveTo(X, Y);
-        c.lineTo(X - 300, Y + 52);
-        c.stroke();
-        c.setLineDash([]);
-        c.lineWidth = 3;
-        c.strokeStyle = pc;
-        c.beginPath();
-        c.arc(X, Y, 12 + 2 * Math.sin(t * 5), 0, 7);
-        c.stroke();
-        c.lineWidth = 1;
+          c.restore();
+        });
         d.par.forEach((p) => {
-          c.globalAlpha = p.l;
-          c.fillStyle = "#ffb13d";
+          c.globalAlpha = Math.max(0, p.l * 2);
+          c.fillStyle = p.c;
           c.beginPath();
-          c.arc(X + p.x, Y + p.y, 3 * p.l + 1, 0, 7);
+          c.arc(p.x, p.y, 4 * p.l + 1, 0, 7);
           c.fill();
         });
-        c.globalAlpha = 1;
-        if (d.st !== "boom" && d.st !== "lost") {
-          const sx = X + d.x,
-            sy = Y + d.y;
-          c.fillStyle = "#e8eef8";
-          c.fillRect(sx - 16, sy - 8, 26, 16);
+        if (d.st !== "lost") {
+          c.save();
+          c.translate(d.x, d.y);
+          c.fillStyle = "#2e6fd6";
           c.beginPath();
-          c.moveTo(sx + 10, sy - 8);
-          c.lineTo(sx + 20, sy);
-          c.lineTo(sx + 10, sy + 8);
+          c.moveTo(-14, -18);
+          c.lineTo(8, -6);
+          c.lineTo(-14, 0);
+          c.closePath();
+          c.moveTo(-14, 18);
+          c.lineTo(8, 6);
+          c.lineTo(-14, 0);
+          c.closePath();
+          c.fill();
+          c.fillStyle = "#eef5ff";
+          c.beginPath();
+          c.moveTo(24, 0);
+          c.lineTo(-16, -10);
+          c.lineTo(-12, 0);
+          c.lineTo(-16, 10);
+          c.closePath();
           c.fill();
           c.fillStyle = "#35d0ff";
-          c.fillRect(sx + 2, sy - 4, 6, 8);
-          c.fillStyle = "#ff9a2e";
-          c.fillRect(sx - 20, sy - 5, 4, 10);
+          c.beginPath();
+          c.ellipse(4, 0, 8, 4, 0, 0, 7);
+          c.fill();
+          c.restore();
         }
         d.ex.forEach((p) => {
-          c.globalAlpha = Math.max(0, p.l);
-          c.fillStyle = p.l > 0.5 ? "#ffd24a" : "#ff5252";
+          c.globalAlpha = Math.max(0, p.l * 1.2);
+          c.fillStyle = p.c;
           c.beginPath();
-          c.arc(X + p.x, Y + p.y, 5 * p.l + 1, 0, 7);
+          c.arc(p.x, p.y, 5 * p.l + 1.5, 0, 7);
           c.fill();
         });
         c.globalAlpha = 1;
-        c.fillStyle = "#0008";
-        c.fillRect(8, 8, 210, 92);
+        c.fillStyle = "#0009";
+        c.fillRect(8, 8, 230, 64);
         c.font = "14px sans-serif";
+        c.fillStyle = "#ffd24a";
+        c.fillText("Asteroids Cleared: " + d.score + " / " + d.target, 18, 28);
         c.fillStyle = "#fff";
-        c.fillText("Distance: " + Math.round(dist) + " m", 18, 28);
-        c.fillStyle = sp < 0.8 ? "#3ddc84" : "#ff7a7a";
-        c.fillText("Speed: " + sp.toFixed(2) + " m/s (need <0.8)", 18, 48);
-        c.fillStyle = al < 12 ? "#3ddc84" : "#ff7a7a";
-        c.fillText("Alignment: " + Math.round(al) + "° (need <12°)", 18, 68);
-        c.fillStyle = "#fff";
-        c.fillText("Fuel", 18, 88);
+        c.fillText("Shield", 18, 52);
         c.fillStyle = "#06101f";
-        c.fillRect(54, 78, 150, 10);
-        c.fillStyle = d.f > 30 ? "#35d0ff" : "#ff5252";
-        c.fillRect(54, 78, 1.5 * d.f, 10);
+        c.fillRect(68, 41, 155, 12);
+        c.fillStyle = d.shield > 40 ? "#3ddc84" : "#ff5252";
+        c.fillRect(68, 41, 1.55 * d.shield, 12);
         c.font = "bold 34px sans-serif";
         c.textAlign = "center";
         c.fillStyle = "#ffd24a";
         if (d.st === "ready") c.fillText("Press ▶ Start", 360, 70);
         if (d.st === "pause") c.fillText("PAUSED", 360, 70);
-        if (d.st === "play" && dist < 90 && sp > 1.5) {
-          c.fillStyle = "#ff5252";
-          c.fillText("SLOW DOWN!", 360, 70);
-        }
         c.textAlign = "left";
         const tm = $("#gtm");
         if (tm) tm.textContent = "Time " + Math.round(d.t) + "s";
         requestAnimationFrame(ddr);
       }
-      const EN = {
-        Moon: [
-          "#9a9aa2",
-          "#6b6b74",
-          1,
-          1.3,
-          "Moon: gravity is 1/6 of Earth. Signal delay: 1.3 seconds.",
-          "Grey lunar soil (regolith) with sharp glassy grains, made by billions of years of space impacts.",
-        ],
-        Mars: [
-          "#b35a34",
-          "#823a20",
-          0.9,
-          4,
-          "Mars: gravity is about 1/3 of Earth. Real signal delay: 3 to 22 minutes.",
-          "Iron-rich rock. It is red because of rust! Water once helped make minerals like this.",
-        ],
-        Asteroid: [
-          "#5e564a",
-          "#3a342b",
-          0.7,
-          2.5,
-          "Asteroid: gravity is tiny, so you could almost float away.",
-          "Dark carbon-rich rock: leftover building material from the early Solar System.",
-        ],
+
+      /* ---------- Game 5: Jet-Pack Rescue & Exoplanet Lander ---------- */
+      const EXW = {
+        "Kepler Canyon": {
+          sky1: "#071329",
+          sky2: "#163b66",
+          ground: "#26547c",
+          rock: "#183654",
+          grav: 36,
+          fact: "Kepler-186f is an Earth-sized exoplanet in the habitable zone of a red dwarf star.",
+        },
+        "Titan Methane Cliffs": {
+          sky1: "#1a1106",
+          sky2: "#6b4314",
+          ground: "#9e6622",
+          rock: "#5c3910",
+          grav: 28,
+          fact: "Saturn's moon Titan has thick orange nitrogen haze and low gravity—an astronaut with wings could almost fly!",
+        },
+        "Europa Ice Rift": {
+          sky1: "#041624",
+          sky2: "#135275",
+          ground: "#70c5e8",
+          rock: "#2d7ca3",
+          grav: 32,
+          fact: "Jupiter's moon Europa has a global ocean hidden beneath kilometers of bright, fractured water ice.",
+        },
       };
-      let RV;
-      function gRover(e) {
-        RV = {
-          e: e || "Moon",
-          x: 200,
-          y: 200,
-          a: 0,
-          v: 0,
+      let JP;
+      function gRover(worldName) {
+        const wKey = worldName && EXW[worldName] ? worldName : "Kepler Canyon";
+        const W = EXW[wKey];
+        JP = {
+          world: wKey,
           st: "ready",
-          k: {},
-          got: 0,
-          photo: 0,
-          scan: 0,
-          sp: 0,
-          bat: 100,
+          x: 86,
+          y: 110,
+          vx: 0,
+          vy: 0,
+          fuel: 100,
+          rescued: 0,
           t: 0,
-          dust: [],
-          cr: [],
-          ro: [],
-          pts: [],
-          arm: 0,
-          tg: null,
-          flash: 0,
-          ring: 0,
-          msg: "Drive with the arrow keys. Follow the arrow to a glowing sample.",
+          k: {},
+          flames: [],
+          stars: [...Array(65)].map(() => [
+            Math.random() * 720,
+            Math.random() * 260,
+            0.8 + Math.random() * 1.4,
+          ]),
+          // Terrain ledges & canyon floor
+          pillars: [
+            { x: 215, y: 245, w: 68, h: 185 },
+            { x: 380, y: 175, w: 62, h: 255 },
+            { x: 525, y: 260, w: 66, h: 170 },
+          ],
+          // Moving plasma geysers / solar gusts
+          hazards: [
+            { x: 315, y: 120, vy: 85, r: 16, minY: 65, maxY: 310 },
+            { x: 470, y: 290, vy: -95, r: 16, minY: 75, maxY: 325 },
+          ],
+          // 3 stranded astronauts waving beacons
+          crew: [
+            { x: 249, y: 227, saved: 0, name: "Dr. Aria" },
+            { x: 411, y: 157, saved: 0, name: "Eng. Leo" },
+            { x: 558, y: 242, saved: 0, name: "Pilot Sam" },
+          ],
+          // Floating fuel pods
+          pods: [
+            { x: 160, y: 155, got: 0 },
+            { x: 335, y: 220, got: 0 },
+            { x: 485, y: 120, got: 0 },
+          ],
+          // Rescue extraction landing pad on the far right
+          pad: { x: 615, y: 388, w: 88 },
+          msg: "Use ▲ / W to fire your main jet-pack thruster and ◀ ▶ / A D to steer. Rescue all 3 crewmates, then land gently on the green extraction pad!",
           l: 0,
         };
-        for (let i = 0; i < 36; i++)
-          RV.cr.push({
-            x: Math.random() * 1400,
-            y: Math.random() * 900,
-            r: 10 + Math.random() * 35,
-          });
-        for (let i = 0; i < 40; i++)
-          RV.ro.push({
-            x: Math.random() * 1400,
-            y: Math.random() * 900,
-            r: 2 + Math.random() * 5,
-          });
-        while (RV.pts.length < 3) {
-          const p = {
-            x: 350 + Math.random() * 950,
-            y: 80 + Math.random() * 740,
-            ok: 0,
-          };
-          if (RV.pts.every((q) => Math.hypot(q.x - p.x, q.y - p.y) > 300))
-            RV.pts.push(p);
-        }
-        const E = EN[RV.e];
         $("#v").innerHTML =
-          `<div class="row"><h2 style="margin:0;flex:1">Planetary Rover Explorer</h2><button id="bk">Back to academy</button></div>${bar()}<div class="bg2" style="grid-template-columns:minmax(0,1fr) 300px"><section><canvas id="rv" class="m" width="720" height="430"></canvas><div class="pn" id="rm2" style="margin-top:8px"></div></section><aside><div class="pn"><h3>World</h3><div class="row">${Object.keys(
-            EN,
+          `<div class="row"><h2 style="margin:0;flex:1">Jet-Pack Rescue & Exoplanet Lander</h2><button id="bk">Back to academy</button></div>${bar()}<div class="bg2" style="grid-template-columns:minmax(0,1fr) 300px"><section><canvas id="rv" class="m" width="720" height="430"></canvas><div class="pn" id="rm2" style="margin-top:8px">${JP.msg}</div></section><aside><div class="pn"><h3>Exoplanet Zone</h3><div class="row">${Object.keys(
+            EXW,
           )
             .map(
               (k) =>
-                `<button data-e="${k}" class="${RV.e === k ? "on" : ""}">${k}</button>`,
+                `<button data-e="${k}" class="${JP.world === k ? "on" : ""}">${k.split(" ")[0]}</button>`,
             )
-            .join(
-              "",
-            )}</div><p class="mu">${E[4]}</p></div><div class="pn ob" id="ob" style="margin-top:8px"></div><div class="pn" style="margin-top:8px"><div class="pad"><div class="row" style="justify-content:center"><button id="tu">▲</button></div><div class="row" style="justify-content:center"><button id="tl">◀</button><button id="td">▼</button><button id="tr">▶</button></div></div><div class="row" style="margin-top:8px"><button id="co">🦾 Collect (C)</button><button id="sc3">📡 Scan (X)</button><button id="ph">📷 Photo (F)</button><button id="sd" class="p">🛰 Send data</button></div></div></aside></div>`;
+            .join("")}</div><p class="mu" style="margin-top:6px">${W.fact}</p></div><div class="pn ob" id="ob" style="margin-top:8px"></div><div class="pn" style="margin-top:8px"><h3>Jet-Pack Controls</h3><p class="mu" style="font-size:.85rem">Hold <b>▲ / W</b> to thrust upward against gravity. Land at speed <b>&lt; 55 m/s</b>!</p><div class="pad"><div class="row" style="justify-content:center"><button id="tu" class="p" style="width:136px">🔥 Thrust (▲)</button></div><div class="row" style="justify-content:center;margin-top:6px"><button id="tl">◀ Left</button><button id="td">▼ Stabilize</button><button id="tr">▶ Right</button></div></div></div></aside></div>`;
         $("#bk").onclick = () => go("home");
-        $("#gR").onclick = () => gRover(RV.e);
+        $("#gR").onclick = () => gRover(JP.world);
         $("#gP").onclick = rpause;
         $("#gS").onclick = () => {
-          if (RV.st !== "ready") return;
+          if (JP.st !== "ready") return;
           cd3(() => {
             if (!$("#rv")) return;
-            RV.st = "play";
+            JP.st = "play";
             setS("play");
-            RV.l = 0;
+            JP.l = 0;
           });
         };
         document
@@ -3571,337 +3757,435 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           const b = $("#" + i);
           b.onpointerdown = (e) => {
             e.preventDefault();
-            RV.k[k] = 1;
+            JP.k[k] = 1;
           };
-          b.onpointerup = b.onpointerleave = () => (RV.k[k] = 0);
+          b.onpointerup = b.onpointerleave = () => (JP.k[k] = 0);
         });
-        const act = (k) => ({ c: rcol, x: rscan, f: rphoto, Enter: rsend })[k];
         document.onkeydown = (e) => {
           if (KM[e.key]) {
             e.preventDefault();
-            RV.k[KM[e.key]] = 1;
+            JP.k[KM[e.key]] = 1;
           }
-          const a = act(e.key);
-          if (a) a();
-          if (e.key === " " || e.key === "p") {
+          if (e.key === " ") {
+            e.preventDefault();
+            JP.k.u = 1;
+          }
+          if (e.key === "p" || e.key === "P") {
             e.preventDefault();
             rpause();
           }
         };
         document.onkeyup = (e) => {
-          if (KM[e.key]) RV.k[KM[e.key]] = 0;
+          if (KM[e.key]) JP.k[KM[e.key]] = 0;
+          if (e.key === " ") JP.k.u = 0;
         };
-        $("#co").onclick = rcol;
-        $("#sc3").onclick = rscan;
-        $("#ph").onclick = rphoto;
-        $("#sd").onclick = rsend;
         setS("ready");
         rob();
         dlg({
-          t: "ROVER MISSION: " + RV.e.toUpperCase(),
+          t: "JET-PACK RESCUE: " + JP.world.toUpperCase(),
           wh: "Your mission",
-          w: "Drive the rover, collect 3 rock samples, scan a rock with the spectrometer, take a photo, then send your data to Earth. Watch your battery!",
-          f: E[4],
-          nt: "Let’s explore!",
+          w: "Three astronauts are stranded on rocky canyon spires! Fly your Maneuvering Jet-Pack to pick up all 3 crewmates, collect blue fuel pods, dodge plasma orbs, and land softly on the green extraction pad.",
+          f: W.fact,
+          nt: "Ignite Jet-Pack!",
         });
         requestAnimationFrame(rvl);
       }
       function rpause() {
-        if (RV.st === "play") {
-          RV.st = "pause";
+        if (JP.st === "play") {
+          JP.st = "pause";
           setS("pause");
-        } else if (RV.st === "pause") {
-          RV.st = "play";
-          RV.l = 0;
+        } else if (JP.st === "pause") {
+          JP.st = "play";
+          JP.l = 0;
           setS("play");
         }
       }
       function rob() {
-        const r = RV,
+        const j = JP,
           o = $("#ob");
-        if (o)
-          o.innerHTML = `<h3>Mission jobs</h3><p>${r.got >= 3 ? "✅" : "⬜"} Collect 3 samples (${r.got}/3)</p><p>${r.scan ? "✅" : "⬜"} Scan a rock</p><p>${r.photo ? "✅" : "⬜"} Take a photo</p><p>${r.sp ? "✅" : "⬜"} Send data to Earth</p>`;
-        const m = $("#rm2");
-        if (m) m.innerHTML = r.msg;
-      }
-      const rn = () =>
-        RV.pts
-          .filter((p) => !p.ok)
-          .sort(
-            (a, b) =>
-              Math.hypot(a.x - RV.x, a.y - RV.y) -
-              Math.hypot(b.x - RV.x, b.y - RV.y),
-          )[0];
-      function rcol() {
-        if (RV.st !== "play" || RV.arm) return;
-        const p = rn();
-        if (p && Math.hypot(p.x - RV.x, p.y - RV.y) < 75) {
-          RV.arm = 0.01;
-          RV.tg = p;
-          RV.msg = "Robotic arm reaching out...";
-        } else
-          RV.msg =
-            '<b class="wr">Too far.</b> Drive closer to a glowing sample (follow the arrow).';
-        rob();
-      }
-      function rscan() {
-        if (RV.st !== "play") return;
-        RV.ring = 0.01;
-        const p = rn() || RV.pts[0];
-        RV.msg =
-          Math.hypot(p.x - RV.x, p.y - RV.y) < 130
-            ? '<b class="ok">Spectrometer result:</b> ' + EN[RV.e][5]
-            : "Nothing special here. Scan close to a glowing sample.";
-        if (RV.msg.includes("result")) RV.scan = 1;
-        rob();
-      }
-      function rphoto() {
-        if (RV.st !== "play") return;
-        RV.flash = 1;
-        RV.photo = 1;
-        RV.msg =
-          '<b class="ok">Photo saved!</b> Cameras let scientists study rocks and landscapes from far away (remote sensing).';
-        rob();
-      }
-      function rsend() {
-        if (RV.st !== "play") return;
-        if (RV.got < 3 || !RV.scan || !RV.photo) {
-          RV.msg =
-            '<b class="wr">Finish the other jobs first:</b> 3 samples, a scan and a photo.';
-          return rob();
+        if (o) {
+          o.innerHTML = `<h3>Rescue Checklist</h3>${j.crew
+            .map(
+              (c) =>
+                `<p>${c.saved ? "✅" : "🆘"} Rescue ${c.name}</p>`,
+            )
+            .join(
+              "",
+            )}<p>${j.rescued >= 3 ? "🟢" : "⬜"} Land gently on Extraction Pad</p>`;
         }
-        RV.st = "send";
-        RV.sendP = 0;
-        RV.msg = "Sending... " + EN[RV.e][4];
-        rob();
+        const m = $("#rm2");
+        if (m) m.innerHTML = j.msg;
       }
       function rvl(now) {
         const cv = $("#rv");
-        if (!cv || !RV) return;
-        const r = RV,
-          E = EN[r.e],
-          dt = Math.min(0.05, (now - r.l) / 1000 || 0);
-        r.l = now;
-        if (r.st === "play" || r.st === "send") {
-          r.t += dt;
-          if (r.st === "play") {
-            const f = E[2];
-            r.v += ((r.k.u ? 1 : 0) - (r.k.d ? 1 : 0)) * 140 * dt * f;
-            r.v *= Math.pow(0.25, dt);
-            r.v = Math.max(-70 * f, Math.min(110 * f, r.v));
-            r.a +=
-              ((r.k.r ? 1 : 0) - (r.k.l ? 1 : 0)) *
-              2.2 *
-              dt *
-              Math.min(1, Math.abs(r.v) / 25 + 0.25) *
-              (r.v < 0 ? -1 : 1);
-            r.x = Math.max(20, Math.min(1380, r.x + Math.cos(r.a) * r.v * dt));
-            r.y = Math.max(20, Math.min(880, r.y + Math.sin(r.a) * r.v * dt));
-            r.bat = Math.min(
-              100,
-              r.bat + (Math.abs(r.v) > 8 ? -2.2 : 0.8) * dt,
-            );
-            if (Math.abs(r.v) > 20 && Math.random() < 0.6)
-              r.dust.push({
-                x: r.x - Math.cos(r.a) * 18,
-                y: r.y - Math.sin(r.a) * 18,
-                l: 1,
+        if (!cv || !JP) return;
+        const j = JP,
+          W = EXW[j.world],
+          dt = Math.min(0.05, (now - j.l) / 1000 || 0);
+        j.l = now;
+
+        if (j.st === "play") {
+          j.t += dt;
+          // Gravity pulls downward
+          j.vy += W.grav * dt;
+
+          // Thruster controls
+          let thrusting = false;
+          if (j.k.u && j.fuel > 0) {
+            j.vy -= 98 * dt;
+            j.fuel = Math.max(0, j.fuel - 5.2 * dt);
+            thrusting = true;
+          }
+          if (j.k.l && j.fuel > 0) {
+            j.vx -= 88 * dt;
+            j.fuel = Math.max(0, j.fuel - 1.8 * dt);
+            thrusting = true;
+          }
+          if (j.k.r && j.fuel > 0) {
+            j.vx += 88 * dt;
+            j.fuel = Math.max(0, j.fuel - 1.8 * dt);
+            thrusting = true;
+          }
+          if (j.k.d) {
+            j.vx *= Math.pow(0.15, dt);
+          } else {
+            j.vx *= Math.pow(0.65, dt);
+          }
+
+          j.vx = Math.max(-165, Math.min(165, j.vx));
+          j.vy = Math.max(-170, Math.min(185, j.vy));
+          j.x += j.vx * dt;
+          j.y += j.vy * dt;
+
+          // Screen bounds
+          if (j.x < 18) {
+            j.x = 18;
+            j.vx = Math.abs(j.vx) * 0.4;
+          }
+          if (j.x > 702) {
+            j.x = 702;
+            j.vx = -Math.abs(j.vx) * 0.4;
+          }
+          if (j.y < 20) {
+            j.y = 20;
+            j.vy = Math.abs(j.vy) * 0.3;
+          }
+
+          // Jet-pack flame trail
+          if (thrusting) {
+            for (let n = 0; n < 2; n++) {
+              j.flames.push({
+                x: j.x + (Math.random() - 0.5) * 6,
+                y: j.y + 14,
+                vx: -j.vx * 0.3 + (Math.random() - 0.5) * 35,
+                vy: 75 + Math.random() * 55,
+                l: 0.38,
+                c: n ? "#35d0ff" : "#ffd24a",
               });
-            if (r.bat <= 0) {
-              r.st = "lost";
+            }
+          }
+
+          // Move plasma energy hazards
+          j.hazards.forEach((h) => {
+            h.y += h.vy * dt;
+            if (h.y < h.minY || h.y > h.maxY) h.vy *= -1;
+            if (Math.hypot(j.x - h.x, j.y - h.y) < h.r + 13) {
+              j.st = "lost";
               setS("lost");
               dlg(
                 {
-                  t: "🔋 BATTERY EMPTY",
+                  t: "⚡ SOLAR PLASMA SURGE!",
                   bad: 1,
-                  w: "The rover ran out of power. Real rovers rest in sunlight to recharge. Plan a shorter route and stop to recharge!",
+                  w: "Your jet-pack touched a high-energy plasma orb! Time your flight between the pulsing orbs.",
                   nt: "Try again",
                 },
-                () => gRover(r.e),
+                () => gRover(j.world),
               );
             }
-          }
-          if (r.arm) {
-            r.arm += dt * 1.4;
-            if (r.arm >= 1.6 && r.tg) {
-              r.tg.ok = 1;
-              r.got++;
-              r.arm = 0;
-              r.msg =
-                '<b class="ok">Sample collected!</b> Scientists study rock and soil to learn how a world formed.';
-              r.tg = null;
+          });
+
+          // Collect fuel pods
+          j.pods.forEach((p) => {
+            if (!p.got && Math.hypot(j.x - p.x, j.y - p.y) < 26) {
+              p.got = 1;
+              j.fuel = Math.min(100, j.fuel + 35);
+              snd("b");
+              j.msg =
+                '<b class="ok">Fuel cell collected (+35% propellant)!</b>';
               rob();
             }
-          }
-          if (r.st === "send") {
-            r.sendP += dt / E[3];
-            if (r.sendP >= 1) {
-              r.st = "won";
-              r.sp = 1;
+          });
+
+          // Rescue stranded astronauts
+          j.crew.forEach((cr) => {
+            if (!cr.saved && Math.hypot(j.x - cr.x, j.y - cr.y) < 30) {
+              cr.saved = 1;
+              j.rescued++;
+              snd("b");
+              j.msg =
+                j.rescued < 3
+                  ? `<b class="ok">${cr.name} rescued!</b> (${j.rescued}/3 aboard). Fly to the next beacon!`
+                  : '<b class="ok">All 3 astronauts rescued!</b> Now touch down gently on the green Extraction Pad on the bottom right!';
               rob();
+            }
+          });
+
+          // Check collision with canyon spires
+          for (const pl of j.pillars) {
+            if (
+              j.x + 11 > pl.x &&
+              j.x - 11 < pl.x + pl.w &&
+              j.y + 14 > pl.y &&
+              j.y - 14 < pl.y + pl.h
+            ) {
+              // Gentle top perch vs hard side crash
+              const onTop = j.y - 14 < pl.y && j.vy >= 0 && j.vy < 65;
+              if (onTop) {
+                j.y = pl.y - 14;
+                j.vy = 0;
+                j.vx *= 0.85;
+              } else {
+                j.st = "lost";
+                setS("lost");
+                dlg(
+                  {
+                    t: "💥 HARD IMPACT ON CANYON ROCK!",
+                    bad: 1,
+                    w: "You hit a rock spire too fast! Feather the upward thruster (▲) to control your descent.",
+                    nt: "Try again",
+                  },
+                  () => gRover(j.world),
+                );
+              }
+            }
+          }
+
+          // Check landing pad or canyon floor (y = 395)
+          if (j.y + 14 >= 395) {
+            const onPad =
+              j.x >= j.pad.x && j.x <= j.pad.x + j.pad.w;
+            const speed = Math.hypot(j.vx, j.vy);
+            if (onPad && speed <= 62 && j.rescued >= 3) {
+              j.y = 381;
+              j.vx = 0;
+              j.vy = 0;
+              j.st = "won";
               setS("won");
               S.gm.rover = 1;
               save();
               award("rover");
               win(
-                "DATA RECEIVED ON EARTH!",
-                E[4] + " Mission time: " + Math.round(r.t) + " s.",
-                r.t < 110 ? 3 : r.t < 180 ? 2 : 1,
-                () => gRover(r.e),
+                "ALL CREW RESCUED!",
+                `Touchdown speed: ${Math.round(speed)} m/s! You saved all 3 astronauts on ${j.world} in ${Math.round(j.t)}s.`,
+                j.fuel >= 35 ? 3 : j.fuel >= 15 ? 2 : 1,
+                () => gRover(j.world),
+              );
+            } else if (onPad && speed <= 62 && j.rescued < 3) {
+              j.y = 381;
+              j.vy = 0;
+              j.vx *= 0.8;
+              j.msg = `<b class="wr">You still need to rescue ${3 - j.rescued} more crewmate(s) before extraction!</b>`;
+              rob();
+            } else {
+              j.st = "lost";
+              setS("lost");
+              dlg(
+                {
+                  t: onPad ? "💥 LANDED TOO HARD!" : "💥 MISSED LANDING PAD!",
+                  bad: 1,
+                  w: onPad
+                    ? `Touchdown speed was ${Math.round(speed)} m/s (safe limit is 62 m/s). Fire thrusters just before landing!`
+                    : "You touched down on rough exoplanet terrain instead of the green extraction pad.",
+                  nt: "Try again",
+                },
+                () => gRover(j.world),
               );
             }
           }
         }
-        r.dust.forEach((p) => (p.l -= dt * 1.2));
-        r.dust = r.dust.filter((p) => p.l > 0);
-        if (r.ring) r.ring += dt * 1.2;
-        if (r.ring > 1) r.ring = 0;
-        if (r.flash > 0) r.flash -= dt * 2;
+
+        j.flames.forEach((f) => {
+          f.x += f.vx * dt;
+          f.y += f.vy * dt;
+          f.l -= dt;
+        });
+        j.flames = j.flames.filter((f) => f.l > 0);
+
+        // Render scene
         const c = cv.getContext("2d"),
-          cx = Math.max(0, Math.min(680, r.x - 360)),
-          cy = Math.max(0, Math.min(470, r.y - 215)),
           t = now / 1000;
-        c.fillStyle = E[0];
+        const sg = c.createLinearGradient(0, 0, 0, 430);
+        sg.addColorStop(0, W.sky1);
+        sg.addColorStop(1, W.sky2);
+        c.fillStyle = sg;
         c.fillRect(0, 0, 720, 430);
+
+        // Twinkling stars
+        j.stars.forEach(([sx, sy, sr], idx) => {
+          c.globalAlpha = 0.35 + 0.55 * Math.sin(t * 2.2 + idx);
+          c.fillStyle = "#fff";
+          c.fillRect(sx, sy, sr, sr);
+        });
+        c.globalAlpha = 1;
+
+        // Distant exoplanet ring & moon
         c.save();
-        c.translate(-cx, -cy);
-        r.cr.forEach((q) => {
-          c.fillStyle = E[1];
-          c.beginPath();
-          c.ellipse(q.x, q.y, q.r, q.r * 0.7, 0, 0, 7);
-          c.fill();
-          c.strokeStyle = "#ffffff30";
+        c.translate(580, 78);
+        c.fillStyle = "rgba(255,220,160,0.22)";
+        c.beginPath();
+        c.arc(0, 0, 34, 0, 7);
+        c.fill();
+        c.strokeStyle = "rgba(53,208,255,0.35)";
+        c.lineWidth = 3;
+        c.beginPath();
+        c.ellipse(0, 0, 56, 12, -0.25, 0, 7);
+        c.stroke();
+        c.restore();
+
+        // Ground & canyon spires
+        c.fillStyle = W.ground;
+        c.fillRect(0, 395, 720, 35);
+        j.pillars.forEach((pl) => {
+          c.fillStyle = W.rock;
+          c.fillRect(pl.x, pl.y, pl.w, pl.h);
+          c.fillStyle = W.ground;
+          c.fillRect(pl.x - 3, pl.y, pl.w + 6, 8);
+        });
+
+        // Extraction landing pad
+        c.fillStyle = j.rescued >= 3 ? "#3ddc84" : "#ffd24a";
+        c.fillRect(j.pad.x, j.pad.y, j.pad.w, 8);
+        c.fillStyle = "#06101f";
+        c.font = "bold 11px sans-serif";
+        c.fillText("PAD", j.pad.x + 32, j.pad.y + 7);
+        // Beacon lights on pad
+        c.fillStyle = Math.sin(t * 8) > 0 ? "#3ddc84" : "#14391f";
+        c.beginPath();
+        c.arc(j.pad.x + 4, j.pad.y - 3, 4, 0, 7);
+        c.arc(j.pad.x + j.pad.w - 4, j.pad.y - 3, 4, 0, 7);
+        c.fill();
+
+        // Fuel pods
+        j.pods.forEach((p) => {
+          if (p.got) return;
+          const bob = Math.sin(t * 4 + p.x) * 4;
+          c.fillStyle = "#35d0ff";
+          c.strokeStyle = "#eef5ff";
           c.lineWidth = 2;
+          c.beginPath();
+          c.roundRect
+            ? c.roundRect(p.x - 9, p.y - 12 + bob, 18, 24, 5)
+            : c.rect(p.x - 9, p.y - 12 + bob, 18, 24);
+          c.fill();
+          c.stroke();
+          c.fillStyle = "#021";
+          c.font = "bold 11px sans-serif";
+          c.fillText("F", p.x - 3, p.y + 4 + bob);
+        });
+
+        // Stranded astronauts
+        j.crew.forEach((cr, idx) => {
+          if (cr.saved) return;
+          const wave = Math.sin(t * 7 + idx) * 4;
+          // Distress pulse ring
+          c.strokeStyle = "rgba(255, 210, 74, 0.55)";
+          c.lineWidth = 2;
+          c.beginPath();
+          c.arc(cr.x, cr.y, 14 + ((t * 24) % 16), 0, 7);
+          c.stroke();
+          // Suit
+          c.fillStyle = "#ff9a2e";
+          c.fillRect(cr.x - 6, cr.y - 4, 12, 14);
+          c.fillStyle = "#fff";
+          c.beginPath();
+          c.arc(cr.x, cr.y - 10, 6, 0, 7);
+          c.fill();
+          c.fillStyle = "#35d0ff";
+          c.fillRect(cr.x - 3, cr.y - 12, 6, 4);
+          // Waving arm
+          c.strokeStyle = "#ff9a2e";
+          c.lineWidth = 3;
+          c.beginPath();
+          c.moveTo(cr.x + 6, cr.y - 1);
+          c.lineTo(cr.x + 14, cr.y - 10 + wave);
           c.stroke();
         });
-        r.ro.forEach((q) => {
-          c.fillStyle = E[1];
+
+        // Moving plasma hazards
+        j.hazards.forEach((h) => {
+          const hg = c.createRadialGradient(h.x, h.y, 2, h.x, h.y, h.r + 8);
+          hg.addColorStop(0, "#fff");
+          hg.addColorStop(0.45, "#ff5252");
+          hg.addColorStop(1, "rgba(255,82,82,0)");
+          c.fillStyle = hg;
           c.beginPath();
-          c.arc(q.x, q.y, q.r, 0, 7);
+          c.arc(h.x, h.y, h.r + 8, 0, 7);
           c.fill();
         });
-        r.pts.forEach((p) => {
-          if (!p.ok) {
-            const g = c.createRadialGradient(
-              p.x,
-              p.y,
-              2,
-              p.x,
-              p.y,
-              26 + 4 * Math.sin(t * 4),
-            );
-            g.addColorStop(0, "#bff4ff");
-            g.addColorStop(1, "transparent");
-            c.fillStyle = g;
-            c.fillRect(p.x - 30, p.y - 30, 60, 60);
-            c.fillStyle = "#35d0ff";
-            c.beginPath();
-            c.arc(p.x, p.y, 6, 0, 7);
-            c.fill();
-          }
-        });
-        r.dust.forEach((p) => {
-          c.globalAlpha = p.l * 0.5;
-          c.fillStyle = "#e8d9c0";
+
+        // Jet-pack flames
+        j.flames.forEach((f) => {
+          c.globalAlpha = Math.max(0, f.l * 2.4);
+          c.fillStyle = f.c;
           c.beginPath();
-          c.arc(p.x, p.y, 6 * (2 - p.l), 0, 7);
+          c.arc(f.x, f.y, 4 * f.l + 1.5, 0, 7);
           c.fill();
         });
         c.globalAlpha = 1;
-        c.save();
-        c.translate(r.x, r.y);
-        c.rotate(r.a);
-        c.fillStyle = "#222";
-        [-14, 0, 14].forEach((w) => {
-          c.fillRect(w - 5, -17, 10, 6);
-          c.fillRect(w - 5, 11, 10, 6);
-        });
-        c.fillStyle = "#e8eef8";
-        c.fillRect(-20, -10, 40, 20);
-        c.fillStyle = "#2e6fd6";
-        c.fillRect(-16, -8, 22, 16);
-        c.fillStyle = "#ff9a2e";
-        c.fillRect(14, -4, 6, 8);
-        if (r.arm) {
-          const L =
-            Math.min(1, r.arm) *
-            (r.tg ? Math.min(70, Math.hypot(r.tg.x - r.x, r.tg.y - r.y)) : 40);
-          c.strokeStyle = "#ffd24a";
-          c.lineWidth = 4;
-          c.beginPath();
-          c.moveTo(20, 0);
-          c.lineTo(20 + L, 0);
-          c.stroke();
-        }
-        c.restore();
-        if (r.ring) {
-          c.strokeStyle = "rgba(61,220,132," + (1 - r.ring) + ")";
-          c.lineWidth = 3;
-          c.beginPath();
-          c.arc(r.x, r.y, r.ring * 130, 0, 7);
-          c.stroke();
-        }
-        if (r.st === "send") {
-          c.strokeStyle = "#35d0ff";
-          c.setLineDash([8, 6]);
-          c.beginPath();
-          c.moveTo(r.x, r.y);
-          c.lineTo(r.x, r.y - 300 * r.sendP);
-          c.stroke();
-          c.setLineDash([]);
-        }
-        c.restore();
-        const p = rn();
-        if (p && r.st === "play") {
-          const a = Math.atan2(p.y - r.y, p.x - r.x),
-            sx = r.x - cx,
-            sy = r.y - cy;
+
+        // Player Astronaut with Jet-Pack
+        if (j.st !== "lost") {
           c.save();
-          c.translate(sx + Math.cos(a) * 60, sy + Math.sin(a) * 60);
-          c.rotate(a);
+          c.translate(j.x, j.y);
+          c.rotate(j.vx * 0.0022);
+          // Jet-pack tank
           c.fillStyle = "#35d0ff";
+          c.fillRect(-12, -8, 6, 18);
+          c.fillRect(6, -8, 6, 18);
+          // Spacesuit torso & legs
+          c.fillStyle = "#eef5ff";
+          c.fillRect(-7, -7, 14, 16);
+          c.fillRect(-6, 9, 5, 6);
+          c.fillRect(1, 9, 5, 6);
+          // Helmet & gold visor
           c.beginPath();
-          c.moveTo(12, 0);
-          c.lineTo(-6, -8);
-          c.lineTo(-6, 8);
+          c.arc(0, -13, 7, 0, 7);
+          c.fill();
+          c.fillStyle = "#ffd24a";
+          c.beginPath();
+          c.ellipse(1, -13, 5, 3.5, 0, 0, 7);
           c.fill();
           c.restore();
         }
-        if (r.flash > 0) {
-          c.fillStyle = "rgba(255,255,255," + r.flash + ")";
-          c.fillRect(0, 0, 720, 430);
-        }
-        c.fillStyle = "#0008";
-        c.fillRect(8, 8, 200, 56);
-        c.font = "14px sans-serif";
+
+        // Telemetry HUD
+        const spd = Math.round(Math.hypot(j.vx, j.vy));
+        c.fillStyle = "#0009";
+        c.fillRect(8, 8, 240, 74);
+        c.font = "13px sans-serif";
         c.fillStyle = "#fff";
-        c.fillText("Battery", 18, 28);
+        c.fillText("Jet-Pack Fuel", 18, 26);
         c.fillStyle = "#06101f";
-        c.fillRect(74, 18, 124, 12);
-        c.fillStyle = r.bat > 30 ? "#3ddc84" : "#ff5252";
-        c.fillRect(74, 18, 1.24 * r.bat, 12);
-        c.fillStyle = "#fff";
+        c.fillRect(106, 16, 128, 12);
+        c.fillStyle = j.fuel > 28 ? "#35d0ff" : "#ff5252";
+        c.fillRect(106, 16, 1.28 * j.fuel, 12);
+        c.fillStyle = "#ffd24a";
+        c.fillText("Crew Rescued: " + j.rescued + " / 3", 18, 48);
+        c.fillStyle = spd <= 62 ? "#3ddc84" : "#ff5252";
         c.fillText(
-          "Samples " + r.got + "/3   Time " + Math.round(r.t) + "s",
+          "Speed: " + spd + " m/s " + (spd <= 62 ? "(Safe)" : "(Fast!)"),
           18,
-          50,
+          68,
         );
-        if (r.st === "send") {
-          c.fillStyle = "#06101f";
-          c.fillRect(220, 380, 280, 14);
-          c.fillStyle = "#35d0ff";
-          c.fillRect(220, 380, 280 * r.sendP, 14);
-          c.fillStyle = "#fff";
-          c.fillText("Sending data to Earth...", 280, 372);
-        }
+
         c.font = "bold 34px sans-serif";
         c.textAlign = "center";
         c.fillStyle = "#ffd24a";
-        if (r.st === "ready") c.fillText("Press ▶ Start", 360, 70);
-        if (r.st === "pause") c.fillText("PAUSED", 360, 70);
+        if (j.st === "ready") c.fillText("Press ▶ Start", 360, 70);
+        if (j.st === "pause") c.fillText("PAUSED", 360, 70);
         c.textAlign = "left";
         const tm = $("#gtm");
-        if (tm) tm.textContent = "Time " + Math.round(r.t) + "s";
+        if (tm) tm.textContent = "Time " + Math.round(j.t) + "s";
         requestAnimationFrame(rvl);
       }
       /* ---------- 3D (Three.js) ---------- */
@@ -4290,7 +4574,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             if (id) (P[id] = P[id] || []).push(m);
             return m;
           };
-        const body = add(
+        add(
           null,
           new T.BoxGeometry(1.2, 1.2, 1.2),
           mat(0xd9b24a, 0.8, 0.3),
@@ -4386,7 +4670,7 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
         R.hl.visible = false;
         R.RM.fairing.transparent = true;
         R.RM.fairing.opacity = 0.85;
-        const eM = (r, c, o) => {
+        const eM = (r, c) => {
           const m = new T.Mesh(new T.SphereGeometry(r, 64, 48), c);
           m.position.y = -600;
           sc.add(m);
@@ -4967,83 +5251,72 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           c.globalAlpha = 1;
         },
         dock: (c, t) => {
-          sky(c, "#0b1038", "#2b2f8a", t);
-          earth(c, 60, 190, 110);
-          c.fillStyle = "#b8c4d8";
-          c.fillRect(190, 68, 70, 18);
-          c.fillRect(230, 58, 40, 38);
-          c.fillStyle = "#2e6fd6";
-          c.fillRect(244, 12, 44, 36);
-          c.fillRect(244, 106, 44, 32);
-          c.fillStyle = "#3d4a63";
-          c.fillRect(264, 10, 3, 130);
-          const k = (t * 0.35) % 1,
-            x = 20 + k * 148,
-            y = 77 + Math.sin(t) * 3;
-          c.fillStyle = "#e8eef8";
-          c.fillRect(x - 12, y - 6, 20, 12);
+          sky(c, "#040b24", "#15255c", t);
+          earth(c, -20, 75, 65);
+          const sy = 75 + Math.sin(t * 2.5) * 24;
+          c.fillStyle = "#eef5ff";
           c.beginPath();
-          c.moveTo(x + 8, y - 6);
-          c.lineTo(x + 15, y);
-          c.lineTo(x + 8, y + 6);
+          c.moveTo(86, sy);
+          c.lineTo(62, sy - 9);
+          c.lineTo(66, sy);
+          c.lineTo(62, sy + 9);
+          c.closePath();
           c.fill();
-          c.fillStyle = "#ffb13d";
-          c.fillRect(x - 17 - k * 4, y - 3, 5, 6);
-          c.strokeStyle = k > 0.8 ? "#3ddc84" : "#35d0ff";
-          c.lineWidth = 2;
-          c.beginPath();
-          c.arc(190, 77, 8 + 2 * Math.sin(t * 5), 0, 7);
-          c.stroke();
-        },
-        rover: (c, t) => {
-          const g = c.createLinearGradient(0, 0, 0, 150);
-          g.addColorStop(0, "#2a0a0a");
-          g.addColorStop(0.6, "#e0703a");
-          g.addColorStop(1, "#f3a064");
-          c.fillStyle = g;
-          c.fillRect(0, 0, 300, 150);
-          c.fillStyle = "#ffe2b0";
-          c.beginPath();
-          c.arc(230, 50, 16, 0, 7);
-          c.fill();
-          c.fillStyle = "#7a2e18";
-          c.beginPath();
-          c.moveTo(0, 110);
-          c.lineTo(60, 60);
-          c.lineTo(110, 105);
-          c.lineTo(170, 70);
-          c.lineTo(240, 108);
-          c.lineTo(300, 80);
-          c.lineTo(300, 150);
-          c.lineTo(0, 150);
-          c.fill();
-          c.fillStyle = "#a64a2a";
-          c.fillRect(0, 112, 300, 38);
-          const x = ((t * 35) % 360) - 30;
-          for (let i = 0; i < 5; i++) {
-            c.fillStyle = "rgba(240,200,160," + (0.5 - i * 0.1) + ")";
+          c.fillStyle = "#35d0ff";
+          c.fillRect(54, sy - 2, 8, 4);
+          const lx = 90 + ((t * 260) % 190);
+          c.fillStyle = "#3ddc84";
+          c.fillRect(lx, sy - 1.5, 18, 3);
+          [
+            [210, 48, 13],
+            [245, 95, 16],
+            [185, 112, 10],
+          ].forEach(([ax, ay, ar], i) => {
+            const x = ((ax - t * 40 + 300) % 210) + 95;
+            c.fillStyle = "#7a6a58";
+            c.strokeStyle = "#ffb13d";
+            c.lineWidth = 1.5;
             c.beginPath();
-            c.arc(x - 16 - i * 9, 128 - i * 2, 5 + i * 2, 0, 7);
+            c.arc(x, ay + Math.sin(t * 2 + i) * 5, ar, 0, 7);
             c.fill();
-          }
-          c.fillStyle = "#e8eef8";
-          c.fillRect(x - 14, 106, 30, 14);
-          c.fillStyle = "#2e6fd6";
-          c.fillRect(x - 10, 108, 16, 10);
-          c.fillRect(x + 4, 96, 2, 10);
-          c.fillStyle = "#eee";
-          c.fillRect(x + 1, 94, 8, 3);
-          [-9, 0, 9].forEach((w) => {
-            c.fillStyle = "#222";
-            c.beginPath();
-            c.arc(x + w, 124, 5, 0, 7);
-            c.fill();
-            c.strokeStyle = "#888";
-            c.beginPath();
-            c.moveTo(x + w, 124);
-            c.lineTo(x + w + Math.cos(t * 8) * 5, 124 + Math.sin(t * 8) * 5);
             c.stroke();
           });
+        },
+        rover: (c, t) => {
+          sky(c, "#071329", "#163b66", t);
+          // Canyon spires & floor
+          c.fillStyle = "#183654";
+          c.fillRect(110, 88, 32, 62);
+          c.fillRect(195, 72, 30, 78);
+          c.fillStyle = "#26547c";
+          c.fillRect(0, 134, 300, 16);
+          // Green extraction pad
+          c.fillStyle = "#3ddc84";
+          c.fillRect(245, 130, 42, 4);
+          // Stranded crewmate waving on spire
+          c.fillStyle = "#ff9a2e";
+          c.fillRect(207, 62, 6, 8);
+          c.fillStyle = "#fff";
+          c.beginPath();
+          c.arc(210, 59, 3, 0, 7);
+          c.fill();
+          // Hovering jet-pack astronaut
+          const ax = 75 + Math.sin(t * 1.4) * 28,
+            ay = 56 + Math.cos(t * 2.6) * 14;
+          c.fillStyle = "#ffd24a";
+          c.beginPath();
+          c.arc(ax, ay + 12, 4 + Math.sin(t * 18) * 1.5, 0, 7);
+          c.fill();
+          c.fillStyle = "#35d0ff";
+          c.fillRect(ax - 7, ay - 4, 4, 10);
+          c.fillRect(ax + 3, ay - 4, 4, 10);
+          c.fillStyle = "#eef5ff";
+          c.fillRect(ax - 4, ay - 4, 8, 10);
+          c.beginPath();
+          c.arc(ax, ay - 8, 4.5, 0, 7);
+          c.fill();
+          c.fillStyle = "#ffd24a";
+          c.fillRect(ax - 2, ay - 9, 5, 2.5);
         },
       };
       function thumbs() {
