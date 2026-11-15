@@ -18,10 +18,7 @@
 7. [Technology](#technology)
 8. [Learning Outcomes](#learning-outcomes)
 9. [Accessibility and Privacy](#accessibility-and-privacy)
-10. [Limitations and Honest Notes](#limitations-and-honest-notes)
-11. [Roadmap](#roadmap)
-12. [Team](#team)
-
+10. [Roadmap](#roadmap)
 ---
 
 ## The Problem
@@ -37,12 +34,10 @@ The game allows participants to define a mission objective, establish mission re
 A strong solution includes a functional interactive game or simulation with a clear user interface, a mission configuration system, resource management mechanisms, collaboration or multiplayer functionality for up to four participants, and a mission simulation and evaluation system. The game provides feedback on mission performance and rewards effective engineering decisions, efficient resource management, successful collaboration, and achievement of mission objectives.
 ## Our Solution
 
-Space Odyssey is a two-part learning platform that turns space engineering into hands-on play:
+Space Odyssey is a learning platform that turns space engineering into hands-on play:
 
 - **Beginner Space Academy** (`odyssey_beginner.html`) is an interactive academy for young learners. Students build rockets, launch satellites, deflect asteroids and rescue astronauts, and learn the physics behind each action as they go.
 - **ODESSEYY Advanced Mission Operations** (`odyssey_advanced.html`) is a mission-design simulator for older students. Players take on the role of a NASA-style mission design team, choose a real mission profile, and make engineering trade-offs in a 3D environment.
-
-Both experiences are single HTML files. Anyone can open them in a browser, which keeps them easy to share in classrooms, at home or at events.
 
 ---
 
@@ -169,16 +164,6 @@ By the end of the experience, learners should be able to:
 
 ---
 
-## Limitations and Honest Notes
-
-- **Simplified physics:** the games use educational approximations. They illustrate concepts and are not engineering-grade simulations.
-- **Not live NASA data:** mission facts come from public NASA references. Budgets, payload limits and telemetry are gameplay values.
-- **Internet needed on first load:** the 3D, gesture and font libraries are loaded from CDNs.
-- **Browser support:** voice input and hand tracking work best in Chrome or Edge, and may behave differently in other browsers.
-- **Large advanced file:** `odyssey_advanced.html` is about 5.7 MB because it bundles a lot of content into one file, so it can take a moment to load on slow connections.
-- **Camera-based control:** gesture control depends on lighting and webcam quality.
-
----
 
 ## Roadmap
 
