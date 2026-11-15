@@ -434,6 +434,33 @@ All generated elements were reviewed, tested, and integrated by the project team
       .ob p {
         margin: 3px 0;
       }
+      .mission-design {
+        margin: 12px 0;
+        border-color: #3476ad;
+      }
+      .mission-design select {
+        width: 100%;
+        margin-top: 4px;
+      }
+      .mission-design .design-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 10px;
+      }
+      .mission-design .stage {
+        display: inline-block;
+        border: 1px solid var(--ln);
+        border-radius: 7px;
+        padding: 5px 8px;
+        margin: 3px;
+        color: var(--mu);
+        font-size: .82rem;
+      }
+      .mission-design .stage.active {
+        border-color: var(--gr);
+        color: var(--gr);
+        background: #123321;
+      }
     </style>
   </head>
   <body>
@@ -1498,7 +1525,7 @@ All generated elements were reviewed, tested, and integrated by the project team
             )
             .join("")}</div></div>
 ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓 Get my certificate</button>' : ""}<div class="grid5">${G.map((g) => `<div class="card">${g[6] ? `<canvas data-p="${g[0]}" width="300" height="150"></canvas>` : '<div class="ph">In development</div>'}<div class="b"><h2 style="font-size:1.1rem;margin:0">${g[1]}</h2><span class="mu">${g[2]}</span><ul><li>${g[3]}</li></ul><span class="mu">Difficulty: ${g[4]} · ${g[5]}</span><div class="bar"><i style="width:${prog[g[0]]()}%"></i></div><button class="${g[6] ? "p" : ""}" data-g="${g[6]}" ${g[6] ? "" : "disabled"}>${g[6] ? "START GAME" : "Coming in next build"}</button></div></div>`).join("")}</div>
-<p class="mu" style="margin-top:18px">Learn more: <a style="color:var(--cy)" href="https://www.nasa.gov/learning-resources/" target="_blank" rel="noopener">NASA Learning Resources</a> · <a style="color:var(--cy)" href="https://spaceplace.nasa.gov/" target="_blank" rel="noopener">NASA Space Place</a></p>`;
+<p class="mu" style="margin-top:18px">Learn more: <a style="color:var(--cy)" href="https://www.nasa.gov/learning-resources/" target="_blank" rel="noopener">NASA Learning Resources</a> · <a style="color:var(--cy)" href="https://spaceplace.nasa.gov/" target="_blank" rel="noopener">NASA Space Place</a> · <a style="color:var(--cy)" href="https://science.nasa.gov/mission/webb/game-build-it-yourself/" target="_blank" rel="noopener">NASA Webb: Build It Yourself</a> · <a style="color:var(--cy)" href="https://www.nasa.gov/wp-content/uploads/2025/04/250323-design-and-develop-science-mission.pdf" target="_blank" rel="noopener">NASA Science Mission Design (PDF)</a></p>`;
         $("#ep").onclick = () => go("welcome");
         if ($("#cert"))
           $("#cert").onclick = () =>
@@ -3149,16 +3176,113 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
           "Navigation satellites (like GPS) tell your phone where you are.",
         ],
       };
+      /* NASA-inspired science mission planning:
+         science goals drive wavelength, instrument and optics choices. */
+      const SCIENCE_GOALS = {
+        "Black holes": {
+          wavelengths: ["Near-infrared", "Mid-infrared"],
+          instruments: ["NIRCam", "MIRI", "NIRSpec"],
+          why: "Study hot gas, dust and material around black holes.",
+        },
+        "Star formation": {
+          wavelengths: ["Near-infrared", "Mid-infrared"],
+          instruments: ["NIRCam", "MIRI", "NIRSpec"],
+          why: "Look through and study dusty regions where stars form.",
+        },
+        "Early universe": {
+          wavelengths: ["Near-infrared"],
+          instruments: ["NIRCam", "NIRSpec"],
+          why: "Observe highly redshifted light from the earliest galaxies.",
+        },
+        Galaxies: {
+          wavelengths: ["Near-infrared", "Mid-infrared"],
+          instruments: ["NIRCam", "MIRI", "NIRSpec"],
+          why: "Study galaxy structure, stars, gas and dust across cosmic time.",
+        },
+        Exoplanets: {
+          wavelengths: ["Near-infrared", "Mid-infrared"],
+          instruments: ["NIRCam", "MIRI", "NIRSpec", "NIRISS/FGS"],
+          why: "Study exoplanets and analyse light from their atmospheres.",
+        },
+      };
+      const INSTRUMENT_INFO = {
+        NIRCam: "Near-Infrared Camera — images in near-infrared light.",
+        MIRI: "Mid-Infrared Instrument — observes mid-infrared light.",
+        NIRSpec: "Near-Infrared Spectrograph — separates light into spectra.",
+        "NIRISS/FGS": "Near-Infrared Imager and Slitless Spectrograph / Fine Guidance Sensor.",
+      };
+      const NASA_DESIGN_STAGES = [
+        "Identify Need & Goals", "Define Concept", "Define Requirements",
+        "Design", "Build & Verify", "Implement"
+      ];
       let SG;
       function gSat() {
-        SG = { m: "Communication", s: {}, u: 0 };
+        SG = {
+          m: "Communication", s: {}, u: 0,
+          science: "Exoplanets", wavelength: "Near-infrared",
+          instrument: "NIRCam"
+        };
         srend();
       }
       function srend() {
         const need = SM[SG.m][0];
         const keep = SG.v ? SG.v.rn.domElement : null;
+        const science = SCIENCE_GOALS[SG.science] || SCIENCE_GOALS.Exoplanets;
+        if (!science.wavelengths.includes(SG.wavelength)) SG.wavelength = science.wavelengths[0];
+        if (!science.instruments.includes(SG.instrument)) SG.instrument = science.instruments[0];
         $("#v").innerHTML =
-          `<div class="row"><h2 style="margin:0;flex:1">Satellite Lab</h2><button id="bk">Back to academy</button></div><p class="mu">Step 1: pick a mission. Step 2: tap parts to add them. Step 3: launch!</p><div class="bg2" style="grid-template-columns:minmax(0,1fr) 320px"><section><div id="sw"></div><canvas id="sc2" class="m" width="600" height="360"></canvas><div class="pn" id="sm" style="margin-top:8px">Choose parts the satellite needs for its job.</div></section><aside><div class="pn"><h3>Mission</h3>${Object.keys(
+          `<div class="row"><h2 style="margin:0;flex:1">Satellite Lab</h2><button id="bk">Back to academy</button></div><p class="mu">Step 1: define your science mission. Step 2: pick a satellite mission and parts. Step 3: verify and deploy!</p>
+<div class="pn mission-design">
+  <h3 style="margin-top:0">Build Your Science Mission</h3>
+  <p class="mu">Beginner tip: You are choosing what your satellite should discover. There are no complicated answers to memorise — just follow the three steps.</p>
+  <div class="pn" style="background:#07172d;margin:10px 0">
+    <b>Step 1 — What do you want to discover?</b>
+    <p class="mu">Choose one space mystery for your mission.</p>
+    <label>My science goal
+      <select id="scienceGoal">${Object.keys(SCIENCE_GOALS).map(g=>`<option ${SG.science===g?"selected":""}>${g}</option>`).join("")}</select>
+    </label>
+    <p class="mu" style="margin-bottom:0">${science.why}</p>
+  </div>
+  <div class="pn" style="background:#07172d;margin:10px 0">
+    <b>Step 2 — What kind of light will you study?</b>
+    <p class="mu">Space objects give off different kinds of light. Webb studies infrared light, which humans cannot see with their eyes.</p>
+    <label>Choose a light type
+      <select id="scienceWave">${science.wavelengths.map(w=>`<option ${SG.wavelength===w?"selected":""}>${w}</option>`).join("")}</select>
+    </label>
+    <p class="mu" style="margin-bottom:0">${SG.wavelength==="Near-infrared"?"Near-infrared: helps us study very distant objects, stars and planets.":"Mid-infrared: helps us study cooler objects and see through some clouds of dust."}</p>
+  </div>
+  <div class="pn" style="background:#07172d;margin:10px 0">
+    <b>Step 3 — Pick your science tool</b>
+    <p class="mu">A science instrument is a special camera or tool on a space telescope.</p>
+    <label>Choose an instrument
+      <select id="scienceInstrument">${science.instruments.map(i=>`<option value="${i}" ${SG.instrument===i?"selected":""}>${i}</option>`).join("")}</select>
+    </label>
+    <p class="mu" style="margin-bottom:0">${INSTRUMENT_INFO[SG.instrument]}</p>
+  </div>
+  <p class="fact" style="margin:8px 0">Your NASA-inspired science plan is ready! Next, choose your satellite mission and build it using the parts on this page.</p>
+  <details style="margin-top:10px">
+    <summary style="cursor:pointer;font-weight:bold">Curious? See how NASA plans real science missions</summary>
+    <p class="mu">NASA uses these six stages. In simple words:</p>
+    <ol class="mu">
+      <li><b>Identify the goal:</b> Decide what question the mission should answer.</li>
+      <li><b>Plan the idea:</b> Work out how a mission could answer it.</li>
+      <li><b>Set the requirements:</b> Decide what the spacecraft and tools must do.</li>
+      <li><b>Design:</b> Plan how all the parts will work together.</li>
+      <li><b>Build and test:</b> Make the spacecraft and check that it works.</li>
+      <li><b>Operate the mission:</b> Launch it, collect data and share the results.</li>
+    </ol>
+    <p class="mu">A real science mission also has four connected parts:</p>
+    <ul class="mu">
+      <li><b>Launch:</b> The rocket carries the spacecraft into space.</li>
+      <li><b>Space:</b> The spacecraft and its instruments collect information.</li>
+      <li><b>Ground:</b> Antennas and mission teams communicate with the spacecraft.</li>
+      <li><b>Users:</b> Scientists and others study and use the information.</li>
+    </ul>
+    <p class="mu">Webb fact: its primary mirror is 6.6 metres wide and has 18 hexagonal segments. Its science instruments include NIRCam, MIRI, NIRSpec and NIRISS/FGS.</p>
+    <p class="mu" style="font-size:.82rem;margin-bottom:0">Based on NASA's Webb Build It Yourself activity and its March 2025 Design and Develop Science Missions resource.</p>
+  </details>
+</div>
+<div class="bg2" style="grid-template-columns:minmax(0,1fr) 320px"><section><div id="sw"></div><canvas id="sc2" class="m" width="600" height="360"></canvas><div class="pn" id="sm" style="margin-top:8px">Choose parts the satellite needs for its job.</div></section><aside><div class="pn"><h3>Mission</h3>${Object.keys(
             SM,
           )
             .map(
@@ -3178,6 +3302,21 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
               "",
             )}<button class="p" id="sl" style="width:100%">Launch satellite</button></div></aside></div>`;
         $("#bk").onclick = () => go("home");
+        $("#scienceGoal").onchange = (e) => {
+          SG.science = e.target.value;
+          const next = SCIENCE_GOALS[SG.science];
+          SG.wavelength = next.wavelengths[0];
+          SG.instrument = next.instruments[0];
+          srend();
+        };
+        $("#scienceWave").onchange = (e) => {
+          SG.wavelength = e.target.value;
+          srend();
+        };
+        $("#scienceInstrument").onchange = (e) => {
+          SG.instrument = e.target.value;
+          srend();
+        };
         document.querySelectorAll("[data-m]").forEach(
           (b) =>
             (b.onclick = () => {
@@ -3212,7 +3351,9 @@ ${totalP() >= 100 ? '<button class="p" id="cert" style="margin-bottom:12px">🎓
             "3. Satellite deployment: it is released into orbit.",
             "4. Solar panels unfold to make power.",
             "5. Communication switched on.",
-            "6. Connected to ground control! " +
+            "6. Science payload configured: " + SG.instrument +
+              " observes in " + SG.wavelength + " to investigate " + SG.science + ".",
+            "7. Connected to ground control! " +
               SM[SG.m][1] +
               (extra.length
                 ? " (Extra parts add weight and cost, so engineers only carry what they need.)"
